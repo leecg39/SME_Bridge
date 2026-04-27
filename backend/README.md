@@ -9,6 +9,23 @@ cd backend
 uvicorn app.main:app --reload --port 8001
 ```
 
+## Supabase Database
+
+The M&A document library uses Supabase when these values are present. Without
+them, the API serves bundled fallback templates.
+
+```bash
+SUPABASE_URL=https://xldqjgamukgjurutgxwj.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=...
+```
+
+Implemented endpoints:
+
+- `GET /api/v1/mna-documents` returns the 5 M&A roadmap phases and the
+  downloadable document templates needed for each phase.
+- `POST /api/v1/consultations` accepts consultation requests and can hand them
+  off to Patasos when configured.
+
 ## Patasos Environment
 
 ```bash

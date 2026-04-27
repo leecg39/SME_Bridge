@@ -905,27 +905,112 @@ textarea {
   text-align: left;
 }
 
+.roadmap-title-row {
+  align-items: start;
+  display: grid;
+  gap: 20px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  margin-bottom: 26px;
+}
+
 .kanban {
   display: grid;
   gap: 16px;
-  grid-template-columns: repeat(5, minmax(210px, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   overflow-x: auto;
 }
 
 .phase-card {
-  min-height: 280px;
+  min-height: 620px;
+  padding: 24px;
 }
 
 .checkbox-row {
   align-items: flex-start;
   display: flex;
   gap: 12px;
+  line-height: 1.45;
+  margin-bottom: 8px;
 }
 
 .checkbox-row input {
   height: 24px;
   min-height: 24px;
   width: 24px;
+}
+
+.phase-document-panel {
+  background: #fbfaf7;
+  border: 1px solid var(--neutral-200);
+  border-radius: 8px;
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+  padding: 14px;
+}
+
+.phase-document-title {
+  align-items: center;
+  color: var(--navy-900);
+  display: flex;
+  font-size: 15px;
+  font-weight: 900;
+  gap: 7px;
+}
+
+.phase-document-title span {
+  background: var(--gold-100);
+  border-radius: 999px;
+  color: var(--gold-700);
+  font-size: 13px;
+  margin-left: auto;
+  padding: 3px 8px;
+}
+
+.phase-document-list {
+  display: grid;
+  gap: 8px;
+}
+
+.document-download {
+  align-items: center;
+  background: white;
+  border: 1px solid rgba(230, 224, 216, 0.96);
+  border-radius: 8px;
+  color: var(--navy-800);
+  display: grid;
+  gap: 10px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  min-height: 68px;
+  padding: 10px 12px;
+  text-decoration: none;
+  transition:
+    border-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.document-download:hover {
+  border-color: rgba(242, 140, 34, 0.56);
+  color: var(--gold-700);
+  transform: translateY(-1px);
+}
+
+.document-download strong,
+.document-download small {
+  display: block;
+}
+
+.document-download strong {
+  font-size: 15px;
+  line-height: 1.35;
+}
+
+.document-download small {
+  color: var(--neutral-700);
+  font-size: 13px;
+  line-height: 1.45;
+  margin-top: 4px;
 }
 
 .floating {
@@ -962,6 +1047,10 @@ textarea {
 
   .strength-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .kanban {
+    grid-template-columns: repeat(5, minmax(220px, 1fr));
   }
 }
 
@@ -1084,6 +1173,7 @@ textarea {
   .grid-4,
   .segmented,
   .dashboard-header,
+  .roadmap-title-row,
   .promo-video-heading,
   .executive-band,
   .consultation-assurance {
