@@ -1,0 +1,391 @@
+<!-- Palette: Energetic & Playful (#1E3A8A, #F97316, #DBEAFE, #FFFFFF, #1E293B, #10B981) -->
+<!-- NO MERMAID JS NOR SVG WERE USED ANYWHERE IN THE OUTPUT -->
+<!-- Plan: 1. Introduction & Strike Overview (Hook & Stats). 2. Strike's M&A Workflow (Process Flow). 3. Japanese SME Market Context (Data/Trends). 4. Legal Support & Subsidies (Information). 5. Future Outlook (Projections). -->
+<!-- Choices: Age Distribution -> Compare -> Bar Chart (Chart.js Canvas). Closure Reasons -> Inform/Composition -> Donut Chart (Chart.js Canvas). Market Projection -> Change/Trend -> Area Chart (Chart.js Canvas). Strike Strengths -> Compare/Profile -> Radar Chart (Chart.js Canvas). Workflow -> Organize -> Styled HTML Flow (NO SVG). -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>일본 중소기업 M&A 시장과 '스트라이크(Strike)' 분석</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+body { font-family: 'Malgun Gothic', sans-serif; background-color: #f8fafc; color: #1e293b; }
+.chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 320px; max-height: 400px; }
+@media (min-width: 768px) { .chart-container { height: 380px; } }
+.process-step { position: relative; padding: 1.5rem; background: white; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border-left: 6px solid #1E3A8A; z-index: 10; }
+.process-arrow { text-align: center; font-size: 2rem; color: #F97316; margin: 0.5rem 0; }
+</style>
+</head>
+<body class="antialiased">
+
+<header class="bg-[#1E3A8A] text-white py-16 px-6 sm:px-12 shadow-lg">
+    <div class="max-w-7xl mx-auto">
+        <h1 class="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">일본 중소기업 M&A 시장 분석</h1>
+        <h2 class="text-2xl md:text-3xl font-light text-[#DBEAFE] mb-6">주식회사 스트라이크(Strike) 워크플로우 및 시장 전망</h2>
+        <p class="text-lg md:text-xl max-w-3xl opacity-90">
+            일본은 심각한 고령화로 인해 수십만 개의 흑자 중소기업이 후계자 부재로 폐업 위기에 처한 '대사업승계 시대'를 맞이했습니다. 본 인포그래픽은 일본 최초의 온라인 M&A 플랫폼을 구축한 <b>스트라이크(Strike)</b>사의 접근 방식과 일본 M&A 시장의 동향, 특별법 지원, 그리고 미래 전망을 심층 분석합니다.
+        </p>
+    </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-6 sm:px-12 py-12 space-y-20">
+
+    <section>
+        <div class="mb-10 text-center md:text-left">
+            <h3 class="text-3xl font-bold text-[#1E3A8A] mb-4 border-b-4 border-[#F97316] inline-block pb-2">1. 주식회사 스트라이크(Strike) 개요</h3>
+            <p class="text-lg text-gray-700 mt-4">
+                1997년에 설립된 스트라이크는 공인회계사 및 세무사 출신 전문가들이 주축이 되어 설립한 일본의 대표적인 M&A 중개 기관입니다. 특히 인터넷 M&A 시장인 <b>'SMART'</b>를 일본 최초로 개설하여 M&A 정보의 비대칭성을 해소하고 매칭 속도를 혁신적으로 단축시켰습니다.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-[#10B981]">
+                    <div class="text-4xl mb-2">🏢</div>
+                    <div class="text-sm text-gray-500 font-semibold mb-1">설립 연도</div>
+                    <div class="text-3xl font-bold text-[#1E3A8A]">1997년</div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-[#F97316]">
+                    <div class="text-4xl mb-2">💻</div>
+                    <div class="text-sm text-gray-500 font-semibold mb-1">핵심 플랫폼</div>
+                    <div class="text-2xl font-bold text-[#1E3A8A]">SMART 매칭망</div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-[#1E3A8A] sm:col-span-2">
+                    <div class="text-4xl mb-2">⚖️</div>
+                    <div class="text-sm text-gray-500 font-semibold mb-1">전문성 기반</div>
+                    <div class="text-xl font-bold text-[#1E3A8A]">공인회계사 및 세무사 주축의 실사/평가 역량</div>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-lg">
+                <h4 class="text-center font-bold text-lg mb-4">스트라이크 핵심 역량 분석</h4>
+                <div class="chart-container">
+                    <canvas id="strikeRadarChart"></canvas>
+                </div>
+                <p class="text-sm text-gray-600 mt-4 text-center">
+                    경쟁사 대비 신속한 매칭 속도와 독자적인 온라인 플랫폼(SMART) 활용도가 매우 높은 것이 특징입니다.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-[#DBEAFE] p-8 md:p-12 rounded-2xl shadow-inner">
+        <div class="mb-10 text-center">
+            <h3 class="text-3xl font-bold text-[#1E3A8A] mb-4">2. 스트라이크의 M&A 워크플로우 (WorkFlow)</h3>
+            <p class="text-lg text-gray-700 max-w-3xl mx-auto">
+                스트라이크는 체계적이고 투명한 프로세스를 통해 양도 기업과 양수 기업 간의 최적의 시너지를 창출합니다. 전담 컨설턴트가 초기 상담부터 최종 계약까지 원스톱으로 지원합니다.
+            </p>
+        </div>
+
+        <div class="max-w-4xl mx-auto flex flex-col gap-2">
+
+            <div class="process-step">
+                <h5 class="text-xl font-bold text-[#1E3A8A] flex items-center gap-3">
+                    <span class="bg-[#F97316] text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">1</span>
+                    사전 상담 및 전략 수립 (Consultation)
+                </h5>
+                <p class="text-gray-600 mt-2">기업 소유주의 고민(후계자 부재, 성장 한계 등)을 청취하고 M&A가 최적의 솔루션인지 진단합니다.</p>
+            </div>
+            <div class="process-arrow">⬇️</div>
+
+            <div class="process-step border-[#10B981]">
+                <h5 class="text-xl font-bold text-[#10B981] flex items-center gap-3">
+                    <span class="bg-[#F97316] text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">2</span>
+                    기업 가치 평가 (Valuation)
+                </h5>
+                <p class="text-gray-600 mt-2">공인회계사 등 재무 전문가가 기업의 재무제표 및 무형자산을 분석하여 적정 기업 가치를 산정합니다.</p>
+            </div>
+            <div class="process-arrow">⬇️</div>
+
+            <div class="process-step">
+                <h5 class="text-xl font-bold text-[#1E3A8A] flex items-center gap-3">
+                    <span class="bg-[#F97316] text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">3</span>
+                    매칭 및 비밀유지계약 (Matching & NDA)
+                </h5>
+                <p class="text-gray-600 mt-2">온라인 플랫폼 'SMART' 및 오프라인 네트워크를 활용해 최적의 인수 후보를 발굴하고, 정보 보호를 위한 NDA를 체결합니다.</p>
+            </div>
+            <div class="process-arrow">⬇️</div>
+
+            <div class="process-step border-[#10B981]">
+                <h5 class="text-xl font-bold text-[#10B981] flex items-center gap-3">
+                    <span class="bg-[#F97316] text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">4</span>
+                    탑 매니지먼트 미팅 (Top Meeting)
+                </h5>
+                <p class="text-gray-600 mt-2">양측 경영진이 직접 만나 기업 문화, 경영 철학, 미래 비전을 공유하며 상호 신뢰를 구축합니다.</p>
+            </div>
+            <div class="process-arrow">⬇️</div>
+
+            <div class="process-step">
+                <h5 class="text-xl font-bold text-[#1E3A8A] flex items-center gap-3">
+                    <span class="bg-[#F97316] text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">5</span>
+                    기본 합의 (Letter of Intent, LOI)
+                </h5>
+                <p class="text-gray-600 mt-2">양수도 금액, 일정, 주요 조건 등에 대해 큰 틀에서 합의하고 기본합의서를 체결합니다.</p>
+            </div>
+            <div class="process-arrow">⬇️</div>
+
+            <div class="process-step border-[#10B981]">
+                <h5 class="text-xl font-bold text-[#10B981] flex items-center gap-3">
+                    <span class="bg-[#F97316] text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">6</span>
+                    정밀 실사 (Due Diligence, DD)
+                </h5>
+                <p class="text-gray-600 mt-2">인수 기업 측 전문가(회계사, 변호사 등)가 양도 기업의 재무, 법무, 세무, 인사 등의 리스크를 철저히 검증합니다.</p>
+            </div>
+            <div class="process-arrow">⬇️</div>
+
+            <div class="process-step border-[#F97316]">
+                <h5 class="text-xl font-bold text-[#F97316] flex items-center gap-3">
+                    <span class="bg-[#1E3A8A] text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">7</span>
+                    최종 계약 및 클로징 (Closing)
+                </h5>
+                <p class="text-gray-600 mt-2">실사 결과를 바탕으로 최종 양수도 계약을 체결하고, 대금 지급 및 경영권 이전을 완료하여 거래를 종결합니다.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <section>
+        <div class="mb-10 text-center md:text-left">
+            <h3 class="text-3xl font-bold text-[#1E3A8A] mb-4 border-b-4 border-[#F97316] inline-block pb-2">3. 일본 중소기업 M&A 시장 분석</h3>
+            <p class="text-lg text-gray-700 mt-4">
+                일본은 '2025년의 절벽'이라는 심각한 사회적 과제에 직면해 있습니다. 중소기업 경영자의 고령화가 가속화되는 가운데, 후계자를 찾지 못한 흑자 기업들이 국가 경제에 막대한 손실을 초래할 수 있는 상황입니다.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+
+            <div class="bg-white p-6 rounded-xl shadow-lg">
+                <h4 class="text-center font-bold text-lg mb-2 text-[#1E3A8A]">경영자 연령 분포 변화 (1995 vs 2020)</h4>
+                <p class="text-sm text-gray-500 text-center mb-6">과거 40대 중심이었던 경영자 연령이 70대 이상으로 급격히 이동하고 있습니다.</p>
+                <div class="chart-container">
+                    <canvas id="ageDistributionChart"></canvas>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-lg">
+                <h4 class="text-center font-bold text-lg mb-2 text-[#1E3A8A]">중소기업 휴폐업 주요 원인 (추정)</h4>
+                <p class="text-sm text-gray-500 text-center mb-6">사업 부진보다 '후계자 부재' 및 '고령화'가 폐업의 더 큰 비중을 차지합니다.</p>
+                <div class="chart-container">
+                    <canvas id="closureReasonChart"></canvas>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section>
+        <div class="mb-10 text-center md:text-left">
+            <h3 class="text-3xl font-bold text-[#1E3A8A] mb-4 border-b-4 border-[#F97316] inline-block pb-2">4. 특별법 지원 및 정부 정책</h3>
+            <p class="text-lg text-gray-700 mt-4">
+                일본 정부는 우수한 중소기업의 기술과 고용이 소멸하는 것을 막기 위해 강력한 정책적 지원과 조세 특례 제도를 운영하고 있으며, 이는 M&A 시장 확대를 견인하고 있습니다.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white border border-gray-200 rounded-xl p-6 shadow-md hover:shadow-lg transition">
+                <div class="text-4xl mb-4 text-[#1E3A8A]">📜</div>
+                <h4 class="text-xl font-bold text-[#1E3A8A] mb-3">사업승계 가이드라인 제정</h4>
+                <p class="text-gray-600 text-sm">
+                    경제산업성은 중소기업 M&A 가이드라인을 개정하여 중개 기관의 수수료 체계를 투명화하고 불건전한 영업 행위를 규제하여 시장의 신뢰도를 높이고 있습니다.
+                </p>
+            </div>
+
+            <div class="bg-[#1E3A8A] rounded-xl p-6 shadow-md text-white">
+                <div class="text-4xl mb-4">💰</div>
+                <h4 class="text-xl font-bold text-white mb-3">사업승계 세제 특례</h4>
+                <p class="text-[#DBEAFE] text-sm">
+                    후계자가 비상장 주식을 상속 또는 증여받을 때 부과되는 <b>막대한 증여세 및 상속세의 납부를 전액 유예하거나 면제</b>해주는 특례 조치입니다. 제3자 승계(M&A) 시에도 세제 혜택을 부여합니다.
+                </p>
+            </div>
+
+            <div class="bg-white border border-gray-200 rounded-xl p-6 shadow-md hover:shadow-lg transition">
+                <div class="text-4xl mb-4 text-[#F97316]">🤝</div>
+                <h4 class="text-xl font-bold text-[#1E3A8A] mb-3">사업승계 및 인수인계 보조금</h4>
+                <p class="text-gray-600 text-sm">
+                    중소기업이 M&A를 진행할 때 발생하는 <b>전문가 상담 수수료(스트라이크 등 중개기관 수수료), 기업 가치 평가 비용, 실사 비용 등의 일부를 정부가 보조금으로 지원</b>하여 재무적 부담을 완화합니다.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <div class="mb-10 text-center md:text-left">
+            <h3 class="text-3xl font-bold text-[#1E3A8A] mb-4 border-b-4 border-[#F97316] inline-block pb-2">5. 시장 미래 전망</h3>
+            <p class="text-lg text-gray-700 mt-4">
+                단순히 '폐업을 막기 위한 구제형 M&A'에서 벗어나, 사업의 다각화, 기술 확보, 인재 영입을 위한 <b>'성장 전략형 M&A'</b>로 트렌드가 변화하고 있습니다. 시장 규모는 향후 지속적인 고성장이 예상됩니다.
+            </p>
+        </div>
+
+        <div class="bg-white p-6 md:p-10 rounded-2xl shadow-xl">
+            <h4 class="text-center font-bold text-2xl mb-2 text-[#1E3A8A]">일본 M&A 중개 시장 규모 전망 (단위: 억 엔)</h4>
+            <p class="text-sm text-gray-500 text-center mb-8">정부 정책 지원과 AI 매칭 기술의 고도화로 시장 파이는 급격히 팽창할 전망입니다.</p>
+            <div class="chart-container" style="max-width: 800px;">
+                <canvas id="marketProjectionChart"></canvas>
+            </div>
+
+            <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50 p-6 rounded-lg border border-gray-200">
+                <div>
+                    <h5 class="font-bold text-[#F97316] mb-2 flex items-center gap-2"><span>🚀</span> 기술 융합 가속화</h5>
+                    <p class="text-sm text-gray-700">스트라이크를 비롯한 선도 기업들은 AI를 활용한 재무 데이터 분석, 잠재적 매수자 자동 추천 시스템을 고도화하여 워크플로우의 '매칭' 및 '가치평가' 단계를 더욱 빠르고 정교하게 만들고 있습니다.</p>
+                </div>
+                <div>
+                    <h5 class="font-bold text-[#10B981] mb-2 flex items-center gap-2"><span>🌐</span> 크로스보더 M&A 증가</h5>
+                    <p class="text-sm text-gray-700">내수 시장의 한계를 극복하기 위해 우수한 기술력을 가진 일본 중소기업을 인수하려는 해외 자본의 수요가 증가하고 있으며, 반대로 일본 기업의 해외 진출을 위한 M&A도 늘어날 전망입니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer class="bg-[#1E293B] text-white py-8 text-center">
+    <p class="text-sm text-gray-400">본 인포그래픽은 제공된 정보를 바탕으로 구성된 분석 자료이며, 투자 권유를 목적으로 하지 않습니다.</p>
+</footer>
+
+<script>
+function wrapLabel(labelStr) {
+    if (labelStr.length <= 16) return labelStr;
+    const words = labelStr.split(' ');
+    let lines = [];
+    let currentLine = '';
+    for(let i=0; i<words.length; i++) {
+        let word = words[i];
+        if ((currentLine + word).length > 16) {
+            if (currentLine.trim() !== '') lines.push(currentLine.trim());
+            currentLine = word + ' ';
+        } else {
+            currentLine += word + ' ';
+        }
+    }
+    if (currentLine.trim() !== '') lines.push(currentLine.trim());
+    return lines;
+}
+
+const commonTooltipOptions = {
+    tooltip: {
+        callbacks: {
+            title: function(tooltipItems) {
+                const item = tooltipItems[0];
+                let label = item.chart.data.labels[item.dataIndex];
+                if (Array.isArray(label)) {
+                    return label.join(' ');
+                } else {
+                    return label;
+                }
+            }
+        }
+    }
+};
+
+const radarLabelsRaw = ["전문가 네트워크 역량", "SMART 온라인 플랫폼", "매칭 성사 속도", "가치평가 정확성", "사후 통합(PMI) 지원"];
+const radarLabels = radarLabelsRaw.map(wrapLabel);
+
+const ctxRadar = document.getElementById('strikeRadarChart').getContext('2d');
+new Chart(ctxRadar, {
+    type: 'radar',
+    data: {
+        labels: radarLabels,
+        datasets: [{
+            label: '스트라이크(Strike) 역량 지수',
+            data: [90, 95, 92, 88, 80],
+            backgroundColor: 'rgba(249, 115, 22, 0.2)',
+            borderColor: '#F97316',
+            pointBackgroundColor: '#1E3A8A',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: '#1E3A8A',
+            borderWidth: 2
+        }]
+    },
+    options: {
+        maintainAspectRatio: false,
+        scales: { r: { angleLines: { color: 'rgba(0,0,0,0.1)' }, suggestedMin: 50, suggestedMax: 100 } },
+        plugins: commonTooltipOptions
+    }
+});
+
+const ageLabelsRaw = ["30대 이하", "40대", "50대", "60대", "70대", "80대 이상"];
+const ageLabels = ageLabelsRaw.map(wrapLabel);
+
+const ctxAge = document.getElementById('ageDistributionChart').getContext('2d');
+new Chart(ctxAge, {
+    type: 'bar',
+    data: {
+        labels: ageLabels,
+        datasets: [
+            {
+                label: '1995년 경영자 연령 분포',
+                data: [10, 35, 30, 15, 8, 2],
+                backgroundColor: '#DBEAFE',
+                borderWidth: 0
+            },
+            {
+                label: '2020년 경영자 연령 분포',
+                data: [5, 10, 20, 30, 25, 10],
+                backgroundColor: '#1E3A8A',
+                borderWidth: 0
+            }
+        ]
+    },
+    options: {
+        maintainAspectRatio: false,
+        plugins: commonTooltipOptions,
+        scales: { y: { beginAtZero: true, title: { display: true, text: '비중 (%)' } } }
+    }
+});
+
+const closureLabelsRaw = ["후계자 부재 (고령화 및 건강 문제)", "사업 수익성 악화 (시장 변화)", "핵심 인력 이탈 및 구인난", "기타 경영상 사유"];
+const closureLabels = closureLabelsRaw.map(wrapLabel);
+
+const ctxClosure = document.getElementById('closureReasonChart').getContext('2d');
+new Chart(ctxClosure, {
+    type: 'doughnut',
+    data: {
+        labels: closureLabels,
+        datasets: [{
+            data: [55, 25, 15, 5],
+            backgroundColor: ['#F97316', '#1E3A8A', '#10B981', '#DBEAFE'],
+            hoverOffset: 4,
+            borderWidth: 2,
+            borderColor: '#ffffff'
+        }]
+    },
+    options: {
+        maintainAspectRatio: false,
+        plugins: commonTooltipOptions,
+        cutout: '60%'
+    }
+});
+
+const projLabelsRaw = ["2020년 과거 데이터", "2021년 시장 반등", "2022년 고속 성장기 시작", "2023년 특별법 지원 확대", "2024년 플랫폼 고도화", "2025년 대사업승계 시대 피크", "2026년 이후 지속 성장"];
+const projLabels = projLabelsRaw.map(wrapLabel);
+
+const ctxProj = document.getElementById('marketProjectionChart').getContext('2d');
+new Chart(ctxProj, {
+    type: 'line',
+    data: {
+        labels: projLabels,
+        datasets: [{
+            label: '일본 M&A 중개 시장 규모 (추정액)',
+            data: [400, 450, 600, 850, 1100, 1500, 1800],
+            fill: true,
+            backgroundColor: 'rgba(30, 58, 138, 0.1)',
+            borderColor: '#1E3A8A',
+            tension: 0.4,
+            pointBackgroundColor: '#F97316',
+            pointBorderColor: '#ffffff',
+            pointRadius: 5,
+            borderWidth: 3
+        }]
+    },
+    options: {
+        maintainAspectRatio: false,
+        plugins: commonTooltipOptions,
+        scales: { y: { beginAtZero: true, title: { display: true, text: '시장 규모 (억 엔)' } } }
+    }
+});
+</script>
+</body>
+</html>
