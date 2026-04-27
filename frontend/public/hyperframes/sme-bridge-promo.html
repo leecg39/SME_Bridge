@@ -1,0 +1,848 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>승계브릿지 홍보 영상</title>
+    <script>
+      function setPromoScale() {
+        document.documentElement.style.setProperty(
+          "--promo-scale",
+          String(Math.min(window.innerWidth / 1920, window.innerHeight / 1080)),
+        );
+      }
+
+      setPromoScale();
+      window.addEventListener("resize", setPromoScale);
+    </script>
+    <style>
+      :root {
+        --navy-950: #2b1107;
+        --navy-900: #7c2d12;
+        --navy-800: #c2410c;
+        --gold-500: #f97316;
+        --gold-100: #ffedd5;
+        --green-500: #f59e0b;
+        --paper: #fff7ed;
+        --ink: #fffaf5;
+        --muted: rgba(255, 247, 237, 0.82);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        background: var(--navy-950);
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+      }
+
+      body {
+        font-family: Pretendard, Apple SD Gothic Neo, Malgun Gothic, system-ui, sans-serif;
+      }
+
+      [data-composition-id="sme-bridge-promo"] {
+        background:
+          radial-gradient(circle at 82% 18%, rgba(251, 146, 60, 0.32), transparent 26%),
+          radial-gradient(circle at 14% 78%, rgba(253, 186, 116, 0.22), transparent 30%),
+          linear-gradient(135deg, #2b1107 0%, #7c2d12 52%, #ea580c 100%);
+        color: var(--ink);
+        height: 100%;
+        overflow: hidden;
+        position: relative;
+        width: 100%;
+      }
+
+      .fallback-frame,
+      .motion-stage {
+        height: 100%;
+        inset: 0;
+        position: absolute;
+        width: 100%;
+      }
+
+      .canvas {
+        height: 1080px;
+        left: 50%;
+        position: absolute;
+        top: 50%;
+        transform: translate(-50%, -50%) scale(var(--promo-scale, 1));
+        transform-origin: center;
+        width: 1920px;
+      }
+
+      .motion-stage {
+        display: none;
+      }
+
+      .motion .motion-stage {
+        display: block;
+      }
+
+      .fallback-frame {
+        align-items: center;
+        display: grid;
+        gap: 34px;
+        grid-template-columns: 1fr 0.82fr;
+        padding: 96px;
+      }
+
+      .fallback-frame h1,
+      .scene h1 {
+        font-size: 74px;
+        letter-spacing: 0;
+        line-height: 1.18;
+        margin: 0;
+        word-break: keep-all;
+      }
+
+      .fallback-frame p,
+      .scene p {
+        color: var(--muted);
+        font-size: 32px;
+        line-height: 1.55;
+        margin: 0;
+        word-break: keep-all;
+      }
+
+      .kicker {
+        color: var(--gold-100);
+        font-size: 26px;
+        font-weight: 900;
+        margin-bottom: 20px;
+      }
+
+      .screen-card {
+        background: rgba(255, 247, 237, 0.98);
+        border-radius: 24px;
+        box-shadow: 0 28px 90px rgba(0, 0, 0, 0.34);
+        color: var(--navy-900);
+        padding: 42px;
+      }
+
+      .screen-card strong {
+        display: block;
+        font-size: 38px;
+        line-height: 1.25;
+        margin-bottom: 24px;
+      }
+
+      .bar {
+        background: rgba(124, 45, 18, 0.12);
+        border-radius: 999px;
+        height: 18px;
+        margin: 18px 0;
+        overflow: hidden;
+      }
+
+      .bar span {
+        background: linear-gradient(90deg, var(--gold-500), var(--green-500));
+        display: block;
+        height: 100%;
+      }
+
+      .photo-card {
+        background:
+          linear-gradient(180deg, rgba(67, 25, 8, 0.06), rgba(67, 25, 8, 0.62)),
+          url("/images/sme-bridge-strike-inspired-hero.png");
+        background-position: center;
+        background-size: cover;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 30px;
+        box-shadow: 0 30px 90px rgba(0, 0, 0, 0.35);
+        min-height: 520px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .final-photo-card {
+        background:
+          linear-gradient(180deg, rgba(67, 25, 8, 0.04), rgba(67, 25, 8, 0.58)),
+          url("/images/sme-bridge-handshake-photo.png");
+        background-position: center;
+        background-size: cover;
+      }
+
+      .photo-card::after {
+        background: linear-gradient(90deg, rgba(67, 25, 8, 0.76), transparent 58%);
+        content: "";
+        inset: 0;
+        position: absolute;
+      }
+
+      .photo-label {
+        bottom: 34px;
+        display: grid;
+        gap: 12px;
+        left: 36px;
+        position: absolute;
+        right: 36px;
+        z-index: 1;
+      }
+
+      .photo-label strong {
+        font-size: 42px;
+        line-height: 1.2;
+        word-break: keep-all;
+      }
+
+      .photo-label span {
+        color: rgba(255, 247, 237, 0.84);
+        font-size: 25px;
+        line-height: 1.45;
+        word-break: keep-all;
+      }
+
+      .visual-stack {
+        display: grid;
+        gap: 24px;
+        position: relative;
+      }
+
+      .kpi-strip {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .kpi {
+        background: rgba(255, 247, 237, 0.98);
+        border-radius: 18px;
+        color: var(--navy-900);
+        padding: 24px;
+      }
+
+      .kpi b {
+        color: var(--gold-500);
+        display: block;
+        font-size: 24px;
+        margin-bottom: 8px;
+      }
+
+      .kpi strong {
+        display: block;
+        font-size: 34px;
+        line-height: 1.1;
+      }
+
+      .graph-card,
+      .dashboard-card {
+        background: rgba(255, 247, 237, 0.98);
+        border-radius: 28px;
+        box-shadow: 0 28px 80px rgba(0, 0, 0, 0.32);
+        color: var(--navy-900);
+        padding: 38px;
+      }
+
+      .graph-card h3,
+      .dashboard-card h3 {
+        font-size: 34px;
+        line-height: 1.2;
+        margin: 0 0 22px;
+      }
+
+      .chart-svg {
+        display: block;
+        height: 260px;
+        width: 100%;
+      }
+
+      .chart-grid {
+        stroke: rgba(124, 45, 18, 0.12);
+        stroke-width: 2;
+      }
+
+      .chart-line {
+        fill: none;
+        stroke: var(--gold-500);
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 10;
+      }
+
+      .chart-area {
+        fill: rgba(249, 115, 22, 0.16);
+      }
+
+      .chart-dot {
+        fill: var(--green-500);
+        stroke: var(--paper);
+        stroke-width: 6;
+      }
+
+      .flow-card {
+        position: relative;
+      }
+
+      .card-icon {
+        color: var(--navy-800);
+        display: block;
+        height: 64px;
+        margin-bottom: 26px;
+        width: 64px;
+      }
+
+      .mini-chart {
+        align-items: end;
+        display: grid;
+        gap: 8px;
+        grid-template-columns: repeat(5, 1fr);
+        height: 84px;
+        margin-top: 28px;
+      }
+
+      .mini-chart i {
+        background: linear-gradient(180deg, var(--gold-500), var(--green-500));
+        border-radius: 999px 999px 0 0;
+        display: block;
+      }
+
+      .dashboard-layout {
+        align-items: stretch;
+        display: grid;
+        gap: 26px;
+        grid-template-columns: 1.1fr 0.9fr;
+        width: 100%;
+      }
+
+      .dashboard-widgets {
+        display: grid;
+        gap: 20px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .dashboard-widget {
+        background: rgba(249, 115, 22, 0.08);
+        border: 1px solid rgba(124, 45, 18, 0.12);
+        border-radius: 20px;
+        min-height: 160px;
+        padding: 26px;
+      }
+
+      .dashboard-widget b {
+        color: #9a4a18;
+        display: block;
+        font-size: 22px;
+        margin-bottom: 12px;
+      }
+
+      .dashboard-widget strong {
+        display: block;
+        font-size: 38px;
+      }
+
+      .donut {
+        align-items: center;
+        background:
+          radial-gradient(circle, var(--paper) 0 44%, transparent 45%),
+          conic-gradient(var(--green-500) 0 68%, rgba(124, 45, 18, 0.14) 68% 100%);
+        border-radius: 999px;
+        color: var(--navy-900);
+        display: flex;
+        font-size: 40px;
+        font-weight: 900;
+        height: 190px;
+        justify-content: center;
+        margin: 20px auto 0;
+        width: 190px;
+      }
+
+      .handoff-photo {
+        min-height: 330px;
+      }
+
+      .issue-card {
+        background: rgba(255, 247, 237, 0.98);
+        border-radius: 24px;
+        color: var(--navy-900);
+        padding: 38px;
+        text-align: left;
+      }
+
+      .issue-header {
+        align-items: center;
+        display: flex;
+        gap: 16px;
+        margin-bottom: 26px;
+      }
+
+      .issue-header svg {
+        color: var(--green-500);
+        height: 54px;
+        width: 54px;
+      }
+
+      .issue-header strong {
+        font-size: 38px;
+        line-height: 1.2;
+      }
+
+      .issue-row {
+        align-items: center;
+        border-top: 1px solid rgba(124, 45, 18, 0.12);
+        display: flex;
+        gap: 16px;
+        min-height: 70px;
+        font-size: 25px;
+      }
+
+      .issue-row span {
+        background: var(--navy-900);
+        border-radius: 999px;
+        color: white;
+        font-size: 20px;
+        font-weight: 900;
+        padding: 4px 12px;
+      }
+
+      .scene {
+        align-items: center;
+        display: grid;
+        gap: 56px;
+        grid-template-columns: 1fr 1fr;
+        height: 100%;
+        inset: 0;
+        padding: 96px;
+        position: absolute;
+      }
+
+      .scene-wide {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        text-align: center;
+      }
+
+      .pill-row,
+      .step-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 18px;
+      }
+
+      .pill {
+        align-items: center;
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        border-radius: 16px;
+        display: inline-flex;
+        font-size: 28px;
+        font-weight: 900;
+        min-height: 72px;
+        padding: 12px 24px;
+      }
+
+      .flow-board {
+        display: grid;
+        gap: 28px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        width: 100%;
+      }
+
+      .flow-card {
+        background: rgba(255, 247, 237, 0.98);
+        border-top: 8px solid var(--gold-500);
+        border-radius: 22px;
+        color: var(--navy-900);
+        min-height: 300px;
+        padding: 40px;
+        text-align: left;
+      }
+
+      .flow-card b {
+        color: var(--gold-500);
+        display: block;
+        font-size: 28px;
+        margin-bottom: 18px;
+      }
+
+      .flow-card strong {
+        display: block;
+        font-size: 38px;
+        line-height: 1.25;
+        margin-bottom: 20px;
+        word-break: keep-all;
+      }
+
+      .flow-card span {
+        color: #8a4b22;
+        font-size: 26px;
+        line-height: 1.45;
+        word-break: keep-all;
+      }
+
+      .handoff-map {
+        align-items: center;
+        display: grid;
+        gap: 30px;
+        grid-template-columns: 1fr 120px 1fr;
+        width: 100%;
+      }
+
+      .handoff-card {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 24px;
+        min-height: 330px;
+        padding: 42px;
+        text-align: left;
+      }
+
+      .handoff-card strong {
+        display: block;
+        font-size: 44px;
+        line-height: 1.22;
+        margin-bottom: 20px;
+        word-break: keep-all;
+      }
+
+      .handoff-arrow {
+        color: var(--gold-100);
+        font-size: 86px;
+        font-weight: 900;
+      }
+
+      .safe-list {
+        display: grid;
+        gap: 14px;
+        margin-top: 28px;
+      }
+
+      .safe-list span {
+        color: var(--muted);
+        font-size: 27px;
+      }
+
+      .logo-mark {
+        color: var(--gold-100);
+        font-size: 34px;
+        font-weight: 900;
+        margin-bottom: 24px;
+      }
+
+      .final-title {
+        font-size: 92px;
+      }
+
+      .final-copy {
+        max-width: 1060px;
+      }
+
+      .final-visual {
+        align-items: center;
+        display: grid;
+        gap: 38px;
+        grid-template-columns: 0.8fr 1fr;
+        text-align: left;
+        width: 100%;
+      }
+
+      .progress-line {
+        background: rgba(255, 255, 255, 0.18);
+        bottom: 44px;
+        height: 8px;
+        left: 96px;
+        overflow: hidden;
+        position: absolute;
+        right: 96px;
+      }
+
+      .progress-fill {
+        background: var(--gold-500);
+        height: 100%;
+        width: 0;
+      }
+
+    </style>
+  </head>
+  <body>
+    <div
+      id="sme-bridge-promo"
+      data-composition-id="sme-bridge-promo"
+      data-start="0"
+      data-duration="30"
+      data-width="1920"
+      data-height="1080"
+    >
+      <div class="canvas">
+        <div class="fallback-frame">
+          <div>
+            <div class="kicker">승계브릿지</div>
+            <h1>기업승계형 M&A를 조용하고 안전하게 준비합니다</h1>
+            <p>기업가치, 세금, 매각 로드맵, 전문가 자문요청까지 한 곳에서 확인합니다.</p>
+          </div>
+          <div class="photo-card">
+            <div class="photo-label">
+              <strong>대표님 전용 승계 준비</strong>
+              <span>재무자료와 상담 질문을 한 화면에서 정리합니다.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="motion-stage">
+          <section class="scene scene-1" data-start="0" data-duration="5" data-track-index="1">
+            <div>
+              <div class="kicker">200억 이하 중소기업 대표님을 위한 준비</div>
+              <h1>흩어진 판단을 한 화면에 모읍니다</h1>
+              <p>회사 가치, 세금, 매각 일정, 상담 요청을 순서대로 확인합니다.</p>
+              <div class="pill-row">
+                <span class="pill">기업가치</span>
+                <span class="pill">세금</span>
+                <span class="pill">로드맵</span>
+              </div>
+            </div>
+            <div class="visual-stack">
+              <div class="photo-card">
+                <div class="photo-label">
+                  <strong>상담 전 요약부터 안전하게</strong>
+                  <span>원본 파일은 별도 동의 전 자동 전송하지 않습니다.</span>
+                </div>
+              </div>
+              <div class="kpi-strip">
+                <div class="kpi">
+                  <b>기업가치</b>
+                  <strong>35억~52억</strong>
+                </div>
+                <div class="kpi">
+                  <b>절세 검토</b>
+                  <strong>4.2억</strong>
+                </div>
+                <div class="kpi">
+                  <b>로드맵</b>
+                  <strong>24%</strong>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="scene scene-wide scene-2" data-start="5" data-duration="6" data-track-index="2">
+            <div>
+              <div class="kicker">복잡한 M&A 절차를 큰 판단 단위로</div>
+              <h1>대표님이 먼저 볼 순서로 정리합니다</h1>
+            </div>
+            <div class="flow-board">
+              <div class="flow-card">
+                <svg class="card-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <rect x="4" y="2.5" width="16" height="19" rx="2.5" />
+                  <path d="M8 7h8M8 11h2M12 11h2M16 11h.01M8 15h2M12 15h2M16 15h.01M8 19h2M12 19h2M16 19h.01" />
+                </svg>
+                <b>01</b>
+                <strong>기업가치 산정</strong>
+                <span>EBITDA 기준으로 예상 범위를 확인합니다.</span>
+                <div class="mini-chart" aria-hidden="true">
+                  <i style="height: 38%"></i>
+                  <i style="height: 52%"></i>
+                  <i style="height: 64%"></i>
+                  <i style="height: 78%"></i>
+                  <i style="height: 92%"></i>
+                </div>
+              </div>
+              <div class="flow-card">
+                <svg class="card-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M14 2.8H7a2.4 2.4 0 0 0-2.4 2.4v13.6A2.4 2.4 0 0 0 7 21.2h10a2.4 2.4 0 0 0 2.4-2.4V8.2Z" />
+                  <path d="M14 2.8v5.4h5.4M8 12h8M8 16h8" />
+                </svg>
+                <b>02</b>
+                <strong>세금 시뮬레이션</strong>
+                <span>양도, 상속, 증여특례 영향을 비교합니다.</span>
+                <div class="mini-chart" aria-hidden="true">
+                  <i style="height: 82%"></i>
+                  <i style="height: 68%"></i>
+                  <i style="height: 56%"></i>
+                  <i style="height: 44%"></i>
+                  <i style="height: 38%"></i>
+                </div>
+              </div>
+              <div class="flow-card">
+                <svg class="card-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M4 6.5h16M4 12h16M4 17.5h16" />
+                  <circle cx="8" cy="6.5" r="2.4" fill="currentColor" stroke="none" />
+                  <circle cx="15" cy="12" r="2.4" fill="currentColor" stroke="none" />
+                  <circle cx="11" cy="17.5" r="2.4" fill="currentColor" stroke="none" />
+                </svg>
+                <b>03</b>
+                <strong>매각 로드맵</strong>
+                <span>자료 준비와 상담 질문을 단계별로 정리합니다.</span>
+                <div class="mini-chart" aria-hidden="true">
+                  <i style="height: 32%"></i>
+                  <i style="height: 48%"></i>
+                  <i style="height: 62%"></i>
+                  <i style="height: 74%"></i>
+                  <i style="height: 88%"></i>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="scene scene-wide scene-3" data-start="11" data-duration="6" data-track-index="3">
+            <div>
+              <div class="kicker">숫자는 한눈에, 질문은 다음 단계로</div>
+              <h1>그래프와 체크리스트로 준비 상태를 보여줍니다</h1>
+            </div>
+            <div class="dashboard-layout">
+              <div class="dashboard-card">
+                <h3>예상 기업가치 추이</h3>
+                <svg class="chart-svg" aria-hidden="true" viewBox="0 0 700 280">
+                  <path class="chart-grid" d="M20 230H680M20 165H680M20 100H680M20 35H680" />
+                  <path class="chart-area" d="M30 220 C150 190 220 160 330 135 C455 105 540 74 672 48 L672 246 L30 246 Z" />
+                  <path class="chart-line" d="M30 220 C150 190 220 160 330 135 C455 105 540 74 672 48" />
+                  <circle class="chart-dot" cx="330" cy="135" r="13" />
+                  <circle class="chart-dot" cx="672" cy="48" r="13" />
+                </svg>
+              </div>
+              <div class="dashboard-widgets">
+                <div class="dashboard-widget">
+                  <b>자료 준비</b>
+                  <strong>24%</strong>
+                  <div class="bar"><span style="width: 24%"></span></div>
+                </div>
+                <div class="dashboard-widget">
+                  <b>절세 후보</b>
+                  <strong>3개</strong>
+                  <div class="bar"><span style="width: 64%"></span></div>
+                </div>
+                <div class="dashboard-widget">
+                  <b>상담 우선순위</b>
+                  <strong>M&A</strong>
+                  <div class="bar"><span style="width: 82%"></span></div>
+                </div>
+                <div class="dashboard-widget">
+                  <b>로드맵 진행</b>
+                  <div class="donut">68%</div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="scene scene-wide scene-4" data-start="17" data-duration="5" data-track-index="4">
+            <div>
+              <div class="kicker">전문가 자문요청</div>
+              <h1>필요한 요약만 Patasos 이슈로 전달합니다</h1>
+            </div>
+            <div class="handoff-map">
+              <div class="photo-card handoff-photo">
+                <div class="photo-label">
+                  <strong>승계브릿지 상담 요청</strong>
+                  <span>연락 동의와 기업 요약, 현재 진행상황을 정리합니다.</span>
+                </div>
+              </div>
+              <div class="handoff-arrow">→</div>
+              <div class="issue-card">
+                <div class="issue-header">
+                  <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M20 13c0 5-3.5 7.5-7.7 9a1 1 0 0 1-.6 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.4-1.2 6.2-2.7a1.2 1.2 0 0 1 1.6 0C14.6 3.8 17 5 19 5a1 1 0 0 1 1 1Z" />
+                    <path d="m9 12 2 2 4-4" />
+                  </svg>
+                  <strong>Patasos 전문가 검토</strong>
+                </div>
+                <div class="issue-row"><span>보호</span> 원본 재무파일 자동 전송 없음</div>
+                <div class="issue-row"><span>요약</span> 상담 처리용 정보만 전달</div>
+                <div class="issue-row"><span>추적</span> 내부 요청 ID로 상태 관리</div>
+              </div>
+            </div>
+          </section>
+
+          <section class="scene scene-wide scene-5" data-start="22" data-duration="8" data-track-index="5">
+            <div class="final-visual">
+              <div class="photo-card final-photo-card">
+                <div class="photo-label">
+                  <strong>상담 준비 완료</strong>
+                  <span>대표님의 다음 판단을 전문가와 함께 검토합니다.</span>
+                </div>
+              </div>
+              <div>
+                <div class="logo-mark">승계브릿지</div>
+                <h1 class="final-title">대표님의 다음 단계를 안전하게 잇습니다</h1>
+                <p class="final-copy">
+                  매각 준비의 첫 판단부터 전문가 상담까지, 조용하고 신뢰할 수 있는 흐름으로 시작하세요.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <div class="progress-line" aria-hidden="true">
+            <div class="progress-fill"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const PROMO_LOOP_SECONDS = 30;
+
+      function setupPromoTimeline() {
+        if (!window.gsap) return;
+        document.documentElement.classList.add("motion");
+
+        const tl = gsap.timeline({ paused: true, repeat: -1, defaults: { ease: "power3.out" } });
+        gsap.set(".scene", { autoAlpha: 0 });
+        gsap.set(".scene-1", { autoAlpha: 1 });
+        gsap.set(".progress-fill", { width: "0%" });
+
+        tl.set(".scene", { autoAlpha: 0, x: 0, y: 0, scale: 1 }, 0);
+        tl.set(".scene-1", { autoAlpha: 1 }, 0);
+        tl.set(".progress-fill", { width: "0%" }, 0);
+
+        tl.to(".fallback-frame", { autoAlpha: 0, duration: 0.35 }, 0.25);
+        tl.from(".scene-1 .kicker", { y: 28, autoAlpha: 0, duration: 0.55 }, 0.2);
+        tl.from(".scene-1 h1", { y: 42, autoAlpha: 0, duration: 0.7 }, 0.35);
+        tl.from(".scene-1 p", { y: 24, autoAlpha: 0, duration: 0.55 }, 0.65);
+        tl.from(".scene-1 .pill", { y: 24, autoAlpha: 0, duration: 0.55, stagger: 0.1 }, 0.9);
+        tl.from(".scene-1 .photo-card", { x: 56, autoAlpha: 0, duration: 0.75 }, 0.55);
+        tl.from(".scene-1 .kpi", { y: 30, autoAlpha: 0, duration: 0.6, stagger: 0.1 }, 1.05);
+
+        tl.to(".scene-1", { x: -80, autoAlpha: 0, duration: 0.65 }, 4.45);
+        tl.set(".scene-2", { x: 80, autoAlpha: 1 }, 4.5);
+        tl.to(".scene-2", { x: 0, duration: 0.7 }, 4.55);
+        tl.from(".scene-2 .kicker", { y: 24, autoAlpha: 0, duration: 0.5 }, 4.8);
+        tl.from(".scene-2 h1", { y: 36, autoAlpha: 0, duration: 0.65 }, 5.0);
+        tl.from(".flow-card", { y: 52, autoAlpha: 0, duration: 0.7, stagger: 0.16 }, 5.45);
+
+        tl.to(".scene-2", { scale: 0.98, autoAlpha: 0, duration: 0.65 }, 10.45);
+        tl.set(".scene-3", { y: 60, autoAlpha: 1 }, 10.5);
+        tl.to(".scene-3", { y: 0, duration: 0.7 }, 10.55);
+        tl.from(".scene-3 .kicker", { y: 24, autoAlpha: 0, duration: 0.5 }, 10.8);
+        tl.from(".scene-3 h1", { y: 36, autoAlpha: 0, duration: 0.65 }, 11.05);
+        tl.from(".scene-3 .dashboard-card", { y: 46, autoAlpha: 0, duration: 0.7 }, 11.45);
+        tl.from(".scene-3 .chart-line", { autoAlpha: 0, duration: 0.55 }, 11.85);
+        tl.from(".scene-3 .chart-dot", { scale: 0.4, autoAlpha: 0, duration: 0.45, stagger: 0.12 }, 12.05);
+        tl.from(".scene-3 .dashboard-widget", { y: 34, autoAlpha: 0, duration: 0.55, stagger: 0.12 }, 12.2);
+        tl.from(".scene-3 .donut", { scale: 0.72, autoAlpha: 0, duration: 0.45 }, 12.8);
+
+        tl.to(".scene-3", { autoAlpha: 0, duration: 0.65 }, 16.45);
+        tl.set(".scene-4", { y: 60, autoAlpha: 1 }, 16.5);
+        tl.to(".scene-4", { y: 0, duration: 0.7 }, 16.55);
+        tl.from(".scene-4 .kicker", { y: 24, autoAlpha: 0, duration: 0.5 }, 16.8);
+        tl.from(".scene-4 h1", { y: 36, autoAlpha: 0, duration: 0.65 }, 17.05);
+        tl.from(".scene-4 .photo-card", { x: -48, autoAlpha: 0, duration: 0.7 }, 17.35);
+        tl.from(".scene-4 .handoff-arrow", { scale: 0.75, autoAlpha: 0, duration: 0.45 }, 17.8);
+        tl.from(".scene-4 .issue-card", { x: 48, autoAlpha: 0, duration: 0.7 }, 17.95);
+        tl.from(".scene-4 .issue-row", { y: 18, autoAlpha: 0, duration: 0.42, stagger: 0.12 }, 18.35);
+
+        tl.to(".scene-4", { autoAlpha: 0, duration: 0.65 }, 21.45);
+        tl.set(".scene-5", { scale: 0.98, autoAlpha: 1 }, 21.5);
+        tl.to(".scene-5", { scale: 1, duration: 0.75 }, 21.55);
+        tl.from(".scene-5 .photo-card", { x: -54, autoAlpha: 0, duration: 0.7 }, 21.75);
+        tl.from(".scene-5 .logo-mark", { y: 22, autoAlpha: 0, duration: 0.5 }, 22.0);
+        tl.from(".scene-5 .final-title", { y: 40, autoAlpha: 0, duration: 0.75 }, 22.2);
+        tl.from(".scene-5 .final-copy", { y: 24, autoAlpha: 0, duration: 0.6 }, 22.6);
+        tl.to(".progress-fill", { width: "100%", duration: PROMO_LOOP_SECONDS, ease: "none" }, 0);
+
+        window.__timelines.smeBridgePromo = tl;
+        requestAnimationFrame(function () {
+          tl.play(0);
+        });
+      }
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", setupPromoTimeline);
+      } else {
+        setupPromoTimeline();
+      }
+    </script>
+  </body>
+</html>

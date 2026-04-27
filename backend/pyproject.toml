@@ -1,0 +1,27 @@
+[project]
+name = "sme-bridge-backend"
+version = "0.1.0"
+description = "FastAPI backend for 승계브릿지 MVP and Patasos handoff"
+requires-python = ">=3.9"
+dependencies = [
+  "celery>=5.4",
+  "fastapi>=0.115",
+  "httpx>=0.27",
+  "pydantic[email]>=2.8",
+  "redis>=5.0",
+  "sqlalchemy>=2.0",
+  "supabase>=2.10",
+  "uvicorn[standard]>=0.30",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+filterwarnings = [
+  "ignore:The configuration option \"asyncio_default_fixture_loop_scope\" is unset:pytest.PytestDeprecationWarning",
+]

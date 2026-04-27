@@ -1,0 +1,74 @@
+{
+  "project_type": "webapp",
+  "pass_threshold": 7,
+  "mode": "surgical-1round",
+  "notes": "Surgical scope: evaluator는 4개 핵심 플로우만 집중 검증. 전체 앱 재검토 아님.",
+  "criteria": [
+    {
+      "name": "Data Accuracy (valuation 매핑)",
+      "weight": 0.35,
+      "threshold": 9,
+      "description": "가장 최근에 고친 valuation 연도-데이터 매핑 버그가 실제로 해결되었는지 — 최우선 검증",
+      "checklist": [
+        "PDF 업로드 → /valuation/review 에서 각 연도 컬럼의 값이 PDF 원본과 일치",
+        "2024/2023/2022 (또는 2025/2024/2023) 컬럼 데이터가 뒤바뀌지 않음",
+        "총 매출액 = 매출액 + 기타 수익만 (제품매출 이중 합산 없음)",
+        "EBITDA 계산 결과가 영업이익 + 감가상각비와 일치",
+        "[gptExtractFromPdfImages] success 로그 확인 (LLM 실제 실행)",
+        "[DEBUG vision raw] 와 [DEBUG vision aligned] 가 동일 매핑"
+      ]
+    },
+    {
+      "name": "Functionality (4개 핵심 플로우)",
+      "weight": 0.30,
+      "threshold": 7,
+      "description": "auth · valuation · tax · roadmap 플로우가 에러 없이 끝까지 동작",
+      "checklist": [
+        "회원가입 → 로그인 → 대시보드 접근 가능",
+        "/valuation/upload 에서 PDF 선택 → 분석 → /valuation/review 진입",
+        "/valuation/review 에서 업종 선택 후 확인 → /valuation/result 진입",
+        "/tax-simulation 계산 결과 표시",
+        "/roadmap 체크리스트 + 템플릿 다운로드 링크 작동",
+        "페이지 전환 시 콘솔 에러 0개"
+      ]
+    },
+    {
+      "name": "Design & Accessibility (60대+ CEO)",
+      "weight": 0.15,
+      "threshold": 7,
+      "description": "타겟 사용자(60대+ CEO) 접근성 — 폰트 크기, 터치 타겟, 한국어 라벨",
+      "checklist": [
+        "본문 텍스트 ≥ 18px, 수치 ≥ 24px",
+        "버튼 min-height ≥ 48px",
+        "Navy/Gold/Green 팔레트 일관성",
+        "한국어 라벨 자연스러움",
+        "금융 용어 툴팁 존재"
+      ]
+    },
+    {
+      "name": "Craft (완성도)",
+      "weight": 0.10,
+      "threshold": 6,
+      "description": "로딩 상태, 빈 상태, 에러 처리",
+      "checklist": [
+        "파일 업로드 중 로딩 스피너 표시",
+        "빈 상태(데이터 없음) 메시지 한국어",
+        "에러 발생 시 사용자 친화적 메시지",
+        "404 페이지 존재 및 작동"
+      ]
+    },
+    {
+      "name": "Regression Safety (기존 커밋 보존)",
+      "weight": 0.10,
+      "threshold": 9,
+      "description": "Builder가 방금 커밋된 valuation 수정(d8c8d4d) 을 망가뜨리지 않았는지",
+      "checklist": [
+        "d8c8d4d 커밋의 alignRawColumnsToDetectedYears 내부 일관성 가드 유지",
+        "extractYears 의 '제N기 YYYY' 단일 매칭 패턴 유지",
+        "next.config.ts 의 serverExternalPackages 설정 유지",
+        "valuation-store v6 유지",
+        "test 6/6 통과 유지"
+      ]
+    }
+  ]
+}
