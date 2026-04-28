@@ -16,5 +16,5 @@ def test_mna_documents_exposes_downloadable_forms_by_phase():
     assert all(phase["documents"] for phase in payload)
     assert payload[1]["documents"][1]["title"] == "NDA 양식"
     assert payload[3]["documents"][0]["file_path"].endswith(
-        "/phase-4-spa-key-terms-checklist.md"
+        "/phase-4-spa-key-terms-checklist.pdf"
     )

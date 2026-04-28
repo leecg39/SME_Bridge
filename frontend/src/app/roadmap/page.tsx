@@ -33,7 +33,7 @@ export default function RoadmapPage() {
         <div>
           <h1 className="page-title">매각 로드맵</h1>
           <p className="lead">
-            완료 항목 {completed}/{total}개, 단계별 필요 서류 양식 {documentTotal}개
+            완료 항목 {completed}/{total}개, 단계별 필요 서류 PDF {documentTotal}개
           </p>
         </div>
         <Link className="button button-secondary" href="/consultation?type=mna">
@@ -63,7 +63,7 @@ export default function RoadmapPage() {
             <div className="phase-document-panel">
               <div className="phase-document-title">
                 <Download aria-hidden="true" size={18} />
-                필요 서류 양식
+                필요 서류 PDF
                 <span>{phase.documents.length}개</span>
               </div>
               <div className="phase-document-list">
@@ -78,6 +78,7 @@ export default function RoadmapPage() {
                       <strong>{document.title}</strong>
                       <small>{document.description}</small>
                     </span>
+                    <em>PDF</em>
                     <Download aria-hidden="true" size={18} />
                   </a>
                 ))}

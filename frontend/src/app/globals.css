@@ -916,7 +916,7 @@ textarea {
 .kanban {
   display: grid;
   gap: 16px;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(270px, 1fr));
   overflow-x: auto;
 }
 
@@ -980,7 +980,7 @@ textarea {
   color: var(--navy-800);
   display: grid;
   gap: 10px;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto auto;
   min-height: 68px;
   padding: 10px 12px;
   text-decoration: none;
@@ -1011,6 +1011,17 @@ textarea {
   font-size: 13px;
   line-height: 1.45;
   margin-top: 4px;
+}
+
+.document-download em {
+  background: var(--gold-100);
+  border-radius: 4px;
+  color: var(--gold-700);
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 900;
+  line-height: 1;
+  padding: 5px 6px;
 }
 
 .floating {
@@ -1050,7 +1061,7 @@ textarea {
   }
 
   .kanban {
-    grid-template-columns: repeat(5, minmax(220px, 1fr));
+    grid-template-columns: repeat(5, minmax(260px, 1fr));
   }
 }
 
