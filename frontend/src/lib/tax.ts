@@ -25,7 +25,6 @@ export const taxScenarioDefinitions: TaxScenarioDefinition[] = [
 ];
 
 const ONE_EOK = 100000000;
-const BUSINESS_SUCCESSION_GIFT_CAP = 600 * ONE_EOK;
 const BUSINESS_SUCCESSION_GIFT_DEDUCTION = 10 * ONE_EOK;
 const BUSINESS_SUCCESSION_GIFT_LOW_RATE_LIMIT = 120 * ONE_EOK;
 
@@ -80,21 +79,33 @@ export function estimateTaxScenario(
   });
 }
 
-export function calculateBusinessSuccessionGiftTax(taxableBase: number) {
+export function calculateBusinessSuccessionGiftTax(
+  taxableBase: number,
+  options: { parentManagementYears?: number } = {},
+) {
   const base = Math.max(0, taxableBase);
-  const specialAmount = Math.min(base, BUSINESS_SUCCESSION_GIFT_CAP);
+  const specialCap = getBusinessSuccessionGiftCap(options.parentManagementYears);
+  const specialAmount = Math.min(base, specialCap);
   const specialTaxBase = Math.max(0, specialAmount - BUSINESS_SUCCESSION_GIFT_DEDUCTION);
   const lowRateBase = Math.min(specialTaxBase, BUSINESS_SUCCESSION_GIFT_LOW_RATE_LIMIT);
   const highRateBase = Math.max(0, specialTaxBase - BUSINESS_SUCCESSION_GIFT_LOW_RATE_LIMIT);
-  const excessAmount = Math.max(0, base - BUSINESS_SUCCESSION_GIFT_CAP);
+  const excessAmount = Math.max(0, base - specialCap);
   const specialTax = lowRateBase * 0.1 + highRateBase * 0.2;
   const excessTax = excessAmount > 0 ? calculateProgressiveTransferTax(excessAmount) : 0;
 
   return {
     excessAmount,
+    specialCap,
     specialTaxBase,
     tax: Math.max(0, specialTax + excessTax),
   };
+}
+
+export function getBusinessSuccessionGiftCap(parentManagementYears = 30): number {
+  if (parentManagementYears >= 30) return 600 * ONE_EOK;
+  if (parentManagementYears >= 20) return 400 * ONE_EOK;
+  if (parentManagementYears >= 10) return 300 * ONE_EOK;
+  return 0;
 }
 
 export function calculateProgressiveTransferTax(taxableBase: number): number {

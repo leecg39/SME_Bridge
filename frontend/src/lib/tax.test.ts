@@ -5,6 +5,7 @@ import {
   calculateProgressiveTransferTax,
   estimateTaxScenario,
   estimateTaxScenarios,
+  getBusinessSuccessionGiftCap,
 } from "./tax";
 
 const ONE_EOK = 100000000;
@@ -29,6 +30,25 @@ describe("calculateBusinessSuccessionGiftTax", () => {
 
     expect(result.specialTaxBase).toBe(140 * ONE_EOK);
     expect(result.tax).toBe(16 * ONE_EOK);
+  });
+
+  it("uses the current management-period cap before applying regular gift tax to excess value", () => {
+    const result = calculateBusinessSuccessionGiftTax(450 * ONE_EOK, {
+      parentManagementYears: 15,
+    });
+
+    expect(result.specialCap).toBe(300 * ONE_EOK);
+    expect(result.excessAmount).toBe(150 * ONE_EOK);
+    expect(result.tax).toBeCloseTo(116.4 * ONE_EOK);
+  });
+});
+
+describe("getBusinessSuccessionGiftCap", () => {
+  it("maps parent management years to the current 300/400/600 eok caps", () => {
+    expect(getBusinessSuccessionGiftCap(9)).toBe(0);
+    expect(getBusinessSuccessionGiftCap(10)).toBe(300 * ONE_EOK);
+    expect(getBusinessSuccessionGiftCap(20)).toBe(400 * ONE_EOK);
+    expect(getBusinessSuccessionGiftCap(30)).toBe(600 * ONE_EOK);
   });
 });
 
