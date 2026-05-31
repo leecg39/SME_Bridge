@@ -29,6 +29,9 @@ def test_mna_documents_exposes_downloadable_forms_by_phase():
         "max_amount_won": 15000000,
         "note": "벤처기업은 60%, 2,000만원 한도까지 검토합니다.",
         "rate_label": "일반 40% / 벤처 60%",
+        "standard_rate": 0.4,
+        "venture_max_amount_won": 20000000,
+        "venture_rate": 0.6,
     }
     assert payload[0]["readiness_seed"] == {
         "first_required_document_key": "phase-1-strategy-brief",
@@ -56,8 +59,10 @@ def test_mna_documents_exposes_downloadable_forms_by_phase():
     ]
     assert payload[2]["support_programs"][0]["funding"]["max_amount_won"] == 30000000
     assert payload[2]["support_programs"][0]["funding"]["rate_label"] == "50%"
+    assert payload[2]["support_programs"][0]["funding"]["standard_rate"] == 0.5
     assert payload[4]["support_programs"][0]["support_scope"] == "PMI 컨설팅 비용"
     assert payload[4]["support_programs"][0]["funding"]["max_amount_won"] == 25000000
+    assert payload[4]["support_programs"][0]["funding"]["standard_rate"] == 0.5
     assert all(phase["documents"] for phase in payload)
     assert payload[1]["documents"][1]["title"] == "NDA 양식"
     assert payload[3]["documents"][0]["file_path"].endswith(

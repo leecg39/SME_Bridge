@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  estimateMnaSupportFunding,
   evaluateMnaPhaseSupportReadiness,
   evaluateSuccessionConsultingEligibility,
   evaluateMnaSupportReadiness,
@@ -77,6 +78,9 @@ describe("getMnaSupportProgramsForPhase", () => {
       max_amount_won: 15000000,
       note: "벤처기업은 60%, 2,000만원 한도까지 검토합니다.",
       rate_label: "일반 40% / 벤처 60%",
+      standard_rate: 0.4,
+      venture_max_amount_won: 20000000,
+      venture_rate: 0.6,
     });
   });
 
@@ -93,6 +97,53 @@ describe("getMnaSupportProgramsForPhase", () => {
 
   it("returns no support program for phases without a direct government support hook", () => {
     expect(getMnaSupportProgramsForPhase("marketing")).toEqual([]);
+  });
+});
+
+describe("estimateMnaSupportFunding", () => {
+  it("calculates capped valuation support for a standard company", () => {
+    expect(estimateMnaSupportFunding("valuation-cost-support", 50000000)).toEqual({
+      estimatedSupportWon: 15000000,
+      expenseAmountWon: 50000000,
+      isCapped: true,
+      maxAmountWon: 15000000,
+      programKey: "valuation-cost-support",
+      rate: 0.4,
+      selfPayWon: 35000000,
+    });
+  });
+
+  it("uses venture valuation support rates when the company is a venture", () => {
+    expect(
+      estimateMnaSupportFunding("valuation-cost-support", 50000000, {
+        isVentureCompany: true,
+      }),
+    ).toEqual({
+      estimatedSupportWon: 20000000,
+      expenseAmountWon: 50000000,
+      isCapped: true,
+      maxAmountWon: 20000000,
+      programKey: "valuation-cost-support",
+      rate: 0.6,
+      selfPayWon: 30000000,
+    });
+  });
+
+  it("calculates uncapped diligence support from the standard rate", () => {
+    expect(estimateMnaSupportFunding("diligence-cost-support", 40000000)).toEqual({
+      estimatedSupportWon: 20000000,
+      expenseAmountWon: 40000000,
+      isCapped: false,
+      maxAmountWon: 30000000,
+      programKey: "diligence-cost-support",
+      rate: 0.5,
+      selfPayWon: 20000000,
+    });
+  });
+
+  it("returns null for non-monetary or unknown support programs", () => {
+    expect(estimateMnaSupportFunding("succession-consulting", 10000000)).toBeNull();
+    expect(estimateMnaSupportFunding("unknown", 10000000)).toBeNull();
   });
 });
 

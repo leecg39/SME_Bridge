@@ -18,6 +18,9 @@ export interface MnaSupportFunding {
   max_amount_won: number | null;
   note: string;
   rate_label: string;
+  standard_rate: number;
+  venture_max_amount_won?: number;
+  venture_rate?: number;
 }
 
 export interface MnaSupportProgram {
@@ -39,6 +42,16 @@ export interface MnaSupportReadiness {
   percent: number;
   programKey: string;
   requiredDocumentKeys: string[];
+}
+
+export interface MnaSupportFundingEstimate {
+  estimatedSupportWon: number;
+  expenseAmountWon: number;
+  isCapped: boolean;
+  maxAmountWon: number | null;
+  programKey: string;
+  rate: number;
+  selfPayWon: number;
 }
 
 export type MnaPhaseSupportReadinessStatus =
@@ -120,6 +133,36 @@ export function evaluateMnaSupportReadiness(
         : Math.round((completedRequiredDocuments.length / requiredDocumentKeys.length) * 100),
     programKey,
     requiredDocumentKeys,
+  };
+}
+
+export function estimateMnaSupportFunding(
+  programKey: string,
+  expenseAmountWon: number,
+  options: { isVentureCompany?: boolean } = {},
+): MnaSupportFundingEstimate | null {
+  const funding = getMnaSupportProgramByKey(programKey)?.funding;
+  if (!funding) return null;
+
+  const expenseAmount = Math.max(0, expenseAmountWon);
+  const isVentureFunding = options.isVentureCompany && funding.venture_rate !== undefined;
+  const rate = isVentureFunding ? funding.venture_rate! : funding.standard_rate;
+  const maxAmountWon =
+    isVentureFunding && funding.venture_max_amount_won !== undefined
+      ? funding.venture_max_amount_won
+      : funding.max_amount_won;
+  const uncappedSupport = expenseAmount * rate;
+  const estimatedSupport =
+    maxAmountWon === null ? uncappedSupport : Math.min(uncappedSupport, maxAmountWon);
+
+  return {
+    estimatedSupportWon: estimatedSupport,
+    expenseAmountWon: expenseAmount,
+    isCapped: maxAmountWon !== null && uncappedSupport > maxAmountWon,
+    maxAmountWon,
+    programKey,
+    rate,
+    selfPayWon: Math.max(0, expenseAmount - estimatedSupport),
   };
 }
 
@@ -215,6 +258,9 @@ const MNA_SUPPORT_PROGRAMS_BY_PHASE: Record<string, MnaSupportProgram[]> = {
         max_amount_won: 15000000,
         note: "벤처기업은 60%, 2,000만원 한도까지 검토합니다.",
         rate_label: "일반 40% / 벤처 60%",
+        standard_rate: 0.4,
+        venture_max_amount_won: 20000000,
+        venture_rate: 0.6,
       },
       required_document_keys: [
         "phase-1-strategy-brief",
@@ -236,6 +282,7 @@ const MNA_SUPPORT_PROGRAMS_BY_PHASE: Record<string, MnaSupportProgram[]> = {
         max_amount_won: 30000000,
         note: "법률·회계·세무 분야별 실사는 1,000만원 한도로 검토합니다.",
         rate_label: "50%",
+        standard_rate: 0.5,
       },
       required_document_keys: [
         "dd-request-list",
@@ -258,6 +305,7 @@ const MNA_SUPPORT_PROGRAMS_BY_PHASE: Record<string, MnaSupportProgram[]> = {
         max_amount_won: 25000000,
         note: "조직·인사·재무·사업 통합 컨설팅 비용 기준입니다.",
         rate_label: "50%",
+        standard_rate: 0.5,
       },
       required_document_keys: [
         "phase-5-pmi-100-day-plan",

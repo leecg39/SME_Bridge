@@ -19,6 +19,9 @@ class MnaSupportFunding(BaseModel):
     max_amount_won: Optional[int] = None
     note: str
     rate_label: str
+    standard_rate: float
+    venture_max_amount_won: Optional[int] = None
+    venture_rate: Optional[float] = None
 
 
 class MnaSupportProgram(BaseModel):
@@ -119,6 +122,9 @@ MNA_SUPPORT_PROGRAMS_BY_PHASE = {
                 max_amount_won=15000000,
                 note="벤처기업은 60%, 2,000만원 한도까지 검토합니다.",
                 rate_label="일반 40% / 벤처 60%",
+                standard_rate=0.4,
+                venture_max_amount_won=20000000,
+                venture_rate=0.6,
             ),
             required_document_keys=[
                 "phase-1-strategy-brief",
@@ -140,6 +146,7 @@ MNA_SUPPORT_PROGRAMS_BY_PHASE = {
                 max_amount_won=30000000,
                 note="법률·회계·세무 분야별 실사는 1,000만원 한도로 검토합니다.",
                 rate_label="50%",
+                standard_rate=0.5,
             ),
             required_document_keys=[
                 "dd-request-list",
@@ -162,6 +169,7 @@ MNA_SUPPORT_PROGRAMS_BY_PHASE = {
                 max_amount_won=25000000,
                 note="조직·인사·재무·사업 통합 컨설팅 비용 기준입니다.",
                 rate_label="50%",
+                standard_rate=0.5,
             ),
             required_document_keys=[
                 "phase-5-pmi-100-day-plan",
