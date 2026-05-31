@@ -54,6 +54,18 @@ export interface MnaPhaseActionSummary {
   supportReadiness: MnaPhaseSupportReadiness;
 }
 
+export type MnaRoadmapActionPlanStatus = "empty" | "in-progress" | "ready";
+
+export interface MnaRoadmapActionPlan {
+  currentPhaseCode: string | null;
+  currentPriority: MnaPhaseActionPriority;
+  nextAction: string;
+  overallDocumentPercent: number;
+  phaseSummaries: MnaPhaseActionSummary[];
+  readyPhaseCodes: string[];
+  status: MnaRoadmapActionPlanStatus;
+}
+
 export const mnaRoadmapPhases: MnaRoadmapPhase[] = [
   {
     phase: 1,
@@ -337,6 +349,44 @@ export function buildMnaPhaseActionSummary(
   };
 }
 
+export function buildMnaRoadmapActionPlan(
+  completedDocumentKeys: string[],
+  phases: MnaRoadmapPhase[] = mnaRoadmapPhases,
+): MnaRoadmapActionPlan {
+  const phaseSummaries = phases.map((phase) =>
+    buildMnaPhaseActionSummary(phase.code, completedDocumentKeys, phases),
+  );
+  const currentSummary =
+    phaseSummaries.find((summary) => !["none", "ready"].includes(summary.priority)) ?? null;
+  const requiredDocumentKeys = getRoadmapRequiredDocumentKeys(phases);
+  const completedSet = new Set(completedDocumentKeys);
+  const completedDocumentCount = requiredDocumentKeys.filter((key) =>
+    completedSet.has(key),
+  ).length;
+  const overallDocumentPercent =
+    requiredDocumentKeys.length === 0
+      ? 0
+      : Math.round((completedDocumentCount / requiredDocumentKeys.length) * 100);
+  const readyPhaseCodes = phaseSummaries
+    .filter((summary) => summary.priority === "ready")
+    .map((summary) => summary.phaseCode);
+  const status = getMnaRoadmapActionPlanStatus(phaseSummaries.length, currentSummary);
+
+  return {
+    currentPhaseCode: currentSummary?.phaseCode ?? null,
+    currentPriority: currentSummary?.priority ?? (status === "ready" ? "ready" : "none"),
+    nextAction:
+      currentSummary?.nextAction ??
+      (status === "ready"
+        ? "전체 로드맵 필수 문서와 지원사업 준비 상태를 상담 스냅샷으로 전송할 수 있습니다."
+        : "로드맵에 바로 실행할 phase 액션이 없습니다."),
+    overallDocumentPercent,
+    phaseSummaries,
+    readyPhaseCodes,
+    status,
+  };
+}
+
 function getMnaPhaseDocumentReadinessStatus(
   requiredDocumentCount: number,
   percent: number,
@@ -377,4 +427,25 @@ function getMnaPhaseNextAction(
   }
 
   return "이 phase에서 바로 실행할 필수 문서 또는 정부지원 액션이 없습니다.";
+}
+
+function getRoadmapRequiredDocumentKeys(phases: MnaRoadmapPhase[]): string[] {
+  return Array.from(
+    new Set(
+      phases.flatMap((phase) =>
+        [...phase.documents]
+          .filter((document) => document.is_required)
+          .sort((left, right) => left.sort_order - right.sort_order)
+          .map((document) => document.document_key),
+      ),
+    ),
+  );
+}
+
+function getMnaRoadmapActionPlanStatus(
+  phaseCount: number,
+  currentSummary: MnaPhaseActionSummary | null,
+): MnaRoadmapActionPlanStatus {
+  if (phaseCount === 0) return "empty";
+  return currentSummary ? "in-progress" : "ready";
 }

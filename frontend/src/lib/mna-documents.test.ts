@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { SUCCESSION_SUPPORT_CHECK_TASK } from "./government-support";
 import {
   buildMnaPhaseActionSummary,
+  buildMnaRoadmapActionPlan,
   evaluateMnaPhaseDocumentReadiness,
   mnaRoadmapPhases,
 } from "./mna-documents";
@@ -113,5 +114,65 @@ describe("buildMnaPhaseActionSummary", () => {
     expect(summary.nextSupportProgramKey).toBeNull();
     expect(summary.documentReadiness.status).toBe("no-required-documents");
     expect(summary.supportReadiness.status).toBe("no-program");
+  });
+});
+
+describe("buildMnaRoadmapActionPlan", () => {
+  const preparationDocumentKeys = [
+    "phase-1-strategy-brief",
+    "phase-1-synergy-hypothesis",
+    "phase-1-approval-memo",
+  ];
+
+  it("selects the first roadmap bottleneck from all phase summaries", () => {
+    const plan = buildMnaRoadmapActionPlan(["phase-1-strategy-brief"]);
+
+    expect(plan.status).toBe("in-progress");
+    expect(plan.currentPhaseCode).toBe("preparation");
+    expect(plan.currentPriority).toBe("document");
+    expect(plan.overallDocumentPercent).toBe(6);
+    expect(plan.phaseSummaries).toHaveLength(5);
+    expect(plan.nextAction).toContain("phase-1-synergy-hypothesis");
+  });
+
+  it("keeps focus on preparation when support program documents are still missing", () => {
+    const plan = buildMnaRoadmapActionPlan(preparationDocumentKeys);
+
+    expect(plan.currentPhaseCode).toBe("preparation");
+    expect(plan.currentPriority).toBe("support");
+    expect(plan.phaseSummaries[0]?.nextSupportProgramKey).toBe("valuation-cost-support");
+  });
+
+  it("moves to marketing after preparation documents and support requirements are ready", () => {
+    const plan = buildMnaRoadmapActionPlan([
+      ...preparationDocumentKeys,
+      "phase-3-valuation-workbook-checklist",
+    ]);
+
+    expect(plan.readyPhaseCodes).toContain("preparation");
+    expect(plan.currentPhaseCode).toBe("marketing");
+    expect(plan.currentPriority).toBe("document");
+    expect(plan.phaseSummaries[1]?.nextDocumentKey).toBe("phase-2-target-screening-matrix");
+  });
+
+  it("marks the full roadmap ready when every required document is complete", () => {
+    const allRequiredDocumentKeys = mnaRoadmapPhases.flatMap((phase) =>
+      phase.documents
+        .filter((document) => document.is_required)
+        .map((document) => document.document_key),
+    );
+    const plan = buildMnaRoadmapActionPlan(allRequiredDocumentKeys);
+
+    expect(plan.status).toBe("ready");
+    expect(plan.currentPhaseCode).toBeNull();
+    expect(plan.currentPriority).toBe("ready");
+    expect(plan.overallDocumentPercent).toBe(100);
+    expect(plan.readyPhaseCodes).toEqual([
+      "preparation",
+      "marketing",
+      "diligence",
+      "negotiation",
+      "closing-pmi",
+    ]);
   });
 });

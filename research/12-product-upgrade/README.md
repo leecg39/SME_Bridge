@@ -269,3 +269,24 @@
 - `MnaPhaseActionSummary`와 `MnaPhaseActionPriority`를 추가한다.
 - 우선순위는 필수 문서 누락을 먼저 해결하고, phase 필수 문서가 끝난 뒤 지원사업 전용 누락 문서를 보강하는 순서로 둔다.
 - 결과에는 문서 준비도와 지원사업 준비도를 모두 포함해 UI, 상담 요청, Patasos 스냅샷이 같은 판단 근거를 공유하도록 한다.
+
+## 13차 A/B 테스트 기준
+
+비교 대상은 전체 M&A 로드맵에서 다음 병목을 찾는 방식이다.
+
+- A안: 각 phase의 액션 요약을 화면이나 상담 로직이 순회하며 다음 작업을 직접 고른다.
+- B안: `buildMnaRoadmapActionPlan()`이 전체 phase 요약, 현재 병목 phase, 전체 필수 문서 준비율, 완료 phase 목록을 한 번에 반환한다.
+- 성공 기준: B안이 준비 phase 문서 병목, 준비 phase 지원사업 병목, 다음 마케팅 phase 전환, 전체 완료 상태를 단위 테스트로 재현해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 전략 정의서만 완료 | phase별 결과를 수동 스캔 | 현재 phase `preparation`, 우선순위 `document`, 전체 6% | B안이 첫 병목을 즉시 선택 |
+| Phase 1 문서만 완료 | 지원사업 병목을 별도 계산 | 현재 phase `preparation`, 우선순위 `support` | B안이 가치평가 비용지원 준비 누락을 잡음 |
+| Phase 1 문서와 가치평가 체크리스트 완료 | 다음 phase를 수동 이동 | 현재 phase `marketing`, 우선순위 `document` | B안이 다음 단계로 자동 이동 |
+| 모든 필수 문서 완료 | 완료 여부 수동 판단 | `ready`, 현재 phase 없음, 전체 100% | B안이 전체 준비 완료를 표시 |
+
+## 13차 기능 업그레이드 결정
+
+- `MnaRoadmapActionPlan`과 `MnaRoadmapActionPlanStatus`를 추가한다.
+- 전체 문서 준비율은 phase별 필수 문서의 중복 없는 키 기준으로 계산한다.
+- `phaseSummaries`를 함께 반환해 상단 추천 액션과 상세 phase 카드가 같은 계산 결과를 공유하도록 한다.
