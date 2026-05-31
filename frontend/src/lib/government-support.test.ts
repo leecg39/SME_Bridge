@@ -72,15 +72,23 @@ describe("getMnaSupportProgramsForPhase", () => {
       "phase-1-synergy-hypothesis",
       "phase-1-approval-memo",
     ]);
+    expect(programs[0]?.funding).toBeNull();
+    expect(programs[1]?.funding).toEqual({
+      max_amount_won: 15000000,
+      note: "벤처기업은 60%, 2,000만원 한도까지 검토합니다.",
+      rate_label: "일반 40% / 벤처 60%",
+    });
   });
 
   it("maps diligence and PMI phases to the new 2026 M&A cost support categories", () => {
-    expect(getMnaSupportProgramsForPhase("diligence")[0]?.support_scope).toBe(
-      "기업실사 비용",
-    );
-    expect(getMnaSupportProgramsForPhase("closing-pmi")[0]?.support_scope).toBe(
-      "PMI 컨설팅 비용",
-    );
+    const diligence = getMnaSupportProgramsForPhase("diligence")[0];
+    const pmi = getMnaSupportProgramsForPhase("closing-pmi")[0];
+
+    expect(diligence?.support_scope).toBe("기업실사 비용");
+    expect(diligence?.funding?.max_amount_won).toBe(30000000);
+    expect(diligence?.funding?.rate_label).toBe("50%");
+    expect(pmi?.support_scope).toBe("PMI 컨설팅 비용");
+    expect(pmi?.funding?.max_amount_won).toBe(25000000);
   });
 
   it("returns no support program for phases without a direct government support hook", () => {

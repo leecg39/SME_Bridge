@@ -24,6 +24,12 @@ def test_mna_documents_exposes_downloadable_forms_by_phase():
         "phase-1-synergy-hypothesis",
         "phase-1-approval-memo",
     ]
+    assert payload[0]["support_programs"][0]["funding"] is None
+    assert payload[0]["support_programs"][1]["funding"] == {
+        "max_amount_won": 15000000,
+        "note": "벤처기업은 60%, 2,000만원 한도까지 검토합니다.",
+        "rate_label": "일반 40% / 벤처 60%",
+    }
     assert payload[0]["readiness_seed"] == {
         "first_required_document_key": "phase-1-strategy-brief",
         "required_document_count": 3,
@@ -48,7 +54,10 @@ def test_mna_documents_exposes_downloadable_forms_by_phase():
         "phase-3-data-room-index",
         "phase-3-red-flag-log",
     ]
+    assert payload[2]["support_programs"][0]["funding"]["max_amount_won"] == 30000000
+    assert payload[2]["support_programs"][0]["funding"]["rate_label"] == "50%"
     assert payload[4]["support_programs"][0]["support_scope"] == "PMI 컨설팅 비용"
+    assert payload[4]["support_programs"][0]["funding"]["max_amount_won"] == 25000000
     assert all(phase["documents"] for phase in payload)
     assert payload[1]["documents"][1]["title"] == "NDA 양식"
     assert payload[3]["documents"][0]["file_path"].endswith(

@@ -15,11 +15,18 @@ class MnaPhaseDocument(BaseModel):
     sort_order: int
 
 
+class MnaSupportFunding(BaseModel):
+    max_amount_won: Optional[int] = None
+    note: str
+    rate_label: str
+
+
 class MnaSupportProgram(BaseModel):
     program_key: str
     title: str
     summary: str
     support_scope: str
+    funding: Optional[MnaSupportFunding] = None
     required_document_keys: List[str]
     next_action: str
     source_label: str
@@ -92,6 +99,7 @@ MNA_SUPPORT_PROGRAMS_BY_PHASE = {
             title="기업승계 M&A 컨설팅",
             summary="교섭 대상 유무에 따라 기초컨설팅 또는 종합컨설팅으로 초기 상담 경로를 나눕니다.",
             support_scope="기초자료 작성, 매각 목적 정리, 교섭 대상 검토",
+            funding=None,
             required_document_keys=[
                 "phase-1-strategy-brief",
                 "phase-1-synergy-hypothesis",
@@ -107,6 +115,11 @@ MNA_SUPPORT_PROGRAMS_BY_PHASE = {
             title="기업가치평가 비용지원",
             summary="M&A 검토 단계에서 외부 가치평가 비용 부담을 낮추는 지원사업을 검토합니다.",
             support_scope="기업가치평가 비용",
+            funding=MnaSupportFunding(
+                max_amount_won=15000000,
+                note="벤처기업은 60%, 2,000만원 한도까지 검토합니다.",
+                rate_label="일반 40% / 벤처 60%",
+            ),
             required_document_keys=[
                 "phase-1-strategy-brief",
                 "phase-3-valuation-workbook-checklist",
@@ -123,6 +136,11 @@ MNA_SUPPORT_PROGRAMS_BY_PHASE = {
             title="기업실사 비용지원",
             summary="재무·법률·세무 등 실사 단계의 외부 비용 지원 가능성을 검토합니다.",
             support_scope="기업실사 비용",
+            funding=MnaSupportFunding(
+                max_amount_won=30000000,
+                note="법률·회계·세무 분야별 실사는 1,000만원 한도로 검토합니다.",
+                rate_label="50%",
+            ),
             required_document_keys=[
                 "dd-request-list",
                 "phase-3-data-room-index",
@@ -140,6 +158,11 @@ MNA_SUPPORT_PROGRAMS_BY_PHASE = {
             title="PMI 컨설팅 비용지원",
             summary="거래 종결 후 통합 실행계획 수립 비용 지원 가능성을 검토합니다.",
             support_scope="PMI 컨설팅 비용",
+            funding=MnaSupportFunding(
+                max_amount_won=25000000,
+                note="조직·인사·재무·사업 통합 컨설팅 비용 기준입니다.",
+                rate_label="50%",
+            ),
             required_document_keys=[
                 "phase-5-pmi-100-day-plan",
                 "phase-5-day-1-communication-plan",
