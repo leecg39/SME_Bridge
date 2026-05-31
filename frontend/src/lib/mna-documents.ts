@@ -24,6 +24,22 @@ export interface MnaRoadmapPhase {
   support_programs?: MnaSupportProgram[];
 }
 
+export type MnaPhaseDocumentReadinessStatus =
+  | "in-progress"
+  | "no-required-documents"
+  | "not-started"
+  | "ready";
+
+export interface MnaPhaseDocumentReadiness {
+  completedRequiredDocumentKeys: string[];
+  missingRequiredDocumentKeys: string[];
+  nextRequiredDocumentKey: string | null;
+  percent: number;
+  phaseCode: string;
+  requiredDocumentKeys: string[];
+  status: MnaPhaseDocumentReadinessStatus;
+}
+
 export const mnaRoadmapPhases: MnaRoadmapPhase[] = [
   {
     phase: 1,
@@ -243,3 +259,45 @@ export const mnaRoadmapPhases: MnaRoadmapPhase[] = [
     ],
   },
 ];
+
+export function evaluateMnaPhaseDocumentReadiness(
+  phaseCode: string,
+  completedDocumentKeys: string[],
+  phases: MnaRoadmapPhase[] = mnaRoadmapPhases,
+): MnaPhaseDocumentReadiness {
+  const phase = phases.find((roadmapPhase) => roadmapPhase.code === phaseCode);
+  const requiredDocumentKeys =
+    phase?.documents
+      .filter((document) => document.is_required)
+      .sort((left, right) => left.sort_order - right.sort_order)
+      .map((document) => document.document_key) ?? [];
+  const completedSet = new Set(completedDocumentKeys);
+  const completedRequiredDocumentKeys = requiredDocumentKeys.filter((key) =>
+    completedSet.has(key),
+  );
+  const missingRequiredDocumentKeys = requiredDocumentKeys.filter((key) => !completedSet.has(key));
+  const percent =
+    requiredDocumentKeys.length === 0
+      ? 0
+      : Math.round((completedRequiredDocumentKeys.length / requiredDocumentKeys.length) * 100);
+
+  return {
+    completedRequiredDocumentKeys,
+    missingRequiredDocumentKeys,
+    nextRequiredDocumentKey: missingRequiredDocumentKeys[0] ?? null,
+    percent,
+    phaseCode,
+    requiredDocumentKeys,
+    status: getMnaPhaseDocumentReadinessStatus(requiredDocumentKeys.length, percent),
+  };
+}
+
+function getMnaPhaseDocumentReadinessStatus(
+  requiredDocumentCount: number,
+  percent: number,
+): MnaPhaseDocumentReadinessStatus {
+  if (requiredDocumentCount === 0) return "no-required-documents";
+  if (percent === 100) return "ready";
+  if (percent > 0) return "in-progress";
+  return "not-started";
+}

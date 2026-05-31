@@ -228,3 +228,23 @@
 - `TaxScenarioComparisonRow/TaxScenarioComparison` 타입을 추가한다.
 - `compareTaxScenarios()`는 기존 `estimateTaxScenarios()` 결과를 재사용해 계산 원천을 하나로 유지한다.
 - 절감액은 기준 시나리오보다 낮은 세액일 때만 양수로 표시하고, 최저세액 대비 차이는 모든 행에서 계산해 상담 우선순위를 만든다.
+
+## 11차 A/B 테스트 기준
+
+비교 대상은 로드맵 phase의 문서 준비 상태를 판단하는 방식이다.
+
+- A안: phase별 PDF 문서 목록만 제공하고, 사용자가 어떤 필수 문서가 남았는지 직접 세어야 한다.
+- B안: `evaluateMnaPhaseDocumentReadiness()`가 phase code와 완료 문서 키만 받아 필수 문서 준비율, 누락 문서, 다음 작성 문서, 상태를 계산한다.
+- 성공 기준: B안이 매각 준비 phase의 1/3 완료 상태, 마케팅 phase의 전체 완료 상태, 알 수 없는 phase의 빈 상태를 단위 테스트로 재현해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| Phase 1, 전략 정의서만 완료 | 남은 문서를 직접 확인 | 33%, 다음 문서 `phase-1-synergy-hypothesis` | B안이 다음 행동을 바로 제공 |
+| Phase 2, 필수 문서 4개 완료 | 완료 여부를 수동 판단 | `ready`, 누락 문서 없음 | B안이 자료실 준비 완료를 표시 |
+| 알 수 없는 phase | 실패 또는 빈 목록 | `no-required-documents`, 0% | B안이 경계값에서도 안정적 |
+
+## 11차 기능 업그레이드 결정
+
+- M&A 지원사업은 가치평가·실사·PMI 등 단계별 비용지원이 있어 phase별 필수 문서 준비도가 상담 품질을 좌우한다.
+- `MnaPhaseDocumentReadiness`와 `MnaPhaseDocumentReadinessStatus`를 추가한다.
+- 다음 작성 문서는 phase 문서의 `sort_order` 순서를 따르게 해 로드맵 UI와 상담 스냅샷이 같은 우선순위를 사용하도록 한다.
