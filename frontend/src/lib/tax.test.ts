@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  buildBusinessSuccessionGiftReview,
   calculateBusinessSuccessionGiftTax,
   calculateProgressiveTransferTax,
   evaluateBusinessSuccessionGiftEligibility,
@@ -109,6 +110,58 @@ describe("evaluateBusinessSuccessionGiftEligibility", () => {
     expect(result.postManagementWarnings).toEqual([
       "증여일부터 5년까지 대표이사 유지 사후관리 필요",
     ]);
+  });
+});
+
+describe("buildBusinessSuccessionGiftReview", () => {
+  const reviewInput = {
+    donorAge: 64,
+    isCompanyShareGift: true,
+    isEligibleCompany: true,
+    parentManagementYears: 18,
+    recipientAge: 35,
+    recipientIsResident: true,
+    taxableBase: 45 * ONE_EOK,
+    willBecomeCeoWithinThreeYears: true,
+    willJoinBusinessByFilingDeadline: true,
+    willMaintainCeoForFiveYears: true,
+  };
+
+  it("combines tax and eligibility into an eligible consultation snapshot", () => {
+    const result = buildBusinessSuccessionGiftReview(reviewInput);
+
+    expect(result.decision).toBe("eligible");
+    expect(result.blockerCount).toBe(0);
+    expect(result.warningCount).toBe(0);
+    expect(result.tax.specialCap).toBe(300 * ONE_EOK);
+    expect(result.tax.tax).toBe(3.5 * ONE_EOK);
+    expect(result.nextAction).toContain("상담 스냅샷");
+  });
+
+  it("flags post-management risk without blocking the initial special tax review", () => {
+    const result = buildBusinessSuccessionGiftReview({
+      ...reviewInput,
+      willMaintainCeoForFiveYears: false,
+    });
+
+    expect(result.decision).toBe("needs-review");
+    expect(result.eligibility.isEligible).toBe(true);
+    expect(result.warningCount).toBe(1);
+    expect(result.nextAction).toContain("사후관리 경고 1개");
+  });
+
+  it("blocks special treatment when statutory requirements are missing", () => {
+    const result = buildBusinessSuccessionGiftReview({
+      ...reviewInput,
+      donorAge: 58,
+      parentManagementYears: 7,
+    });
+
+    expect(result.decision).toBe("not-eligible");
+    expect(result.blockerCount).toBe(2);
+    expect(result.tax.specialCap).toBe(0);
+    expect(result.tax.tax).toBeCloseTo(17.9 * ONE_EOK);
+    expect(result.eligibility.missingRequirements).toContain("부모의 10년 이상 계속 경영");
   });
 });
 

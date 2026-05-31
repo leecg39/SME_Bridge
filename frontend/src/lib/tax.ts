@@ -35,6 +35,31 @@ export interface BusinessSuccessionGiftEligibilityResult {
   ruleBaseDate: string;
 }
 
+export interface BusinessSuccessionGiftTaxResult {
+  excessAmount: number;
+  specialCap: number;
+  specialTaxBase: number;
+  tax: number;
+}
+
+export type BusinessSuccessionGiftReviewDecision =
+  | "eligible"
+  | "needs-review"
+  | "not-eligible";
+
+export interface BusinessSuccessionGiftReviewInput extends BusinessSuccessionGiftEligibilityInput {
+  taxableBase: number;
+}
+
+export interface BusinessSuccessionGiftReviewResult {
+  blockerCount: number;
+  decision: BusinessSuccessionGiftReviewDecision;
+  eligibility: BusinessSuccessionGiftEligibilityResult;
+  nextAction: string;
+  tax: BusinessSuccessionGiftTaxResult;
+  warningCount: number;
+}
+
 export const TAX_RULE_BASE_DATE = "2026-05-31";
 
 export const taxScenarioDefinitions: TaxScenarioDefinition[] = [
@@ -102,7 +127,7 @@ export function estimateTaxScenario(
 export function calculateBusinessSuccessionGiftTax(
   taxableBase: number,
   options: { parentManagementYears?: number } = {},
-) {
+): BusinessSuccessionGiftTaxResult {
   const base = Math.max(0, taxableBase);
   const specialCap = getBusinessSuccessionGiftCap(options.parentManagementYears);
   const specialAmount = Math.min(base, specialCap);
@@ -157,6 +182,28 @@ export function evaluateBusinessSuccessionGiftEligibility(
   };
 }
 
+export function buildBusinessSuccessionGiftReview(
+  input: BusinessSuccessionGiftReviewInput,
+): BusinessSuccessionGiftReviewResult {
+  const { taxableBase, ...eligibilityInput } = input;
+  const eligibility = evaluateBusinessSuccessionGiftEligibility(eligibilityInput);
+  const tax = calculateBusinessSuccessionGiftTax(taxableBase, {
+    parentManagementYears: input.parentManagementYears,
+  });
+  const blockerCount = eligibility.missingRequirements.length;
+  const warningCount = eligibility.postManagementWarnings.length;
+  const decision = getBusinessSuccessionGiftReviewDecision(blockerCount, warningCount);
+
+  return {
+    blockerCount,
+    decision,
+    eligibility,
+    nextAction: getBusinessSuccessionGiftReviewNextAction(decision, blockerCount, warningCount),
+    tax,
+    warningCount,
+  };
+}
+
 export function calculateProgressiveTransferTax(taxableBase: number): number {
   const base = Math.max(0, taxableBase);
 
@@ -165,6 +212,31 @@ export function calculateProgressiveTransferTax(taxableBase: number): number {
   if (base <= 10 * ONE_EOK) return base * 0.3 - 0.6 * ONE_EOK;
   if (base <= 30 * ONE_EOK) return base * 0.4 - 1.6 * ONE_EOK;
   return base * 0.5 - 4.6 * ONE_EOK;
+}
+
+function getBusinessSuccessionGiftReviewDecision(
+  blockerCount: number,
+  warningCount: number,
+): BusinessSuccessionGiftReviewDecision {
+  if (blockerCount > 0) return "not-eligible";
+  if (warningCount > 0) return "needs-review";
+  return "eligible";
+}
+
+function getBusinessSuccessionGiftReviewNextAction(
+  decision: BusinessSuccessionGiftReviewDecision,
+  blockerCount: number,
+  warningCount: number,
+): string {
+  if (decision === "not-eligible") {
+    return `누락 요건 ${blockerCount}개를 먼저 확인한 뒤 일반 증여세 또는 다른 승계 전략과 비교합니다.`;
+  }
+
+  if (decision === "needs-review") {
+    return `특례세액 계산은 가능하지만 사후관리 경고 ${warningCount}개를 상담 안건으로 올립니다.`;
+  }
+
+  return "특례세액, 적용요건, 사후관리 확인 결과를 상담 스냅샷으로 전송할 수 있습니다.";
 }
 
 function calculateCapitalGainsTax(taxableBase: number): number {
