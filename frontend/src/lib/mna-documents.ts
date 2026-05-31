@@ -1,6 +1,8 @@
 import {
+  evaluateMnaPhaseSupportReadiness,
   getMnaSupportProgramsForPhase,
   SUCCESSION_SUPPORT_CHECK_TASK,
+  type MnaPhaseSupportReadiness,
   type MnaSupportProgram,
 } from "./government-support";
 
@@ -38,6 +40,18 @@ export interface MnaPhaseDocumentReadiness {
   phaseCode: string;
   requiredDocumentKeys: string[];
   status: MnaPhaseDocumentReadinessStatus;
+}
+
+export type MnaPhaseActionPriority = "document" | "none" | "ready" | "support";
+
+export interface MnaPhaseActionSummary {
+  documentReadiness: MnaPhaseDocumentReadiness;
+  nextAction: string;
+  nextDocumentKey: string | null;
+  nextSupportProgramKey: string | null;
+  phaseCode: string;
+  priority: MnaPhaseActionPriority;
+  supportReadiness: MnaPhaseSupportReadiness;
 }
 
 export const mnaRoadmapPhases: MnaRoadmapPhase[] = [
@@ -292,6 +306,37 @@ export function evaluateMnaPhaseDocumentReadiness(
   };
 }
 
+export function buildMnaPhaseActionSummary(
+  phaseCode: string,
+  completedDocumentKeys: string[],
+  phases: MnaRoadmapPhase[] = mnaRoadmapPhases,
+): MnaPhaseActionSummary {
+  const documentReadiness = evaluateMnaPhaseDocumentReadiness(
+    phaseCode,
+    completedDocumentKeys,
+    phases,
+  );
+  const supportReadiness = evaluateMnaPhaseSupportReadiness(phaseCode, completedDocumentKeys);
+  const nextDocumentKey = documentReadiness.nextRequiredDocumentKey;
+  const nextSupportProgramKey = supportReadiness.nextProgramKey;
+  const priority = getMnaPhaseActionPriority(
+    documentReadiness.status,
+    supportReadiness.status,
+    nextDocumentKey,
+    nextSupportProgramKey,
+  );
+
+  return {
+    documentReadiness,
+    nextAction: getMnaPhaseNextAction(priority, nextDocumentKey, nextSupportProgramKey),
+    nextDocumentKey,
+    nextSupportProgramKey,
+    phaseCode,
+    priority,
+    supportReadiness,
+  };
+}
+
 function getMnaPhaseDocumentReadinessStatus(
   requiredDocumentCount: number,
   percent: number,
@@ -300,4 +345,36 @@ function getMnaPhaseDocumentReadinessStatus(
   if (percent === 100) return "ready";
   if (percent > 0) return "in-progress";
   return "not-started";
+}
+
+function getMnaPhaseActionPriority(
+  documentStatus: MnaPhaseDocumentReadinessStatus,
+  supportStatus: MnaPhaseSupportReadiness["status"],
+  nextDocumentKey: string | null,
+  nextSupportProgramKey: string | null,
+): MnaPhaseActionPriority {
+  if (nextDocumentKey) return "document";
+  if (nextSupportProgramKey) return "support";
+  if (documentStatus === "ready" || supportStatus === "ready") return "ready";
+  return "none";
+}
+
+function getMnaPhaseNextAction(
+  priority: MnaPhaseActionPriority,
+  nextDocumentKey: string | null,
+  nextSupportProgramKey: string | null,
+): string {
+  if (priority === "document" && nextDocumentKey) {
+    return `다음 필수 문서 ${nextDocumentKey}를 먼저 작성합니다.`;
+  }
+
+  if (priority === "support" && nextSupportProgramKey) {
+    return `지원사업 ${nextSupportProgramKey} 신청에 필요한 누락 문서를 보강합니다.`;
+  }
+
+  if (priority === "ready") {
+    return "필수 문서와 지원사업 준비 상태를 상담 스냅샷으로 전송할 수 있습니다.";
+  }
+
+  return "이 phase에서 바로 실행할 필수 문서 또는 정부지원 액션이 없습니다.";
 }

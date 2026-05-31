@@ -248,3 +248,24 @@
 - M&A 지원사업은 가치평가·실사·PMI 등 단계별 비용지원이 있어 phase별 필수 문서 준비도가 상담 품질을 좌우한다.
 - `MnaPhaseDocumentReadiness`와 `MnaPhaseDocumentReadinessStatus`를 추가한다.
 - 다음 작성 문서는 phase 문서의 `sort_order` 순서를 따르게 해 로드맵 UI와 상담 스냅샷이 같은 우선순위를 사용하도록 한다.
+
+## 12차 A/B 테스트 기준
+
+비교 대상은 로드맵 phase에서 다음 행동을 고르는 방식이다.
+
+- A안: 문서 준비도와 정부지원 준비도를 각각 계산하고, 화면이나 상담 로직이 우선순위를 다시 판단한다.
+- B안: `buildMnaPhaseActionSummary()`가 phase 문서 준비도와 지원사업 준비도를 함께 읽어 `document`, `support`, `ready`, `none` 중 하나의 우선 액션을 반환한다.
+- 성공 기준: B안이 문서 작성 우선, 지원사업 보강 우선, 완료 상태, 알 수 없는 phase 상태를 단위 테스트로 재현해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| Phase 1, 전략 정의서만 완료 | 문서/지원 준비도를 따로 해석 | `document`, 다음 문서 `phase-1-synergy-hypothesis` | B안이 문서 병목을 먼저 잡음 |
+| Phase 1, phase 문서는 완료했지만 가치평가 체크리스트 없음 | 지원사업 누락문서 판단을 별도 구현 | `support`, 다음 지원 `valuation-cost-support` | B안이 정부지원 신청 보강으로 전환 |
+| Phase 5, 필수 문서 모두 완료 | 완료 상태 수동 판단 | `ready`, PMI 지원 준비 완료 | B안이 상담/신청 가능 상태를 명확화 |
+| 알 수 없는 phase | 빈 상태 해석 필요 | `none`, 액션 없음 | B안이 경계값에서도 안정적 |
+
+## 12차 기능 업그레이드 결정
+
+- `MnaPhaseActionSummary`와 `MnaPhaseActionPriority`를 추가한다.
+- 우선순위는 필수 문서 누락을 먼저 해결하고, phase 필수 문서가 끝난 뒤 지원사업 전용 누락 문서를 보강하는 순서로 둔다.
+- 결과에는 문서 준비도와 지원사업 준비도를 모두 포함해 UI, 상담 요청, Patasos 스냅샷이 같은 판단 근거를 공유하도록 한다.
