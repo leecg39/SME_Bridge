@@ -88,3 +88,23 @@
 - `frontend/src/lib/government-support.ts`에 phase별 정부지원 프로그램 매핑을 추가한다.
 - `frontend/src/lib/mna-documents.ts`와 `backend/app/services/mna_document_service.py`의 `MnaRoadmapPhase`에 `support_programs` 필드를 추가한다.
 - Supabase에서 phase를 읽는 경우에도 phase code로 `support_programs`를 보강해 DB 유무와 관계없이 API 결과를 동일하게 유지한다.
+
+## 4차 A/B 테스트 기준
+
+비교 대상은 정부지원 프로그램과 승계브릿지 문서 준비도의 연결 방식이다.
+
+- A안: phase별 지원 프로그램명과 다음 행동만 제공한다.
+- B안: 각 지원 프로그램에 필요한 문서 키를 `required_document_keys`로 연결하고, 완료 문서 기준 준비도 계산을 제공한다.
+- 성공 기준: B안이 지원 프로그램별 필수 문서와 완료율을 단위 테스트로 재현하고, 백엔드 API도 같은 필수 문서 키를 반환해야 한다.
+
+| 지원 프로그램 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 기업승계 M&A 컨설팅 | 다음 행동만 표시 | 전략 정의서, 시너지 가설, 승인 메모 필요 | B안이 상담 전 준비자료를 명확화 |
+| 기업실사 비용지원 | 다음 행동만 표시 | 실사 요청자료, 데이터룸 인덱스, Red Flag 로그 필요 | B안이 실사 단계 신청 준비도를 계산 가능 |
+| PMI 컨설팅 비용지원 | 다음 행동만 표시 | PMI 100일 계획, Day 1 커뮤니케이션, 통합 작업 관리표 필요 | B안이 클로징 후 통합 준비도를 계산 가능 |
+
+## 4차 기능 업그레이드 결정
+
+- `MnaSupportProgram`에 `required_document_keys`를 추가한다.
+- `evaluateMnaSupportReadiness()`로 완료 문서 키를 받아 프로그램별 준비율과 누락 문서를 계산한다.
+- 프론트 테스트와 백엔드 API 테스트로 문서 키 매핑과 준비도 계산을 검증한다.

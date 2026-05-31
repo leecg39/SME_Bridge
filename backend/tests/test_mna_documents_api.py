@@ -18,7 +18,17 @@ def test_mna_documents_exposes_downloadable_forms_by_phase():
         "succession-consulting",
         "valuation-cost-support",
     ]
+    assert payload[0]["support_programs"][0]["required_document_keys"] == [
+        "phase-1-strategy-brief",
+        "phase-1-synergy-hypothesis",
+        "phase-1-approval-memo",
+    ]
     assert payload[2]["support_programs"][0]["program_key"] == "diligence-cost-support"
+    assert payload[2]["support_programs"][0]["required_document_keys"] == [
+        "dd-request-list",
+        "phase-3-data-room-index",
+        "phase-3-red-flag-log",
+    ]
     assert payload[4]["support_programs"][0]["support_scope"] == "PMI 컨설팅 비용"
     assert all(phase["documents"] for phase in payload)
     assert payload[1]["documents"][1]["title"] == "NDA 양식"

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   evaluateSuccessionConsultingEligibility,
+  evaluateMnaSupportReadiness,
   getMnaSupportProgramsForPhase,
   SUCCESSION_SUPPORT_CHECK_TASK,
 } from "./government-support";
@@ -65,6 +66,11 @@ describe("getMnaSupportProgramsForPhase", () => {
       "succession-consulting",
       "valuation-cost-support",
     ]);
+    expect(programs[0]?.required_document_keys).toEqual([
+      "phase-1-strategy-brief",
+      "phase-1-synergy-hypothesis",
+      "phase-1-approval-memo",
+    ]);
   });
 
   it("maps diligence and PMI phases to the new 2026 M&A cost support categories", () => {
@@ -78,5 +84,31 @@ describe("getMnaSupportProgramsForPhase", () => {
 
   it("returns no support program for phases without a direct government support hook", () => {
     expect(getMnaSupportProgramsForPhase("marketing")).toEqual([]);
+  });
+});
+
+describe("evaluateMnaSupportReadiness", () => {
+  it("calculates required document readiness for a support program", () => {
+    const readiness = evaluateMnaSupportReadiness("diligence-cost-support", [
+      "dd-request-list",
+      "phase-3-red-flag-log",
+    ]);
+
+    expect(readiness.percent).toBe(67);
+    expect(readiness.completedRequiredDocuments).toEqual([
+      "dd-request-list",
+      "phase-3-red-flag-log",
+    ]);
+    expect(readiness.missingRequiredDocuments).toEqual(["phase-3-data-room-index"]);
+  });
+
+  it("returns an empty readiness result for unknown programs", () => {
+    expect(evaluateMnaSupportReadiness("unknown", ["phase-1-strategy-brief"])).toEqual({
+      completedRequiredDocuments: [],
+      missingRequiredDocuments: [],
+      percent: 0,
+      programKey: "unknown",
+      requiredDocumentKeys: [],
+    });
   });
 });
