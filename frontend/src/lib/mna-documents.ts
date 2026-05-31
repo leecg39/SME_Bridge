@@ -1,3 +1,5 @@
+import { SUCCESSION_SUPPORT_CHECK_TASK } from "./government-support";
+
 export interface MnaPhaseDocument {
   document_key: string;
   title: string;
@@ -23,7 +25,12 @@ export const mnaRoadmapPhases: MnaRoadmapPhase[] = [
     code: "preparation",
     name: "매각 준비",
     duration: "3~6개월",
-    tasks: ["최근 3개년 재무제표 준비", "임대차 계약서 정리", "주요 거래처 매출 비중 확인"],
+    tasks: [
+      SUCCESSION_SUPPORT_CHECK_TASK,
+      "최근 3개년 재무제표 준비",
+      "임대차 계약서 정리",
+      "주요 거래처 매출 비중 확인",
+    ],
     documents: [
       {
         document_key: "phase-1-strategy-brief",

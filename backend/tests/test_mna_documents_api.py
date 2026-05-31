@@ -13,6 +13,7 @@ def test_mna_documents_exposes_downloadable_forms_by_phase():
     payload = response.json()
     assert len(payload) == 5
     assert payload[0]["name"] == "매각 준비"
+    assert payload[0]["tasks"][0] == "기업승계 M&A 컨설팅 지원사업 자격 확인"
     assert all(phase["documents"] for phase in payload)
     assert payload[1]["documents"][1]["title"] == "NDA 양식"
     assert payload[3]["documents"][0]["file_path"].endswith(

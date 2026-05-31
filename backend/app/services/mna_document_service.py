@@ -30,7 +30,12 @@ DEFAULT_MNA_ROADMAP_PHASES = [
         code="preparation",
         name="매각 준비",
         duration="3~6개월",
-        tasks=["최근 3개년 재무제표 준비", "임대차 계약서 정리", "주요 거래처 매출 비중 확인"],
+        tasks=[
+            "기업승계 M&A 컨설팅 지원사업 자격 확인",
+            "최근 3개년 재무제표 준비",
+            "임대차 계약서 정리",
+            "주요 거래처 매출 비중 확인",
+        ],
         documents=[
             MnaPhaseDocument(
                 document_key="phase-1-strategy-brief",
