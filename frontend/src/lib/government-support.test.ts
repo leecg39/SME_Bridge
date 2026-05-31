@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   estimateMnaSupportFunding,
   estimateMnaPhaseSupportFunding,
+  estimateMnaRoadmapSupportFunding,
   evaluateMnaPhaseSupportReadiness,
   evaluateSuccessionConsultingEligibility,
   evaluateMnaSupportReadiness,
@@ -251,6 +252,81 @@ describe("estimateMnaPhaseSupportFunding", () => {
       nextAction: "예상 지원금과 자부담을 상담 스냅샷에 반영합니다.",
       nextExpenseProgramKey: null,
       status: "estimated",
+    });
+  });
+});
+
+describe("estimateMnaRoadmapSupportFunding", () => {
+  it("summarizes support funding across selected roadmap phases", () => {
+    expect(
+      estimateMnaRoadmapSupportFunding(
+        ["preparation", "diligence", "closing-pmi"],
+        {
+          preparation: {
+            "valuation-cost-support": 50000000,
+          },
+          diligence: {
+            "diligence-cost-support": 40000000,
+          },
+          "closing-pmi": {
+            "pmi-consulting-support": 30000000,
+          },
+        },
+      ),
+    ).toMatchObject({
+      estimatedSupportWon: 50000000,
+      expenseAmountWon: 120000000,
+      missingExpensePhaseCodes: [],
+      nextAction: "전 구간 예상 지원금과 자부담을 상담 스냅샷에 반영합니다.",
+      nextExpenseProgramKey: null,
+      nextPhaseCode: null,
+      selfPayWon: 70000000,
+      status: "estimated",
+    });
+  });
+
+  it("selects the next phase and support program that still needs an expense", () => {
+    expect(
+      estimateMnaRoadmapSupportFunding(
+        ["preparation", "diligence", "closing-pmi"],
+        {
+          preparation: {
+            "valuation-cost-support": 50000000,
+          },
+          diligence: {
+            "diligence-cost-support": 40000000,
+          },
+        },
+      ),
+    ).toMatchObject({
+      estimatedSupportWon: 35000000,
+      expenseAmountWon: 90000000,
+      missingExpensePhaseCodes: ["closing-pmi"],
+      nextAction:
+        "closing-pmi 단계의 PMI 컨설팅 비용지원 예상 비용을 입력해 지원금과 자부담을 산출합니다.",
+      nextExpenseProgramKey: "pmi-consulting-support",
+      nextPhaseCode: "closing-pmi",
+      selfPayWon: 55000000,
+      status: "needs-expense",
+    });
+  });
+
+  it("returns a no-support state for roadmap sections without support programs", () => {
+    expect(estimateMnaRoadmapSupportFunding(["marketing"], {})).toMatchObject({
+      estimatedSupportWon: 0,
+      expenseAmountWon: 0,
+      missingExpensePhaseCodes: [],
+      nextAction: "선택한 구간에는 직접 연결된 비용지원 프로그램이 없습니다.",
+      nextExpenseProgramKey: null,
+      nextPhaseCode: null,
+      phaseEstimates: [
+        {
+          phaseCode: "marketing",
+          status: "no-program",
+        },
+      ],
+      selfPayWon: 0,
+      status: "no-support-program",
     });
   });
 });

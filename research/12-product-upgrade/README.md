@@ -433,3 +433,23 @@
 - `MnaPhaseSupportFundingEstimate`에 `nextAction`을 추가한다.
 - `needs-expense` 상태에서는 다음 비용 입력 프로그램의 title을 사용해 질문 문구를 만든다.
 - `estimated`, `no-program`, `no-monetary-support` 상태는 상담/화면에서 그대로 쓸 수 있는 짧은 문장으로 고정한다.
+
+## 21차 A/B 테스트 기준
+
+비교 대상은 로드맵 여러 단계의 비용지원 예산을 상담 전에 합산하는 방식이다.
+
+- A안: phase별 `estimateMnaPhaseSupportFunding()` 결과를 UI나 상담 로직이 다시 순회해 전체 지원금, 자부담, 다음 비용 입력 병목을 직접 계산한다.
+- B안: `estimateMnaRoadmapSupportFunding()`이 선택한 phase 목록과 phase별 비용 입력만 받아 전 구간 총 예상 지원금, 총 자부담, 다음 입력 phase/program/action을 한 번에 반환한다.
+- 성공 기준: B안이 준비·실사·PMI 전체 합산, PMI 비용 누락 시 다음 입력 병목 선택, 지원사업 없는 구간의 `no-support-program` 상태를 단위 테스트로 재현해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 준비 5,000만원·실사 4,000만원·PMI 3,000만원 | phase별 결과를 다시 합산 | 총 지원금 5,000만원, 자부담 7,000만원 | B안이 전 구간 예산 상담을 한 번에 제공 |
+| 준비·실사 비용만 입력, PMI 누락 | 누락 phase를 별도 탐색 | 다음 입력 `closing-pmi` / `pmi-consulting-support` | B안이 다음 질문을 자동 선택 |
+| 마케팅 phase만 선택 | 지원사업 없음 판단 필요 | `no-support-program`, 다음 입력 없음 | B안이 예외 구간을 명확화 |
+
+## 21차 기능 업그레이드 결정
+
+- `MnaRoadmapSupportFundingPlan`과 `MnaRoadmapSupportFundingStatus`를 추가한다.
+- 로드맵 총액은 phase 산출 결과를 재사용해 정책 금액 계산 원천을 하나로 유지한다.
+- 다음 병목은 선택한 phase 순서에서 가장 먼저 `needs-expense`인 phase를 고르게 한다.

@@ -73,6 +73,23 @@ export type MnaPhaseSupportFundingStatus =
   | "no-monetary-support"
   | "no-program";
 
+export interface MnaRoadmapSupportFundingPlan {
+  estimatedSupportWon: number;
+  expenseAmountWon: number;
+  missingExpensePhaseCodes: string[];
+  nextAction: string;
+  nextExpenseProgramKey: string | null;
+  nextPhaseCode: string | null;
+  phaseEstimates: MnaPhaseSupportFundingEstimate[];
+  selfPayWon: number;
+  status: MnaRoadmapSupportFundingStatus;
+}
+
+export type MnaRoadmapSupportFundingStatus =
+  | "estimated"
+  | "needs-expense"
+  | "no-support-program";
+
 export type MnaPhaseSupportReadinessStatus =
   | "in-progress"
   | "no-program"
@@ -241,6 +258,45 @@ export function estimateMnaPhaseSupportFunding(
   };
 }
 
+export function estimateMnaRoadmapSupportFunding(
+  phaseCodes: string[],
+  expenseAmountWonByPhaseCode: Record<string, Record<string, number>>,
+  options: { isVentureCompany?: boolean } = {},
+): MnaRoadmapSupportFundingPlan {
+  const phaseEstimates = phaseCodes.map((phaseCode) =>
+    estimateMnaPhaseSupportFunding(
+      phaseCode,
+      expenseAmountWonByPhaseCode[phaseCode] ?? {},
+      options,
+    ),
+  );
+  const missingExpensePhaseCodes = phaseEstimates
+    .filter((phaseEstimate) => phaseEstimate.status === "needs-expense")
+    .map((phaseEstimate) => phaseEstimate.phaseCode);
+  const nextPhaseEstimate =
+    phaseEstimates.find((phaseEstimate) => phaseEstimate.status === "needs-expense") ?? null;
+  const status = getRoadmapSupportFundingStatus(
+    phaseEstimates.length,
+    phaseEstimates.some((phaseEstimate) => phaseEstimate.status !== "no-program"),
+    missingExpensePhaseCodes.length,
+  );
+
+  return {
+    estimatedSupportWon: sumBy(
+      phaseEstimates,
+      (phaseEstimate) => phaseEstimate.estimatedSupportWon,
+    ),
+    expenseAmountWon: sumBy(phaseEstimates, (phaseEstimate) => phaseEstimate.expenseAmountWon),
+    missingExpensePhaseCodes,
+    nextAction: getRoadmapSupportFundingNextAction(status, nextPhaseEstimate),
+    nextExpenseProgramKey: nextPhaseEstimate?.nextExpenseProgramKey ?? null,
+    nextPhaseCode: nextPhaseEstimate?.phaseCode ?? null,
+    phaseEstimates,
+    selfPayWon: sumBy(phaseEstimates, (phaseEstimate) => phaseEstimate.selfPayWon),
+    status,
+  };
+}
+
 export function evaluateMnaPhaseSupportReadiness(
   phaseCode: string,
   completedDocumentKeys: string[],
@@ -329,6 +385,29 @@ function getPhaseSupportFundingNextAction(
     return "비용지원 산출 대상은 없고 비금전 지원 프로그램을 상담 스냅샷에 반영합니다.";
   }
   return "예상 지원금과 자부담을 상담 스냅샷에 반영합니다.";
+}
+
+function getRoadmapSupportFundingStatus(
+  phaseCount: number,
+  hasSupportProgram: boolean,
+  missingExpensePhaseCount: number,
+): MnaRoadmapSupportFundingStatus {
+  if (phaseCount === 0 || !hasSupportProgram) return "no-support-program";
+  if (missingExpensePhaseCount > 0) return "needs-expense";
+  return "estimated";
+}
+
+function getRoadmapSupportFundingNextAction(
+  status: MnaRoadmapSupportFundingStatus,
+  nextPhaseEstimate: MnaPhaseSupportFundingEstimate | null,
+): string {
+  if (status === "needs-expense" && nextPhaseEstimate) {
+    return `${nextPhaseEstimate.phaseCode} 단계의 ${nextPhaseEstimate.nextAction}`;
+  }
+  if (status === "no-support-program") {
+    return "선택한 구간에는 직접 연결된 비용지원 프로그램이 없습니다.";
+  }
+  return "전 구간 예상 지원금과 자부담을 상담 스냅샷에 반영합니다.";
 }
 
 function uniqueDocumentKeys(documentKeys: string[]): string[] {
