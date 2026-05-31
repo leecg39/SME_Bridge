@@ -15,6 +15,26 @@ export interface TaxScenarioEstimate extends TaxScenarioDefinition {
   warnings: string[];
 }
 
+export interface BusinessSuccessionGiftEligibilityInput {
+  donorAge: number;
+  isCompanyShareGift: boolean;
+  isEligibleCompany: boolean;
+  parentManagementYears: number;
+  recipientAge: number;
+  recipientIsResident: boolean;
+  willBecomeCeoWithinThreeYears: boolean;
+  willJoinBusinessByFilingDeadline: boolean;
+  willMaintainCeoForFiveYears: boolean;
+}
+
+export interface BusinessSuccessionGiftEligibilityResult {
+  isEligible: boolean;
+  missingRequirements: string[];
+  nextAction: string;
+  postManagementWarnings: string[];
+  ruleBaseDate: string;
+}
+
 export const TAX_RULE_BASE_DATE = "2026-05-31";
 
 export const taxScenarioDefinitions: TaxScenarioDefinition[] = [
@@ -106,6 +126,35 @@ export function getBusinessSuccessionGiftCap(parentManagementYears = 30): number
   if (parentManagementYears >= 20) return 400 * ONE_EOK;
   if (parentManagementYears >= 10) return 300 * ONE_EOK;
   return 0;
+}
+
+export function evaluateBusinessSuccessionGiftEligibility(
+  input: BusinessSuccessionGiftEligibilityInput,
+): BusinessSuccessionGiftEligibilityResult {
+  const missingRequirements = [
+    ...(input.isCompanyShareGift ? [] : ["가업 주식 또는 출자지분 증여"]),
+    ...(input.isEligibleCompany ? [] : ["중소기업 또는 요건을 충족한 중견기업"]),
+    ...(input.parentManagementYears >= 10 ? [] : ["부모의 10년 이상 계속 경영"]),
+    ...(input.donorAge >= 60 ? [] : ["증여자 60세 이상 부모"]),
+    ...(input.recipientAge >= 18 ? [] : ["수증자 18세 이상"]),
+    ...(input.recipientIsResident ? [] : ["수증자 거주자"]),
+    ...(input.willJoinBusinessByFilingDeadline ? [] : ["증여세 신고기한까지 가업 종사"]),
+    ...(input.willBecomeCeoWithinThreeYears ? [] : ["증여일부터 3년 이내 대표이사 취임"]),
+  ];
+  const postManagementWarnings = input.willMaintainCeoForFiveYears
+    ? []
+    : ["증여일부터 5년까지 대표이사 유지 사후관리 필요"];
+
+  return {
+    isEligible: missingRequirements.length === 0,
+    missingRequirements,
+    nextAction:
+      missingRequirements.length === 0
+        ? "특례세율 계산값과 5년 사후관리 의무를 전문가 상담 스냅샷에 포함합니다."
+        : "누락 요건을 먼저 확인한 뒤 일반 증여세 또는 다른 승계 전략과 비교합니다.",
+    postManagementWarnings,
+    ruleBaseDate: TAX_RULE_BASE_DATE,
+  };
 }
 
 export function calculateProgressiveTransferTax(taxableBase: number): number {
