@@ -54,6 +54,15 @@ export interface MnaSupportFundingEstimate {
   selfPayWon: number;
 }
 
+export interface MnaPhaseSupportFundingEstimate {
+  estimatedSupportWon: number;
+  estimates: MnaSupportFundingEstimate[];
+  expenseAmountWon: number;
+  nonMonetaryProgramKeys: string[];
+  phaseCode: string;
+  selfPayWon: number;
+}
+
 export type MnaPhaseSupportReadinessStatus =
   | "in-progress"
   | "no-program"
@@ -166,6 +175,36 @@ export function estimateMnaSupportFunding(
   };
 }
 
+export function estimateMnaPhaseSupportFunding(
+  phaseCode: string,
+  expenseAmountWonByProgramKey: Record<string, number>,
+  options: { isVentureCompany?: boolean } = {},
+): MnaPhaseSupportFundingEstimate {
+  const programs = getMnaSupportProgramsForPhase(phaseCode);
+  const estimates = programs.flatMap((program) => {
+    const estimate = estimateMnaSupportFunding(
+      program.program_key,
+      expenseAmountWonByProgramKey[program.program_key] ?? 0,
+      options,
+    );
+
+    return estimate ? [estimate] : [];
+  });
+  const expenseAmountWon = sumBy(estimates, (estimate) => estimate.expenseAmountWon);
+  const estimatedSupportWon = sumBy(estimates, (estimate) => estimate.estimatedSupportWon);
+
+  return {
+    estimatedSupportWon,
+    estimates,
+    expenseAmountWon,
+    nonMonetaryProgramKeys: programs
+      .filter((program) => program.funding === null)
+      .map((program) => program.program_key),
+    phaseCode,
+    selfPayWon: Math.max(0, expenseAmountWon - estimatedSupportWon),
+  };
+}
+
 export function evaluateMnaPhaseSupportReadiness(
   phaseCode: string,
   completedDocumentKeys: string[],
@@ -229,6 +268,10 @@ function getPhaseSupportReadinessStatus(
 
 function uniqueDocumentKeys(documentKeys: string[]): string[] {
   return Array.from(new Set(documentKeys));
+}
+
+function sumBy<T>(items: T[], selectValue: (item: T) => number): number {
+  return items.reduce((total, item) => total + selectValue(item), 0);
 }
 
 const MNA_SUPPORT_PROGRAMS_BY_PHASE: Record<string, MnaSupportProgram[]> = {

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   estimateMnaSupportFunding,
+  estimateMnaPhaseSupportFunding,
   evaluateMnaPhaseSupportReadiness,
   evaluateSuccessionConsultingEligibility,
   evaluateMnaSupportReadiness,
@@ -144,6 +145,77 @@ describe("estimateMnaSupportFunding", () => {
   it("returns null for non-monetary or unknown support programs", () => {
     expect(estimateMnaSupportFunding("succession-consulting", 10000000)).toBeNull();
     expect(estimateMnaSupportFunding("unknown", 10000000)).toBeNull();
+  });
+});
+
+describe("estimateMnaPhaseSupportFunding", () => {
+  it("summarizes preparation phase funding and separates non-monetary consulting", () => {
+    expect(
+      estimateMnaPhaseSupportFunding("preparation", {
+        "valuation-cost-support": 50000000,
+      }),
+    ).toEqual({
+      estimatedSupportWon: 15000000,
+      estimates: [
+        {
+          estimatedSupportWon: 15000000,
+          expenseAmountWon: 50000000,
+          isCapped: true,
+          maxAmountWon: 15000000,
+          programKey: "valuation-cost-support",
+          rate: 0.4,
+          selfPayWon: 35000000,
+        },
+      ],
+      expenseAmountWon: 50000000,
+      nonMonetaryProgramKeys: ["succession-consulting"],
+      phaseCode: "preparation",
+      selfPayWon: 35000000,
+    });
+  });
+
+  it("uses venture valuation caps in preparation phase totals", () => {
+    expect(
+      estimateMnaPhaseSupportFunding(
+        "preparation",
+        {
+          "valuation-cost-support": 50000000,
+        },
+        { isVentureCompany: true },
+      ),
+    ).toMatchObject({
+      estimatedSupportWon: 20000000,
+      expenseAmountWon: 50000000,
+      selfPayWon: 30000000,
+    });
+  });
+
+  it("summarizes diligence phase funding totals", () => {
+    expect(
+      estimateMnaPhaseSupportFunding("diligence", {
+        "diligence-cost-support": 40000000,
+      }),
+    ).toMatchObject({
+      estimatedSupportWon: 20000000,
+      expenseAmountWon: 40000000,
+      nonMonetaryProgramKeys: [],
+      selfPayWon: 20000000,
+    });
+  });
+
+  it("returns empty totals for phases without support programs", () => {
+    expect(
+      estimateMnaPhaseSupportFunding("marketing", {
+        "valuation-cost-support": 50000000,
+      }),
+    ).toEqual({
+      estimatedSupportWon: 0,
+      estimates: [],
+      expenseAmountWon: 0,
+      nonMonetaryProgramKeys: [],
+      phaseCode: "marketing",
+      selfPayWon: 0,
+    });
   });
 });
 

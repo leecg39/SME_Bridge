@@ -351,3 +351,24 @@
 - `MnaSupportFunding`에 `standard_rate`, `venture_rate`, `venture_max_amount_won` 숫자 필드를 추가한다.
 - `estimateMnaSupportFunding()`과 `MnaSupportFundingEstimate`를 추가한다.
 - 백엔드 API도 같은 숫자 필드를 내려주도록 모델과 테스트를 맞춘다.
+
+## 17차 A/B 테스트 기준
+
+비교 대상은 로드맵 phase의 지원사업 예산을 상담 숫자로 묶는 방식이다.
+
+- A안: 지원사업별 `estimateMnaSupportFunding()`을 화면이나 상담 로직이 각각 호출하고, phase 총 지원금·자부담·비금전 지원사업을 다시 합산한다.
+- B안: `estimateMnaPhaseSupportFunding()`이 phase code와 프로그램별 예상 비용만 받아 금전 지원 예상치, 총 지원금, 총 자부담, 비금전 지원 프로그램 키를 한 번에 반환한다.
+- 성공 기준: B안이 매각 준비 phase의 기업가치평가 5,000만원 일반/벤처 한도, 실사 phase 4,000만원 비용의 2,000만원 지원, 지원사업이 없는 phase의 0원 합계를 단위 테스트로 재현해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| Phase 1, 기업가치평가 5,000만원, 일반 | 화면/상담 로직이 개별 계산 후 합산 | 총 지원금 1,500만원, 자부담 3,500만원, 비금전 지원 `succession-consulting` 분리 | B안이 매각 준비 예산 상담을 한 객체로 제공 |
+| Phase 1, 기업가치평가 5,000만원, 벤처 | 벤처 예외 합산을 별도 구현 | 총 지원금 2,000만원, 자부담 3,000만원 | B안이 벤처 여부를 phase 합계에 반영 |
+| Phase 3, 기업실사 4,000만원 | 개별 계산 필요 | 총 지원금 2,000만원, 자부담 2,000만원 | B안이 실사 예산 논의를 바로 연결 |
+| 마케팅 phase | 지원사업 없음 처리 필요 | 총 지원금 0원, 자부담 0원, 산출 없음 | B안이 지원사업 없는 단계를 안전하게 처리 |
+
+## 17차 기능 업그레이드 결정
+
+- `MnaPhaseSupportFundingEstimate` 타입을 추가한다.
+- `estimateMnaPhaseSupportFunding()`은 기존 프로그램별 계산 함수를 재사용해 정책 금액 계산 원천을 하나로 유지한다.
+- `nonMonetaryProgramKeys`로 기업승계 컨설팅처럼 비용지원 계산 대상이 아닌 지원사업을 분리해 상담 UI가 금전 지원과 상담 지원을 섞지 않게 한다.
