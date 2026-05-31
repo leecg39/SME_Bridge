@@ -392,3 +392,24 @@
 - `MnaPhaseSupportFundingEstimate`에 `missingExpenseProgramKeys`를 추가한다.
 - 비용 입력 객체에 해당 프로그램 키가 없을 때만 입력 필요로 본다.
 - 비용 키가 존재하면 음수/0 입력은 기존 프로그램별 계산의 0원 보정 규칙을 그대로 따른다.
+
+## 19차 A/B 테스트 기준
+
+비교 대상은 phase 지원금 산출 결과를 다음 상담 질문으로 전환하는 방식이다.
+
+- A안: `missingExpenseProgramKeys` 배열을 UI나 상담 로직이 다시 해석해 “예상 완료”, “비용 입력 필요”, “지원사업 없음” 상태를 직접 판단한다.
+- B안: `estimateMnaPhaseSupportFunding()`이 `status`와 `nextExpenseProgramKey`를 함께 반환해 다음 입력 질문을 즉시 선택한다.
+- 성공 기준: B안이 비용 미입력 준비 phase를 `needs-expense`, 비용 입력 완료 phase를 `estimated`, 지원사업 없는 phase를 `no-program`으로 구분해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| Phase 1, 비용 입력 없음 | 배열 해석 필요 | `needs-expense`, 다음 입력 `valuation-cost-support` | B안이 상담 질문을 바로 생성 |
+| Phase 1, 기업가치평가 5,000만원 입력 | 계산 완료 상태를 추론 | `estimated`, 다음 입력 없음 | B안이 산출 완료를 명확화 |
+| Phase 3, 기업실사 비용 0원 명시 입력 | 0원과 미입력을 혼동 가능 | `estimated`, 다음 입력 없음 | B안이 사용자가 입력한 0원을 존중 |
+| 마케팅 phase | 지원사업 없음 추론 필요 | `no-program`, 다음 입력 없음 | B안이 지원사업 없는 단계를 명확화 |
+
+## 19차 기능 업그레이드 결정
+
+- `MnaPhaseSupportFundingStatus`를 추가한다.
+- `MnaPhaseSupportFundingEstimate`에 `status`와 `nextExpenseProgramKey`를 추가한다.
+- 상태 판단은 phase 프로그램 없음, 금전 지원사업 없음, 비용 입력 필요, 산출 완료 순서로 분리한다.

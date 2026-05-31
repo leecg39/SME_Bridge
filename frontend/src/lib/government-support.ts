@@ -59,10 +59,18 @@ export interface MnaPhaseSupportFundingEstimate {
   estimates: MnaSupportFundingEstimate[];
   expenseAmountWon: number;
   missingExpenseProgramKeys: string[];
+  nextExpenseProgramKey: string | null;
   nonMonetaryProgramKeys: string[];
   phaseCode: string;
   selfPayWon: number;
+  status: MnaPhaseSupportFundingStatus;
 }
+
+export type MnaPhaseSupportFundingStatus =
+  | "estimated"
+  | "needs-expense"
+  | "no-monetary-support"
+  | "no-program";
 
 export type MnaPhaseSupportReadinessStatus =
   | "in-progress"
@@ -202,22 +210,30 @@ export function estimateMnaPhaseSupportFunding(
   });
   const expenseAmountWon = sumBy(estimates, (estimate) => estimate.expenseAmountWon);
   const estimatedSupportWon = sumBy(estimates, (estimate) => estimate.estimatedSupportWon);
+  const missingExpenseProgramKeys = programs
+    .filter(
+      (program) =>
+        program.funding && !Object.hasOwn(expenseAmountWonByProgramKey, program.program_key),
+    )
+    .map((program) => program.program_key);
+  const monetaryProgramCount = programs.filter((program) => program.funding).length;
 
   return {
     estimatedSupportWon,
     estimates,
     expenseAmountWon,
-    missingExpenseProgramKeys: programs
-      .filter(
-        (program) =>
-          program.funding && !Object.hasOwn(expenseAmountWonByProgramKey, program.program_key),
-      )
-      .map((program) => program.program_key),
+    missingExpenseProgramKeys,
+    nextExpenseProgramKey: missingExpenseProgramKeys[0] ?? null,
     nonMonetaryProgramKeys: programs
       .filter((program) => program.funding === null)
       .map((program) => program.program_key),
     phaseCode,
     selfPayWon: Math.max(0, expenseAmountWon - estimatedSupportWon),
+    status: getPhaseSupportFundingStatus(
+      programs.length,
+      monetaryProgramCount,
+      missingExpenseProgramKeys.length,
+    ),
   };
 }
 
@@ -280,6 +296,17 @@ function getPhaseSupportReadinessStatus(
   if (overallPercent === 100) return "ready";
   if (overallPercent > 0) return "in-progress";
   return "not-started";
+}
+
+function getPhaseSupportFundingStatus(
+  programCount: number,
+  monetaryProgramCount: number,
+  missingExpenseProgramCount: number,
+): MnaPhaseSupportFundingStatus {
+  if (programCount === 0) return "no-program";
+  if (monetaryProgramCount === 0) return "no-monetary-support";
+  if (missingExpenseProgramCount > 0) return "needs-expense";
+  return "estimated";
 }
 
 function uniqueDocumentKeys(documentKeys: string[]): string[] {

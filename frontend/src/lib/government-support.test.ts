@@ -169,9 +169,11 @@ describe("estimateMnaPhaseSupportFunding", () => {
       ],
       expenseAmountWon: 50000000,
       missingExpenseProgramKeys: [],
+      nextExpenseProgramKey: null,
       nonMonetaryProgramKeys: ["succession-consulting"],
       phaseCode: "preparation",
       selfPayWon: 35000000,
+      status: "estimated",
     });
   });
 
@@ -214,21 +216,37 @@ describe("estimateMnaPhaseSupportFunding", () => {
       estimates: [],
       expenseAmountWon: 0,
       missingExpenseProgramKeys: [],
+      nextExpenseProgramKey: null,
       nonMonetaryProgramKeys: [],
       phaseCode: "marketing",
       selfPayWon: 0,
+      status: "no-program",
     });
   });
 
-  it("tracks monetary support programs that still need expense inputs", () => {
+  it("tracks monetary support programs that still need expense inputs and the next input", () => {
     expect(estimateMnaPhaseSupportFunding("preparation", {})).toEqual({
       estimatedSupportWon: 0,
       estimates: [],
       expenseAmountWon: 0,
       missingExpenseProgramKeys: ["valuation-cost-support"],
+      nextExpenseProgramKey: "valuation-cost-support",
       nonMonetaryProgramKeys: ["succession-consulting"],
       phaseCode: "preparation",
       selfPayWon: 0,
+      status: "needs-expense",
+    });
+  });
+
+  it("treats explicit zero expense as an estimated funding state", () => {
+    expect(
+      estimateMnaPhaseSupportFunding("diligence", {
+        "diligence-cost-support": 0,
+      }),
+    ).toMatchObject({
+      missingExpenseProgramKeys: [],
+      nextExpenseProgramKey: null,
+      status: "estimated",
     });
   });
 });
