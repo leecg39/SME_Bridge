@@ -169,6 +169,7 @@ describe("estimateMnaPhaseSupportFunding", () => {
       ],
       expenseAmountWon: 50000000,
       missingExpenseProgramKeys: [],
+      nextAction: "예상 지원금과 자부담을 상담 스냅샷에 반영합니다.",
       nextExpenseProgramKey: null,
       nonMonetaryProgramKeys: ["succession-consulting"],
       phaseCode: "preparation",
@@ -216,6 +217,7 @@ describe("estimateMnaPhaseSupportFunding", () => {
       estimates: [],
       expenseAmountWon: 0,
       missingExpenseProgramKeys: [],
+      nextAction: "이 단계에는 직접 연결된 비용지원 프로그램이 없습니다.",
       nextExpenseProgramKey: null,
       nonMonetaryProgramKeys: [],
       phaseCode: "marketing",
@@ -230,6 +232,7 @@ describe("estimateMnaPhaseSupportFunding", () => {
       estimates: [],
       expenseAmountWon: 0,
       missingExpenseProgramKeys: ["valuation-cost-support"],
+      nextAction: "기업가치평가 비용지원 예상 비용을 입력해 지원금과 자부담을 산출합니다.",
       nextExpenseProgramKey: "valuation-cost-support",
       nonMonetaryProgramKeys: ["succession-consulting"],
       phaseCode: "preparation",
@@ -245,6 +248,7 @@ describe("estimateMnaPhaseSupportFunding", () => {
       }),
     ).toMatchObject({
       missingExpenseProgramKeys: [],
+      nextAction: "예상 지원금과 자부담을 상담 스냅샷에 반영합니다.",
       nextExpenseProgramKey: null,
       status: "estimated",
     });

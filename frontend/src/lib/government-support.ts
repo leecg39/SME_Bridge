@@ -59,6 +59,7 @@ export interface MnaPhaseSupportFundingEstimate {
   estimates: MnaSupportFundingEstimate[];
   expenseAmountWon: number;
   missingExpenseProgramKeys: string[];
+  nextAction: string;
   nextExpenseProgramKey: string | null;
   nonMonetaryProgramKeys: string[];
   phaseCode: string;
@@ -217,23 +218,26 @@ export function estimateMnaPhaseSupportFunding(
     )
     .map((program) => program.program_key);
   const monetaryProgramCount = programs.filter((program) => program.funding).length;
+  const nextExpenseProgramKey = missingExpenseProgramKeys[0] ?? null;
+  const status = getPhaseSupportFundingStatus(
+    programs.length,
+    monetaryProgramCount,
+    missingExpenseProgramKeys.length,
+  );
 
   return {
     estimatedSupportWon,
     estimates,
     expenseAmountWon,
     missingExpenseProgramKeys,
-    nextExpenseProgramKey: missingExpenseProgramKeys[0] ?? null,
+    nextAction: getPhaseSupportFundingNextAction(status, nextExpenseProgramKey),
+    nextExpenseProgramKey,
     nonMonetaryProgramKeys: programs
       .filter((program) => program.funding === null)
       .map((program) => program.program_key),
     phaseCode,
     selfPayWon: Math.max(0, expenseAmountWon - estimatedSupportWon),
-    status: getPhaseSupportFundingStatus(
-      programs.length,
-      monetaryProgramCount,
-      missingExpenseProgramKeys.length,
-    ),
+    status,
   };
 }
 
@@ -307,6 +311,24 @@ function getPhaseSupportFundingStatus(
   if (monetaryProgramCount === 0) return "no-monetary-support";
   if (missingExpenseProgramCount > 0) return "needs-expense";
   return "estimated";
+}
+
+function getPhaseSupportFundingNextAction(
+  status: MnaPhaseSupportFundingStatus,
+  nextExpenseProgramKey: string | null,
+): string {
+  if (status === "needs-expense" && nextExpenseProgramKey) {
+    const title = getMnaSupportProgramByKey(nextExpenseProgramKey)?.title ?? "비용지원";
+
+    return `${title} 예상 비용을 입력해 지원금과 자부담을 산출합니다.`;
+  }
+  if (status === "no-program") {
+    return "이 단계에는 직접 연결된 비용지원 프로그램이 없습니다.";
+  }
+  if (status === "no-monetary-support") {
+    return "비용지원 산출 대상은 없고 비금전 지원 프로그램을 상담 스냅샷에 반영합니다.";
+  }
+  return "예상 지원금과 자부담을 상담 스냅샷에 반영합니다.";
 }
 
 function uniqueDocumentKeys(documentKeys: string[]): string[] {

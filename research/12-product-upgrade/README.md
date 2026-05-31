@@ -413,3 +413,23 @@
 - `MnaPhaseSupportFundingStatus`를 추가한다.
 - `MnaPhaseSupportFundingEstimate`에 `status`와 `nextExpenseProgramKey`를 추가한다.
 - 상태 판단은 phase 프로그램 없음, 금전 지원사업 없음, 비용 입력 필요, 산출 완료 순서로 분리한다.
+
+## 20차 A/B 테스트 기준
+
+비교 대상은 phase 지원금 산출 상태를 상담 문장으로 바꾸는 방식이다.
+
+- A안: `status`와 `nextExpenseProgramKey`만 반환해 UI나 Patasos 상담 스냅샷이 다음 행동 문구를 별도로 조립한다.
+- B안: `estimateMnaPhaseSupportFunding()`이 `nextAction`을 함께 반환해 비용 입력 질문, 산출 완료 안내, 지원사업 없음 안내를 즉시 제공한다.
+- 성공 기준: B안이 비용 미입력 준비 phase에서 기업가치평가 비용 입력 요청, 비용 입력 완료 phase에서 상담 스냅샷 반영 안내, 지원사업 없는 phase에서 직접 연결 프로그램 없음 안내를 단위 테스트로 재현해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| Phase 1, 비용 입력 없음 | 상태 코드를 다시 문장화 | “기업가치평가 비용지원 예상 비용을 입력...” | B안이 다음 질문을 바로 제공 |
+| Phase 1, 기업가치평가 5,000만원 입력 | 완료 안내를 별도 작성 | “예상 지원금과 자부담을 상담 스냅샷에 반영...” | B안이 상담 전송 문구를 안정화 |
+| 마케팅 phase | 지원사업 없음 문구를 별도 작성 | “직접 연결된 비용지원 프로그램이 없습니다.” | B안이 예외 단계를 명확화 |
+
+## 20차 기능 업그레이드 결정
+
+- `MnaPhaseSupportFundingEstimate`에 `nextAction`을 추가한다.
+- `needs-expense` 상태에서는 다음 비용 입력 프로그램의 title을 사용해 질문 문구를 만든다.
+- `estimated`, `no-program`, `no-monetary-support` 상태는 상담/화면에서 그대로 쓸 수 있는 짧은 문장으로 고정한다.
