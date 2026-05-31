@@ -17,11 +17,18 @@ describe("calculateBusinessSuccessionGiftTax", () => {
     expect(result.tax).toBe(3.5 * ONE_EOK);
   });
 
-  it("applies the 20 percent rate above the special low-rate band", () => {
+  it("keeps the 10 percent rate through the current 120 eok low-rate band", () => {
     const result = calculateBusinessSuccessionGiftTax(90 * ONE_EOK);
 
     expect(result.specialTaxBase).toBe(80 * ONE_EOK);
-    expect(result.tax).toBe(10 * ONE_EOK);
+    expect(result.tax).toBe(8 * ONE_EOK);
+  });
+
+  it("applies the 20 percent rate above the current 120 eok low-rate band", () => {
+    const result = calculateBusinessSuccessionGiftTax(150 * ONE_EOK);
+
+    expect(result.specialTaxBase).toBe(140 * ONE_EOK);
+    expect(result.tax).toBe(16 * ONE_EOK);
   });
 });
 
@@ -46,5 +53,12 @@ describe("estimateTaxScenarios", () => {
 
     expect(hybrid.formulaLabel).toContain("50%");
     expect(hybrid.tax).toBe(7.145 * ONE_EOK);
+  });
+
+  it("describes the current business succession gift tax threshold", () => {
+    const gift = estimateTaxScenario("gift", 90 * ONE_EOK);
+
+    expect(gift.formulaLabel).toBe("10억원 공제 + 120억원 초과분 20%");
+    expect(gift.tax).toBe(8 * ONE_EOK);
   });
 });

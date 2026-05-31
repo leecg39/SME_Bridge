@@ -27,7 +27,7 @@ export const taxScenarioDefinitions: TaxScenarioDefinition[] = [
 const ONE_EOK = 100000000;
 const BUSINESS_SUCCESSION_GIFT_CAP = 600 * ONE_EOK;
 const BUSINESS_SUCCESSION_GIFT_DEDUCTION = 10 * ONE_EOK;
-const BUSINESS_SUCCESSION_GIFT_LOW_RATE_LIMIT = 60 * ONE_EOK;
+const BUSINESS_SUCCESSION_GIFT_LOW_RATE_LIMIT = 120 * ONE_EOK;
 
 export function estimateTaxScenarios(taxableBase: number): TaxScenarioEstimate[] {
   return taxScenarioDefinitions.map((scenario) => estimateTaxScenario(scenario.id, taxableBase));
@@ -45,7 +45,7 @@ export function estimateTaxScenario(
     const result = calculateBusinessSuccessionGiftTax(base);
     return buildEstimate(definition, base, result.tax, {
       basis: "가업승계 주식 등 증여재산 600억원 한도, 10억원 공제 후 10%/20% 특례세율",
-      formulaLabel: "10억원 공제 + 60억원 초과분 20%",
+      formulaLabel: "10억원 공제 + 120억원 초과분 20%",
       warnings: result.excessAmount > 0
         ? ["600억원 한도 초과분은 일반 증여세율 간이 계산으로만 반영했습니다."]
         : ["수증자, 업종, 지분, 대표이사 취임, 5년 사후관리 요건 확인이 필요합니다."],
