@@ -290,3 +290,23 @@
 - `MnaRoadmapActionPlan`과 `MnaRoadmapActionPlanStatus`를 추가한다.
 - 전체 문서 준비율은 phase별 필수 문서의 중복 없는 키 기준으로 계산한다.
 - `phaseSummaries`를 함께 반환해 상단 추천 액션과 상세 phase 카드가 같은 계산 결과를 공유하도록 한다.
+
+## 14차 A/B 테스트 기준
+
+비교 대상은 백엔드 M&A 로드맵 API가 phase 준비도 계산의 씨앗 데이터를 제공하는 방식이다.
+
+- A안: API는 문서 배열과 지원사업 배열만 내려주고, 클라이언트가 필수 문서 수, 첫 작성 문서, 지원사업 필수 문서를 매번 다시 계산한다.
+- B안: `MnaRoadmapPhase.readiness_seed`가 phase별 필수 문서 키, 첫 필수 문서, 지원사업 수, 지원사업 필수 문서 키를 함께 반환한다.
+- 성공 기준: B안이 매각 준비 phase의 필수 문서 3개와 지원사업 필수 문서 4개, 마케팅 phase의 지원사업 없음 상태, Supabase 경로의 자동 계산을 백엔드 테스트로 재현해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| Phase 1 API 응답 | 배열을 다시 순회 | 필수 문서 3개, 첫 문서 `phase-1-strategy-brief`, 지원사업 문서 4개 | B안이 클라이언트 계산 중복을 줄임 |
+| Phase 2 API 응답 | 지원사업 없음 여부를 별도 판단 | 지원사업 수 0, 지원사업 문서 빈 배열 | B안이 정부지원 훅이 없는 단계를 명확화 |
+| Supabase phase 생성 | DB 결과마다 후처리 필요 | 모델 생성 시 `readiness_seed` 자동 계산 | B안이 정적/DB 경로를 일치 |
+
+## 14차 기능 업그레이드 결정
+
+- 백엔드 `MnaPhaseReadinessSeed` 모델을 추가한다.
+- `MnaRoadmapPhase.model_post_init()`에서 문서와 지원사업을 기반으로 readiness seed를 자동 계산한다.
+- API 응답 테스트로 정적 fallback과 DB 모델 생성 경로가 같은 seed 구조를 갖는지 검증한다.

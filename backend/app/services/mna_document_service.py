@@ -27,6 +27,14 @@ class MnaSupportProgram(BaseModel):
     rule_base_date: str
 
 
+class MnaPhaseReadinessSeed(BaseModel):
+    first_required_document_key: Optional[str] = None
+    required_document_count: int
+    required_document_keys: List[str]
+    support_program_count: int
+    support_required_document_keys: List[str]
+
+
 class MnaRoadmapPhase(BaseModel):
     phase: int
     code: str
@@ -35,6 +43,32 @@ class MnaRoadmapPhase(BaseModel):
     tasks: List[str]
     documents: List[MnaPhaseDocument] = Field(default_factory=list)
     support_programs: List[MnaSupportProgram] = Field(default_factory=list)
+    readiness_seed: Optional[MnaPhaseReadinessSeed] = None
+
+    def model_post_init(self, __context: Any) -> None:
+        if self.readiness_seed is not None:
+            return
+
+        required_documents = sorted(
+            [document for document in self.documents if document.is_required],
+            key=lambda document: document.sort_order,
+        )
+        support_required_document_keys = unique_keys(
+            [
+                document_key
+                for program in self.support_programs
+                for document_key in program.required_document_keys
+            ]
+        )
+        self.readiness_seed = MnaPhaseReadinessSeed(
+            first_required_document_key=(
+                required_documents[0].document_key if required_documents else None
+            ),
+            required_document_count=len(required_documents),
+            required_document_keys=[document.document_key for document in required_documents],
+            support_program_count=len(self.support_programs),
+            support_required_document_keys=support_required_document_keys,
+        )
 
 
 SUCCESSION_SUPPORT_RULE_BASE_DATE = "2026-05-31"
@@ -45,6 +79,10 @@ MNA_ACTIVATION_SUPPORT_SOURCE_URL = (
 
 def support_programs_for_phase(phase_code: str) -> List[MnaSupportProgram]:
     return MNA_SUPPORT_PROGRAMS_BY_PHASE.get(phase_code, [])
+
+
+def unique_keys(keys: List[str]) -> List[str]:
+    return list(dict.fromkeys(keys))
 
 
 MNA_SUPPORT_PROGRAMS_BY_PHASE = {
