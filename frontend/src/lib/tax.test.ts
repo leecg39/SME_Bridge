@@ -4,6 +4,7 @@ import {
   buildBusinessSuccessionGiftReview,
   calculateBusinessSuccessionGiftTax,
   calculateProgressiveTransferTax,
+  compareTaxScenarios,
   evaluateBusinessSuccessionGiftEligibility,
   estimateTaxScenario,
   estimateTaxScenarios,
@@ -193,5 +194,36 @@ describe("estimateTaxScenarios", () => {
 
     expect(gift.formulaLabel).toBe("10억원 공제 + 120억원 초과분 20%");
     expect(gift.tax).toBe(8 * ONE_EOK);
+  });
+});
+
+describe("compareTaxScenarios", () => {
+  it("ranks tax scenarios and calculates savings against the sale baseline", () => {
+    const comparison = compareTaxScenarios(45 * ONE_EOK);
+
+    expect(comparison.bestScenarioId).toBe("gift");
+    expect(comparison.maxSavingsAgainstBaseline).toBeCloseTo(8.29 * ONE_EOK);
+    expect(comparison.rows.map((row) => row.id)).toEqual([
+      "gift",
+      "hybrid",
+      "sale",
+      "inheritance",
+    ]);
+    expect(comparison.rows[0]?.id).toBe("gift");
+    expect(comparison.rows[0]?.rank).toBe(1);
+    expect(comparison.rows[0]?.savingsAgainstBaseline).toBeCloseTo(8.29 * ONE_EOK);
+    expect(comparison.rows[0]?.taxGapFromBest).toBe(0);
+    expect(comparison.rows.find((row) => row.id === "inheritance")?.taxGapFromBest).toBeCloseTo(
+      14.4 * ONE_EOK,
+    );
+  });
+
+  it("keeps comparison values stable for a zero taxable base", () => {
+    const comparison = compareTaxScenarios(0);
+
+    expect(comparison.bestScenarioId).toBe("sale");
+    expect(comparison.maxSavingsAgainstBaseline).toBe(0);
+    expect(comparison.rows.every((row) => row.savingsAgainstBaseline === 0)).toBe(true);
+    expect(comparison.rows.every((row) => row.taxGapFromBest === 0)).toBe(true);
   });
 });

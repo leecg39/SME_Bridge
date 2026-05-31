@@ -15,6 +15,20 @@ export interface TaxScenarioEstimate extends TaxScenarioDefinition {
   warnings: string[];
 }
 
+export interface TaxScenarioComparisonRow extends TaxScenarioEstimate {
+  rank: number;
+  savingsAgainstBaseline: number;
+  taxGapFromBest: number;
+}
+
+export interface TaxScenarioComparison {
+  baselineScenarioId: TaxScenarioId;
+  bestScenarioId: TaxScenarioId;
+  maxSavingsAgainstBaseline: number;
+  rows: TaxScenarioComparisonRow[];
+  taxableBase: number;
+}
+
 export interface BusinessSuccessionGiftEligibilityInput {
   donorAge: number;
   isCompanyShareGift: boolean;
@@ -75,6 +89,37 @@ const BUSINESS_SUCCESSION_GIFT_LOW_RATE_LIMIT = 120 * ONE_EOK;
 
 export function estimateTaxScenarios(taxableBase: number): TaxScenarioEstimate[] {
   return taxScenarioDefinitions.map((scenario) => estimateTaxScenario(scenario.id, taxableBase));
+}
+
+export function compareTaxScenarios(
+  taxableBase: number,
+  baselineScenarioId: TaxScenarioId = "sale",
+): TaxScenarioComparison {
+  const base = Math.max(0, taxableBase);
+  const estimates = estimateTaxScenarios(base);
+  const baseline = estimates.find((estimate) => estimate.id === baselineScenarioId) ?? estimates[0]!;
+  const best = estimates.reduce((currentBest, estimate) =>
+    estimate.tax < currentBest.tax ? estimate : currentBest,
+  );
+  const rows = [...estimates]
+    .sort((left, right) => left.tax - right.tax)
+    .map((estimate, index) => ({
+      ...estimate,
+      rank: index + 1,
+      savingsAgainstBaseline: Math.max(0, baseline.tax - estimate.tax),
+      taxGapFromBest: Math.max(0, estimate.tax - best.tax),
+    }));
+
+  return {
+    baselineScenarioId: baseline.id,
+    bestScenarioId: best.id,
+    maxSavingsAgainstBaseline: Math.max(
+      0,
+      ...rows.map((estimate) => estimate.savingsAgainstBaseline),
+    ),
+    rows,
+    taxableBase: base,
+  };
 }
 
 export function estimateTaxScenario(
