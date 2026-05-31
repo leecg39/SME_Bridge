@@ -34,6 +34,23 @@ export interface MnaSupportReadiness {
   requiredDocumentKeys: string[];
 }
 
+export type MnaPhaseSupportReadinessStatus =
+  | "in-progress"
+  | "no-program"
+  | "not-started"
+  | "ready";
+
+export interface MnaPhaseSupportReadiness {
+  missingDocumentKeys: string[];
+  nextProgramKey: string | null;
+  overallPercent: number;
+  phaseCode: string;
+  programs: MnaSupportReadiness[];
+  readyProgramKeys: string[];
+  status: MnaPhaseSupportReadinessStatus;
+  totalRequiredDocumentKeys: string[];
+}
+
 export const SUCCESSION_SUPPORT_CHECK_TASK =
   "기업승계 M&A 컨설팅 지원사업 자격 확인";
 
@@ -99,10 +116,69 @@ export function evaluateMnaSupportReadiness(
   };
 }
 
+export function evaluateMnaPhaseSupportReadiness(
+  phaseCode: string,
+  completedDocumentKeys: string[],
+): MnaPhaseSupportReadiness {
+  const programs = getMnaSupportProgramsForPhase(phaseCode).map((program) =>
+    evaluateMnaSupportReadiness(program.program_key, completedDocumentKeys),
+  );
+  const totalRequiredDocumentKeys = uniqueDocumentKeys(
+    programs.flatMap((program) => program.requiredDocumentKeys),
+  );
+  const completedSet = new Set(completedDocumentKeys);
+  const completedDocumentCount = totalRequiredDocumentKeys.filter((key) =>
+    completedSet.has(key),
+  ).length;
+  const missingDocumentKeys = totalRequiredDocumentKeys.filter((key) => !completedSet.has(key));
+  const overallPercent =
+    totalRequiredDocumentKeys.length === 0
+      ? 0
+      : Math.round((completedDocumentCount / totalRequiredDocumentKeys.length) * 100);
+
+  return {
+    missingDocumentKeys,
+    nextProgramKey: getNextSupportProgramKey(programs),
+    overallPercent,
+    phaseCode,
+    programs,
+    readyProgramKeys: programs
+      .filter((program) => program.requiredDocumentKeys.length > 0 && program.percent === 100)
+      .map((program) => program.programKey),
+    status: getPhaseSupportReadinessStatus(programs.length, overallPercent),
+    totalRequiredDocumentKeys,
+  };
+}
+
 function getMnaSupportProgramByKey(programKey: string): MnaSupportProgram | undefined {
   return Object.values(MNA_SUPPORT_PROGRAMS_BY_PHASE)
     .flat()
     .find((program) => program.program_key === programKey);
+}
+
+function getNextSupportProgramKey(programs: MnaSupportReadiness[]): string | null {
+  const incompletePrograms = programs.filter(
+    (program) => program.requiredDocumentKeys.length > 0 && program.percent < 100,
+  );
+  if (incompletePrograms.length === 0) return null;
+
+  return incompletePrograms.reduce((best, program) =>
+    program.percent > best.percent ? program : best,
+  ).programKey;
+}
+
+function getPhaseSupportReadinessStatus(
+  programCount: number,
+  overallPercent: number,
+): MnaPhaseSupportReadinessStatus {
+  if (programCount === 0) return "no-program";
+  if (overallPercent === 100) return "ready";
+  if (overallPercent > 0) return "in-progress";
+  return "not-started";
+}
+
+function uniqueDocumentKeys(documentKeys: string[]): string[] {
+  return Array.from(new Set(documentKeys));
 }
 
 const MNA_SUPPORT_PROGRAMS_BY_PHASE: Record<string, MnaSupportProgram[]> = {

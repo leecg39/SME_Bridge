@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  evaluateMnaPhaseSupportReadiness,
   evaluateSuccessionConsultingEligibility,
   evaluateMnaSupportReadiness,
   getMnaSupportProgramsForPhase,
@@ -109,6 +110,59 @@ describe("evaluateMnaSupportReadiness", () => {
       percent: 0,
       programKey: "unknown",
       requiredDocumentKeys: [],
+    });
+  });
+});
+
+describe("evaluateMnaPhaseSupportReadiness", () => {
+  it("summarizes phase-level readiness and selects the closest support application", () => {
+    const readiness = evaluateMnaPhaseSupportReadiness("preparation", [
+      "phase-1-strategy-brief",
+    ]);
+
+    expect(readiness.status).toBe("in-progress");
+    expect(readiness.overallPercent).toBe(25);
+    expect(readiness.nextProgramKey).toBe("valuation-cost-support");
+    expect(readiness.totalRequiredDocumentKeys).toEqual([
+      "phase-1-strategy-brief",
+      "phase-1-synergy-hypothesis",
+      "phase-1-approval-memo",
+      "phase-3-valuation-workbook-checklist",
+    ]);
+    expect(readiness.missingDocumentKeys).toEqual([
+      "phase-1-synergy-hypothesis",
+      "phase-1-approval-memo",
+      "phase-3-valuation-workbook-checklist",
+    ]);
+  });
+
+  it("marks all support programs ready when every unique required document is complete", () => {
+    const readiness = evaluateMnaPhaseSupportReadiness("preparation", [
+      "phase-1-strategy-brief",
+      "phase-1-synergy-hypothesis",
+      "phase-1-approval-memo",
+      "phase-3-valuation-workbook-checklist",
+    ]);
+
+    expect(readiness.status).toBe("ready");
+    expect(readiness.overallPercent).toBe(100);
+    expect(readiness.readyProgramKeys).toEqual([
+      "succession-consulting",
+      "valuation-cost-support",
+    ]);
+    expect(readiness.nextProgramKey).toBeNull();
+  });
+
+  it("separates roadmap phases without a direct government support hook", () => {
+    expect(evaluateMnaPhaseSupportReadiness("marketing", [])).toEqual({
+      missingDocumentKeys: [],
+      nextProgramKey: null,
+      overallPercent: 0,
+      phaseCode: "marketing",
+      programs: [],
+      readyProgramKeys: [],
+      status: "no-program",
+      totalRequiredDocumentKeys: [],
     });
   });
 });
