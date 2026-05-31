@@ -612,10 +612,10 @@ a {
 
 .promo-video-frame {
   aspect-ratio: 16 / 9;
-  background: var(--gold-700);
-  border: 1px solid rgba(242, 140, 34, 0.28);
+  background: #006241;
+  border: 1px solid rgba(0, 98, 65, 0.34);
   border-radius: 8px;
-  box-shadow: 0 18px 48px rgba(242, 140, 34, 0.16);
+  box-shadow: 0 18px 48px rgba(0, 98, 65, 0.18);
   overflow: hidden;
   width: 100%;
 }
@@ -805,6 +805,13 @@ textarea {
   margin-bottom: 28px;
 }
 
+.dashboard-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
 .executive-band,
 .consultation-assurance {
   background: var(--navy-900);
@@ -898,11 +905,617 @@ textarea {
   width: 100%;
 }
 
+.table-scroll {
+  overflow-x: auto;
+}
+
 .table th,
 .table td {
   border-bottom: 1px solid var(--neutral-200);
   padding: 14px;
   text-align: left;
+}
+
+.table-number-input {
+  font-size: 16px;
+  min-height: 44px;
+  padding: 7px 10px;
+  text-align: right;
+}
+
+.table td small {
+  color: var(--neutral-700);
+  display: block;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.valuation-breakdown {
+  margin-top: 24px;
+}
+
+.valuation-editor {
+  display: grid;
+  gap: 22px;
+  margin-bottom: 24px;
+}
+
+.valuation-editor-heading {
+  align-items: flex-start;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.valuation-editor-heading h2,
+.valuation-editor-heading p {
+  margin: 0;
+}
+
+.valuation-editor-heading p {
+  color: var(--neutral-700);
+}
+
+.valuation-control-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.valuation-checkbox {
+  align-self: end;
+  background: var(--navy-050);
+  border: 1px solid var(--neutral-200);
+  border-radius: 8px;
+  min-height: 60px;
+  padding: 16px;
+}
+
+.valuation-breakdown dl {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+}
+
+.valuation-breakdown dl div {
+  align-items: center;
+  border-top: 1px solid var(--neutral-200);
+  display: flex;
+  justify-content: space-between;
+  min-height: 52px;
+}
+
+.valuation-breakdown dt {
+  color: var(--neutral-700);
+  font-weight: 800;
+}
+
+.valuation-breakdown dd {
+  color: var(--navy-800);
+  font-weight: 900;
+  margin: 0;
+  text-align: right;
+}
+
+.tax-input-panel {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-bottom: 24px;
+}
+
+.tax-source-card {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  margin-bottom: 24px;
+}
+
+.tax-source-card h2,
+.tax-source-card p {
+  margin: 0;
+}
+
+.tax-source-card p {
+  color: var(--neutral-700);
+}
+
+.tax-source-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.tax-source-grid button {
+  background: var(--navy-050);
+  border: 1px solid var(--neutral-200);
+  color: var(--neutral-900);
+  display: grid;
+  gap: 5px;
+  justify-items: start;
+  line-height: 1.35;
+  min-height: 78px;
+  padding: 12px 14px;
+  text-align: left;
+}
+
+.tax-source-grid button.active {
+  background: var(--navy-800);
+  border-color: var(--navy-800);
+  color: white;
+}
+
+.tax-source-grid span {
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.tax-source-grid strong {
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.tax-comparison-card {
+  margin-top: 24px;
+}
+
+.tax-rule-card {
+  margin-top: 24px;
+}
+
+.tax-rule-heading {
+  align-items: start;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.tax-rule-heading h2,
+.tax-rule-heading p {
+  margin: 0;
+}
+
+.tax-rule-heading p {
+  color: var(--neutral-700);
+}
+
+.tax-rule-list {
+  display: grid;
+  gap: 0;
+  margin: 20px 0 0;
+}
+
+.tax-rule-list div {
+  border-top: 1px solid var(--neutral-200);
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 160px minmax(0, 1fr);
+  min-height: 54px;
+  padding: 14px 0;
+}
+
+.tax-rule-list dt {
+  color: var(--neutral-700);
+  font-weight: 900;
+}
+
+.tax-rule-list dd {
+  margin: 0;
+}
+
+.selected-row {
+  background: var(--navy-050);
+  color: var(--navy-800);
+  font-weight: 900;
+}
+
+.input-with-unit {
+  align-items: center;
+  border: 1px solid var(--neutral-200);
+  border-radius: 8px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  overflow: hidden;
+}
+
+.input-with-unit input {
+  border: 0;
+  min-height: 58px;
+  text-align: right;
+}
+
+.input-with-unit span {
+  color: var(--neutral-700);
+  font-weight: 900;
+  padding: 0 16px 0 8px;
+}
+
+.admin-summary {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-bottom: 24px;
+}
+
+.admin-summary div {
+  background: white;
+  border: 1px solid rgba(230, 224, 216, 0.96);
+  border-radius: 8px;
+  box-shadow: 0 8px 22px rgba(8, 39, 94, 0.05);
+  display: grid;
+  gap: 6px;
+  min-height: 118px;
+  padding: 22px;
+}
+
+.admin-summary span {
+  color: var(--neutral-700);
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.admin-summary strong {
+  color: var(--navy-800);
+  font-size: 34px;
+  line-height: 1.1;
+}
+
+.admin-card {
+  display: grid;
+  gap: 18px;
+}
+
+.admin-card-header {
+  align-items: start;
+  display: grid;
+  gap: 18px;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.admin-card-header p {
+  color: var(--neutral-700);
+  margin: 0;
+}
+
+.admin-table {
+  min-width: 1180px;
+}
+
+.admin-table th {
+  color: var(--neutral-700);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.admin-table td {
+  vertical-align: top;
+}
+
+.admin-issue-link {
+  align-items: center;
+  color: var(--navy-800);
+  display: inline-flex;
+  margin-left: 8px;
+  min-height: 36px;
+  text-decoration: none;
+  vertical-align: middle;
+}
+
+.table-action-button {
+  background: var(--navy-800);
+  color: white;
+  font-size: 14px;
+  font-weight: 900;
+  min-height: 40px;
+  padding: 0 12px;
+  white-space: nowrap;
+}
+
+.table-action-button svg {
+  color: var(--gold-100);
+}
+
+.admin-workspace-page {
+  max-width: 1440px;
+}
+
+.agent-plan {
+  background: var(--navy-900);
+  color: white;
+  display: grid;
+  gap: 22px;
+  margin-bottom: 22px;
+  padding: 28px;
+}
+
+.agent-plan-header,
+.kanban-toolbar {
+  align-items: flex-start;
+  display: grid;
+  gap: 18px;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.agent-plan-header h2,
+.agent-plan-header p,
+.kanban-toolbar h2,
+.kanban-toolbar p {
+  margin: 0;
+}
+
+.agent-plan-header p,
+.agent-plan-steps p {
+  color: rgba(255, 255, 255, 0.76);
+}
+
+.agent-plan-header svg {
+  color: var(--gold-600);
+}
+
+.agent-plan-steps {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.agent-plan-steps article {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  display: grid;
+  gap: 8px;
+  padding: 18px;
+}
+
+.agent-plan-steps span {
+  align-items: center;
+  background: var(--gold-600);
+  border-radius: 999px;
+  display: inline-flex;
+  font-size: 14px;
+  font-weight: 900;
+  height: 30px;
+  justify-content: center;
+  width: 30px;
+}
+
+.agent-plan-steps strong,
+.agent-plan-steps em {
+  display: block;
+  line-height: 1.35;
+}
+
+.agent-plan-steps em {
+  color: var(--gold-100);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.agent-plan-steps p {
+  font-size: 15px;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.agent-roster {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-bottom: 24px;
+}
+
+.agent-roster-card {
+  background: white;
+  border: 1px solid rgba(230, 224, 216, 0.96);
+  border-left: 5px solid var(--neutral-200);
+  border-radius: 8px;
+  display: grid;
+  gap: 7px;
+  min-height: 152px;
+  padding: 18px;
+}
+
+.agent-roster-card strong,
+.agent-roster-card span,
+.agent-roster-card p {
+  line-height: 1.45;
+}
+
+.agent-roster-card strong {
+  color: var(--neutral-900);
+  font-size: 18px;
+}
+
+.agent-roster-card span {
+  color: var(--navy-800);
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.agent-roster-card p {
+  color: var(--neutral-700);
+  font-size: 14px;
+  margin: 0;
+}
+
+.agent-lane-leadership {
+  border-left-color: var(--gold-600);
+}
+
+.agent-lane-coordination {
+  border-left-color: var(--navy-800);
+}
+
+.agent-lane-specialist {
+  border-left-color: var(--green-700);
+}
+
+.consultation-kanban {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(4, minmax(300px, 1fr));
+  overflow-x: auto;
+  padding-bottom: 6px;
+}
+
+.kanban-column {
+  background: #fbfaf7;
+  border: 1px solid rgba(230, 224, 216, 0.96);
+  border-radius: 8px;
+  display: grid;
+  gap: 14px;
+  min-width: 300px;
+  padding: 16px;
+}
+
+.kanban-column-header {
+  align-items: flex-start;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.kanban-column-header h3,
+.kanban-column-header p {
+  margin: 0;
+}
+
+.kanban-column-header h3 {
+  font-size: 20px;
+}
+
+.kanban-column-header p {
+  color: var(--neutral-700);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.kanban-column-header span {
+  align-items: center;
+  background: var(--navy-100);
+  border-radius: 999px;
+  color: var(--navy-800);
+  display: inline-flex;
+  font-size: 15px;
+  font-weight: 900;
+  height: 34px;
+  justify-content: center;
+  min-width: 34px;
+  padding: 0 10px;
+}
+
+.kanban-column-owner {
+  align-items: center;
+  background: var(--gold-100);
+  color: var(--gold-700);
+  display: inline-flex;
+  font-size: 14px;
+  font-weight: 900;
+  gap: 7px;
+  min-height: 34px;
+  padding: 5px 10px;
+  width: fit-content;
+}
+
+.kanban-card-list {
+  display: grid;
+  gap: 12px;
+}
+
+.consultation-kanban-card {
+  background: white;
+  border: 1px solid rgba(230, 224, 216, 0.96);
+  border-radius: 8px;
+  box-shadow: 0 8px 18px rgba(8, 39, 94, 0.05);
+  display: grid;
+  gap: 13px;
+  padding: 16px;
+}
+
+.kanban-card-topline,
+.kanban-card-actions,
+.kanban-move-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.kanban-card-topline {
+  align-items: center;
+  justify-content: space-between;
+}
+
+.kanban-card-topline > span:first-child {
+  color: var(--neutral-700);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.consultation-kanban-card h4 {
+  font-size: 18px;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.consultation-kanban-card dl {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+
+.consultation-kanban-card dl div {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 86px minmax(0, 1fr);
+}
+
+.consultation-kanban-card dt {
+  color: var(--neutral-700);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.consultation-kanban-card dd {
+  font-size: 14px;
+  font-weight: 800;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.agent-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.agent-chip-list span {
+  background: var(--navy-100);
+  border-radius: 999px;
+  color: var(--navy-800);
+  font-size: 12px;
+  font-weight: 900;
+  min-height: 28px;
+  padding: 4px 9px;
+}
+
+.kanban-card-actions {
+  align-items: center;
+}
+
+.compact-button {
+  min-height: 40px;
+  padding: 0 12px;
+}
+
+.kanban-move-actions button {
+  background: white;
+  border: 1px solid var(--neutral-200);
+  color: var(--neutral-700);
+  font-size: 13px;
+  font-weight: 900;
+  min-height: 36px;
+  padding: 0 10px;
 }
 
 .roadmap-title-row {
@@ -911,6 +1524,68 @@ textarea {
   gap: 20px;
   grid-template-columns: minmax(0, 1fr) auto;
   margin-bottom: 26px;
+}
+
+.roadmap-actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.roadmap-save-status {
+  background: var(--green-100);
+  border-radius: 999px;
+  color: var(--green-700);
+  font-size: 14px;
+  font-weight: 900;
+  padding: 7px 12px;
+}
+
+.phase-progress {
+  background: white;
+  border: 1px solid rgba(230, 224, 216, 0.96);
+  border-radius: 8px;
+  box-shadow: 0 8px 22px rgba(8, 39, 94, 0.05);
+  display: grid;
+  gap: 14px;
+  margin-bottom: 20px;
+  padding: 20px 22px;
+}
+
+.phase-progress div:first-child {
+  align-items: center;
+  display: flex;
+  gap: 14px;
+  justify-content: space-between;
+}
+
+.phase-progress strong {
+  color: var(--gold-600);
+  font-family: Georgia, Times New Roman, serif;
+  font-size: 34px;
+  line-height: 1;
+}
+
+.phase-progress span {
+  color: var(--neutral-700);
+  font-weight: 800;
+  text-align: right;
+}
+
+.phase-progress-track {
+  background: var(--navy-100);
+  border-radius: 999px;
+  height: 12px;
+  overflow: hidden;
+}
+
+.phase-progress-track span {
+  background: var(--gold-600);
+  display: block;
+  height: 100%;
+  transition: width 180ms ease;
 }
 
 .kanban {
@@ -937,6 +1612,46 @@ textarea {
   height: 24px;
   min-height: 24px;
   width: 24px;
+}
+
+.checklist-button {
+  background: white;
+  border: 1px solid var(--neutral-200);
+  color: var(--neutral-900);
+  display: grid;
+  font-size: 16px;
+  font-weight: 800;
+  gap: 10px;
+  grid-template-columns: 24px minmax(0, 1fr);
+  justify-content: start;
+  line-height: 1.45;
+  margin-bottom: 8px;
+  min-height: 52px;
+  padding: 10px 12px;
+  text-align: left;
+  width: 100%;
+}
+
+.checklist-button span {
+  align-items: center;
+  border: 2px solid var(--neutral-200);
+  border-radius: 6px;
+  color: white;
+  display: inline-flex;
+  height: 24px;
+  justify-content: center;
+  width: 24px;
+}
+
+.checklist-button.checked {
+  background: var(--green-100);
+  border-color: rgba(24, 115, 72, 0.38);
+  color: var(--green-700);
+}
+
+.checklist-button.checked span {
+  background: var(--green-700);
+  border-color: var(--green-700);
 }
 
 .phase-document-panel {
@@ -1063,6 +1778,11 @@ textarea {
   .kanban {
     grid-template-columns: repeat(5, minmax(260px, 1fr));
   }
+
+  .agent-plan-steps,
+  .agent-roster {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 840px) {
@@ -1183,9 +1903,23 @@ textarea {
   .grid-3,
   .grid-4,
   .segmented,
+  .tax-input-panel,
   .dashboard-header,
+  .dashboard-actions,
+  .admin-summary,
+  .admin-card-header,
+  .agent-plan-header,
+  .agent-plan-steps,
+  .agent-roster,
+  .kanban-toolbar,
   .roadmap-title-row,
   .promo-video-heading,
+  .tax-source-card,
+  .tax-source-grid,
+  .tax-rule-heading,
+  .tax-rule-list div,
+  .valuation-control-grid,
+  .valuation-editor-heading,
   .executive-band,
   .consultation-assurance {
     grid-template-columns: 1fr;
@@ -1196,6 +1930,41 @@ textarea {
   }
 
   .snapshot-list span {
+    text-align: left;
+  }
+
+  .agent-plan,
+  .kanban-column {
+    padding: 18px;
+  }
+
+  .consultation-kanban {
+    grid-template-columns: 1fr;
+    overflow-x: visible;
+  }
+
+  .kanban-column {
+    min-width: 0;
+  }
+
+  .roadmap-actions {
+    justify-content: stretch;
+  }
+
+  .roadmap-actions .button,
+  .roadmap-actions button {
+    width: 100%;
+  }
+
+  .phase-progress div:first-child,
+  .valuation-breakdown dl div {
+    align-items: flex-start;
+    display: grid;
+    gap: 6px;
+  }
+
+  .phase-progress span,
+  .valuation-breakdown dd {
     text-align: left;
   }
 }
