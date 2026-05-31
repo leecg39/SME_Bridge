@@ -15,6 +15,17 @@ class MnaPhaseDocument(BaseModel):
     sort_order: int
 
 
+class MnaSupportProgram(BaseModel):
+    program_key: str
+    title: str
+    summary: str
+    support_scope: str
+    next_action: str
+    source_label: str
+    source_url: str
+    rule_base_date: str
+
+
 class MnaRoadmapPhase(BaseModel):
     phase: int
     code: str
@@ -22,6 +33,67 @@ class MnaRoadmapPhase(BaseModel):
     duration: str
     tasks: List[str]
     documents: List[MnaPhaseDocument] = Field(default_factory=list)
+    support_programs: List[MnaSupportProgram] = Field(default_factory=list)
+
+
+SUCCESSION_SUPPORT_RULE_BASE_DATE = "2026-05-31"
+MNA_ACTIVATION_SUPPORT_SOURCE_URL = (
+    "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156748624"
+)
+
+
+def support_programs_for_phase(phase_code: str) -> List[MnaSupportProgram]:
+    return MNA_SUPPORT_PROGRAMS_BY_PHASE.get(phase_code, [])
+
+
+MNA_SUPPORT_PROGRAMS_BY_PHASE = {
+    "preparation": [
+        MnaSupportProgram(
+            program_key="succession-consulting",
+            title="기업승계 M&A 컨설팅",
+            summary="교섭 대상 유무에 따라 기초컨설팅 또는 종합컨설팅으로 초기 상담 경로를 나눕니다.",
+            support_scope="기초자료 작성, 매각 목적 정리, 교섭 대상 검토",
+            next_action="대표자 연령, 업력, 중소기업 여부, 교섭 대상 유무를 상담 스냅샷에 포함합니다.",
+            source_label="기업마당 기업승계 M&A 컨설팅 지원사업",
+            source_url="https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342",
+            rule_base_date=SUCCESSION_SUPPORT_RULE_BASE_DATE,
+        ),
+        MnaSupportProgram(
+            program_key="valuation-cost-support",
+            title="기업가치평가 비용지원",
+            summary="M&A 검토 단계에서 외부 가치평가 비용 부담을 낮추는 지원사업을 검토합니다.",
+            support_scope="기업가치평가 비용",
+            next_action="최근 3개년 재무자료와 가치평가 목적을 정리합니다.",
+            source_label="정책브리핑 2026년 M&A 활성화 지원사업",
+            source_url=MNA_ACTIVATION_SUPPORT_SOURCE_URL,
+            rule_base_date=SUCCESSION_SUPPORT_RULE_BASE_DATE,
+        ),
+    ],
+    "diligence": [
+        MnaSupportProgram(
+            program_key="diligence-cost-support",
+            title="기업실사 비용지원",
+            summary="재무·법률·세무 등 실사 단계의 외부 비용 지원 가능성을 검토합니다.",
+            support_scope="기업실사 비용",
+            next_action="실사 요청자료 목록, 데이터룸 인덱스, Red Flag 로그를 우선 정리합니다.",
+            source_label="정책브리핑 2026년 M&A 활성화 지원사업",
+            source_url=MNA_ACTIVATION_SUPPORT_SOURCE_URL,
+            rule_base_date=SUCCESSION_SUPPORT_RULE_BASE_DATE,
+        )
+    ],
+    "closing-pmi": [
+        MnaSupportProgram(
+            program_key="pmi-consulting-support",
+            title="PMI 컨설팅 비용지원",
+            summary="거래 종결 후 통합 실행계획 수립 비용 지원 가능성을 검토합니다.",
+            support_scope="PMI 컨설팅 비용",
+            next_action="PMI 100일 실행계획과 Day 1 커뮤니케이션 계획을 먼저 작성합니다.",
+            source_label="정책브리핑 2026년 M&A 활성화 지원사업",
+            source_url=MNA_ACTIVATION_SUPPORT_SOURCE_URL,
+            rule_base_date=SUCCESSION_SUPPORT_RULE_BASE_DATE,
+        )
+    ],
+}
 
 
 DEFAULT_MNA_ROADMAP_PHASES = [
@@ -36,6 +108,7 @@ DEFAULT_MNA_ROADMAP_PHASES = [
             "임대차 계약서 정리",
             "주요 거래처 매출 비중 확인",
         ],
+        support_programs=support_programs_for_phase("preparation"),
         documents=[
             MnaPhaseDocument(
                 document_key="phase-1-strategy-brief",
@@ -72,6 +145,7 @@ DEFAULT_MNA_ROADMAP_PHASES = [
         name="마케팅",
         duration="2~3개월",
         tasks=["티저 작성", "NDA 준비", "인수후보 롱리스트 작성"],
+        support_programs=support_programs_for_phase("marketing"),
         documents=[
             MnaPhaseDocument(
                 document_key="phase-2-target-screening-matrix",
@@ -117,6 +191,7 @@ DEFAULT_MNA_ROADMAP_PHASES = [
         name="실사",
         duration="1~2개월",
         tasks=["재무 실사 자료실 구성", "법률 리스크 점검", "노무 이슈 확인"],
+        support_programs=support_programs_for_phase("diligence"),
         documents=[
             MnaPhaseDocument(
                 document_key="dd-request-list",
@@ -162,6 +237,7 @@ DEFAULT_MNA_ROADMAP_PHASES = [
         name="협상/계약",
         duration="1~2개월",
         tasks=["LOI 검토", "가격 조정 조건 정리", "SPA 주요 조항 검토"],
+        support_programs=support_programs_for_phase("negotiation"),
         documents=[
             MnaPhaseDocument(
                 document_key="phase-4-spa-key-terms-checklist",
@@ -198,6 +274,7 @@ DEFAULT_MNA_ROADMAP_PHASES = [
         name="클로징/PMI",
         duration="1~3개월",
         tasks=["대금 수수 준비", "경영권 이전 일정", "직원 커뮤니케이션 계획"],
+        support_programs=support_programs_for_phase("closing-pmi"),
         documents=[
             MnaPhaseDocument(
                 document_key="phase-5-pmi-100-day-plan",
@@ -279,6 +356,7 @@ class SupabaseMnaDocumentRepository:
                 duration=row["duration"],
                 tasks=row.get("tasks") or [],
                 documents=documents_by_phase.get(row["phase"], []),
+                support_programs=support_programs_for_phase(row["code"]),
             )
             for row in phases or []
         ]

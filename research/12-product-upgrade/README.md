@@ -68,3 +68,23 @@
 - `frontend/src/lib/government-support.ts`에 2026년 기업승계 M&A 컨설팅 지원사업의 기본 자격 판정 로직을 분리한다.
 - `frontend/src/lib/mna-documents.ts`, `backend/app/services/mna_document_service.py`, `supabase/migrations/004_add_mna_phase_documents.sql`의 Phase 1 첫 작업을 동일하게 맞춘다.
 - 프론트 단위 테스트와 백엔드 API 테스트로 자격 판정 및 로드맵 기본 데이터 일치를 검증한다.
+
+## 3차 A/B 테스트 기준
+
+비교 대상은 로드맵 phase 데이터가 정부지원 기회를 표현하는 방식이다.
+
+- A안: 로드맵은 작업과 문서만 제공하고, 비용지원 여부는 사용자가 별도로 찾아야 한다.
+- B안: 로드맵 phase마다 직접 연결되는 정부지원 기회를 `support_programs`로 함께 제공한다.
+- 성공 기준: B안이 준비 단계의 기업승계 컨설팅/기업가치평가 비용지원, 실사 단계의 기업실사 비용지원, 클로징/PMI 단계의 PMI 컨설팅 비용지원을 프론트 기본 데이터와 백엔드 API에서 모두 재현해야 한다.
+
+| Phase | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| Phase 1 매각 준비 | 지원기회 없음 | 기업승계 M&A 컨설팅, 기업가치평가 비용지원 | B안이 초기 상담과 가치평가 준비를 연결 |
+| Phase 3 실사 | 지원기회 없음 | 기업실사 비용지원 | B안이 데이터룸/Red Flag 준비와 비용지원 연결 |
+| Phase 5 클로징/PMI | 지원기회 없음 | PMI 컨설팅 비용지원 | B안이 Day 1/100일 계획과 비용지원 연결 |
+
+## 3차 기능 업그레이드 결정
+
+- `frontend/src/lib/government-support.ts`에 phase별 정부지원 프로그램 매핑을 추가한다.
+- `frontend/src/lib/mna-documents.ts`와 `backend/app/services/mna_document_service.py`의 `MnaRoadmapPhase`에 `support_programs` 필드를 추가한다.
+- Supabase에서 phase를 읽는 경우에도 phase code로 `support_programs`를 보강해 DB 유무와 관계없이 API 결과를 동일하게 유지한다.

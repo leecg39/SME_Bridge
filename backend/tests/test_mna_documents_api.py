@@ -14,6 +14,12 @@ def test_mna_documents_exposes_downloadable_forms_by_phase():
     assert len(payload) == 5
     assert payload[0]["name"] == "매각 준비"
     assert payload[0]["tasks"][0] == "기업승계 M&A 컨설팅 지원사업 자격 확인"
+    assert [program["program_key"] for program in payload[0]["support_programs"]] == [
+        "succession-consulting",
+        "valuation-cost-support",
+    ]
+    assert payload[2]["support_programs"][0]["program_key"] == "diligence-cost-support"
+    assert payload[4]["support_programs"][0]["support_scope"] == "PMI 컨설팅 비용"
     assert all(phase["documents"] for phase in payload)
     assert payload[1]["documents"][1]["title"] == "NDA 양식"
     assert payload[3]["documents"][0]["file_path"].endswith(

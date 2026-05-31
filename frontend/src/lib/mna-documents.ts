@@ -1,4 +1,8 @@
-import { SUCCESSION_SUPPORT_CHECK_TASK } from "./government-support";
+import {
+  getMnaSupportProgramsForPhase,
+  SUCCESSION_SUPPORT_CHECK_TASK,
+  type MnaSupportProgram,
+} from "./government-support";
 
 export interface MnaPhaseDocument {
   document_key: string;
@@ -17,6 +21,7 @@ export interface MnaRoadmapPhase {
   duration: string;
   tasks: string[];
   documents: MnaPhaseDocument[];
+  support_programs?: MnaSupportProgram[];
 }
 
 export const mnaRoadmapPhases: MnaRoadmapPhase[] = [
@@ -31,6 +36,7 @@ export const mnaRoadmapPhases: MnaRoadmapPhase[] = [
       "임대차 계약서 정리",
       "주요 거래처 매출 비중 확인",
     ],
+    support_programs: getMnaSupportProgramsForPhase("preparation"),
     documents: [
       {
         document_key: "phase-1-strategy-brief",
@@ -67,6 +73,7 @@ export const mnaRoadmapPhases: MnaRoadmapPhase[] = [
     name: "마케팅",
     duration: "2~3개월",
     tasks: ["티저 작성", "NDA 준비", "인수후보 롱리스트 작성"],
+    support_programs: getMnaSupportProgramsForPhase("marketing"),
     documents: [
       {
         document_key: "phase-2-target-screening-matrix",
@@ -112,6 +119,7 @@ export const mnaRoadmapPhases: MnaRoadmapPhase[] = [
     name: "실사",
     duration: "1~2개월",
     tasks: ["재무 실사 자료실 구성", "법률 리스크 점검", "노무 이슈 확인"],
+    support_programs: getMnaSupportProgramsForPhase("diligence"),
     documents: [
       {
         document_key: "dd-request-list",
@@ -157,6 +165,7 @@ export const mnaRoadmapPhases: MnaRoadmapPhase[] = [
     name: "협상/계약",
     duration: "1~2개월",
     tasks: ["LOI 검토", "가격 조정 조건 정리", "SPA 주요 조항 검토"],
+    support_programs: getMnaSupportProgramsForPhase("negotiation"),
     documents: [
       {
         document_key: "phase-4-spa-key-terms-checklist",
@@ -193,6 +202,7 @@ export const mnaRoadmapPhases: MnaRoadmapPhase[] = [
     name: "클로징/PMI",
     duration: "1~3개월",
     tasks: ["대금 수수 준비", "경영권 이전 일정", "직원 커뮤니케이션 계획"],
+    support_programs: getMnaSupportProgramsForPhase("closing-pmi"),
     documents: [
       {
         document_key: "phase-5-pmi-100-day-plan",
