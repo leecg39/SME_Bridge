@@ -372,3 +372,23 @@
 - `MnaPhaseSupportFundingEstimate` 타입을 추가한다.
 - `estimateMnaPhaseSupportFunding()`은 기존 프로그램별 계산 함수를 재사용해 정책 금액 계산 원천을 하나로 유지한다.
 - `nonMonetaryProgramKeys`로 기업승계 컨설팅처럼 비용지원 계산 대상이 아닌 지원사업을 분리해 상담 UI가 금전 지원과 상담 지원을 섞지 않게 한다.
+
+## 18차 A/B 테스트 기준
+
+비교 대상은 phase 지원금 합산에서 비용 미입력 상태를 해석하는 방식이다.
+
+- A안: 지원사업 예상 비용이 아직 입력되지 않아도 0원으로 계산되어, 상담 화면이 “지원금 없음”인지 “입력 필요”인지 구분하지 못한다.
+- B안: `estimateMnaPhaseSupportFunding()`이 금전 지원사업 중 비용 입력이 없는 항목을 `missingExpenseProgramKeys`로 분리해 반환한다.
+- 성공 기준: B안이 매각 준비 phase에서 기업가치평가 비용을 입력하지 않은 경우 `valuation-cost-support`를 입력 필요 항목으로 표시하고, 비용이 입력된 경우에는 입력 필요 목록을 비워야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| Phase 1, 비용 입력 없음 | 지원금 0원으로만 보임 | `missingExpenseProgramKeys: ["valuation-cost-support"]` | B안이 예산 입력 누락을 상담 질문으로 전환 |
+| Phase 1, 기업가치평가 5,000만원 입력 | 0원/입력누락 구분이 약함 | 입력 필요 없음, 총 지원금 1,500만원 | B안이 계산 완료 상태를 명확화 |
+| 마케팅 phase | 지원사업 없음과 비용 미입력 혼동 가능 | 입력 필요 없음, 산출 없음 | B안이 지원사업 없는 단계를 안전하게 처리 |
+
+## 18차 기능 업그레이드 결정
+
+- `MnaPhaseSupportFundingEstimate`에 `missingExpenseProgramKeys`를 추가한다.
+- 비용 입력 객체에 해당 프로그램 키가 없을 때만 입력 필요로 본다.
+- 비용 키가 존재하면 음수/0 입력은 기존 프로그램별 계산의 0원 보정 규칙을 그대로 따른다.

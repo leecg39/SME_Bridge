@@ -58,6 +58,7 @@ export interface MnaPhaseSupportFundingEstimate {
   estimatedSupportWon: number;
   estimates: MnaSupportFundingEstimate[];
   expenseAmountWon: number;
+  missingExpenseProgramKeys: string[];
   nonMonetaryProgramKeys: string[];
   phaseCode: string;
   selfPayWon: number;
@@ -182,9 +183,18 @@ export function estimateMnaPhaseSupportFunding(
 ): MnaPhaseSupportFundingEstimate {
   const programs = getMnaSupportProgramsForPhase(phaseCode);
   const estimates = programs.flatMap((program) => {
+    const expenseAmountWon = expenseAmountWonByProgramKey[program.program_key];
+    if (
+      !program.funding ||
+      expenseAmountWon === undefined ||
+      !Object.hasOwn(expenseAmountWonByProgramKey, program.program_key)
+    ) {
+      return [];
+    }
+
     const estimate = estimateMnaSupportFunding(
       program.program_key,
-      expenseAmountWonByProgramKey[program.program_key] ?? 0,
+      expenseAmountWon,
       options,
     );
 
@@ -197,6 +207,12 @@ export function estimateMnaPhaseSupportFunding(
     estimatedSupportWon,
     estimates,
     expenseAmountWon,
+    missingExpenseProgramKeys: programs
+      .filter(
+        (program) =>
+          program.funding && !Object.hasOwn(expenseAmountWonByProgramKey, program.program_key),
+      )
+      .map((program) => program.program_key),
     nonMonetaryProgramKeys: programs
       .filter((program) => program.funding === null)
       .map((program) => program.program_key),

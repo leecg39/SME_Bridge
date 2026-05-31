@@ -168,6 +168,7 @@ describe("estimateMnaPhaseSupportFunding", () => {
         },
       ],
       expenseAmountWon: 50000000,
+      missingExpenseProgramKeys: [],
       nonMonetaryProgramKeys: ["succession-consulting"],
       phaseCode: "preparation",
       selfPayWon: 35000000,
@@ -212,8 +213,21 @@ describe("estimateMnaPhaseSupportFunding", () => {
       estimatedSupportWon: 0,
       estimates: [],
       expenseAmountWon: 0,
+      missingExpenseProgramKeys: [],
       nonMonetaryProgramKeys: [],
       phaseCode: "marketing",
+      selfPayWon: 0,
+    });
+  });
+
+  it("tracks monetary support programs that still need expense inputs", () => {
+    expect(estimateMnaPhaseSupportFunding("preparation", {})).toEqual({
+      estimatedSupportWon: 0,
+      estimates: [],
+      expenseAmountWon: 0,
+      missingExpenseProgramKeys: ["valuation-cost-support"],
+      nonMonetaryProgramKeys: ["succession-consulting"],
+      phaseCode: "preparation",
       selfPayWon: 0,
     });
   });
