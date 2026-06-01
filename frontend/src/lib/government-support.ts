@@ -18,6 +18,7 @@ export interface SuccessionConsultingApplicationGuide {
   onlineApplicationContactLabel: string;
   onlineApplicationContactPhoneNumbers: string[];
   operatingAgencyLabel: string;
+  sellerEligibilityLabel: string;
   supervisingMinistryLabel: string;
   url: string;
 }
@@ -166,6 +167,7 @@ const SUCCESSION_CONSULTING_APPLICATION_GUIDE: SuccessionConsultingApplicationGu
   onlineApplicationContactLabel: "기술보증기금 기술거래보호부 플랫폼팀",
   onlineApplicationContactPhoneNumbers: ["051-606-7429", "051-606-7431", "051-606-7699"],
   operatingAgencyLabel: "기술보증기금",
+  sellerEligibilityLabel: "대표자 만 55세 이상 및 업력 만 5년 이상인 중소기업",
   supervisingMinistryLabel: "중소벤처기업부",
   url: "https://tb.kibo.or.kr",
 };

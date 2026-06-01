@@ -782,3 +782,27 @@
 - `SuccessionConsultingApplicationGuide`에 `supervisingMinistryLabel`을 추가한다.
 - 적격 트랙은 공식 소관부처 `중소벤처기업부`를 반환한다.
 - 미자격은 기존처럼 신청 안내 객체를 `null`로 유지한다.
+
+## 36차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 신청 안내에서 매도희망기업 지원대상 문구를 보존하는 방식이다.
+
+- 리서치 근거: 기업마당 공고는 매도희망기업 지원대상을 `대표자 연령이 만 55세 이상 및 업력 만 5년 이상인 중소기업`으로 명시한다. 현재 자격 판정은 개별 누락 요건만 반환하므로, 적격 상담 CTA나 로드맵 화면에서 공식 지원대상 문구를 다시 조립해야 한다.
+- A안: `applicationGuide`가 공식 지원대상 문구를 반환하지 않고, UI나 상담 로직이 나이/업력/중소기업 조건을 조합한다.
+- B안: `applicationGuide`가 `sellerEligibilityLabel`을 함께 반환한다.
+- 성공 기준: B안이 적격 기초/종합 트랙 모두 공식 매도희망기업 지원대상 문구를 반환하고, 미자격은 기존처럼 `applicationGuide: null`을 유지해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 지원대상 문구 별도 조립 필요 | `sellerEligibilityLabel` 제공 | B안이 기초 상담 CTA의 자격 설명을 명확화 |
+| 적격, 교섭 대상 있음 | 종합 상담도 자격 문구 별도 조립 필요 | 같은 지원대상 문구 제공 | B안이 종합 상담 로그도 공식 문구로 정리 |
+| 미자격 | 지원대상 문구 노출 예외 처리 필요 | `applicationGuide: null` | B안이 자격 보완 상담과 신청 안내를 분리 |
+
+출처:
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342
+
+## 36차 기능 업그레이드 결정
+
+- `SuccessionConsultingApplicationGuide`에 `sellerEligibilityLabel`을 추가한다.
+- 적격 트랙은 공식 매도희망기업 지원대상 `대표자 만 55세 이상 및 업력 만 5년 이상인 중소기업`을 반환한다.
+- 미자격은 기존처럼 신청 안내 객체를 `null`로 유지한다.
