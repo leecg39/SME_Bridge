@@ -998,3 +998,27 @@
 - `SuccessionConsultingApplicationGuide`에 `applicationPreparationDocumentLabels`를 추가한다.
 - 적격 트랙은 원문 공고 파일명과 신청 첨부서식 파일명을 순서대로 반환한다.
 - 미자격은 기존처럼 신청 안내 객체를 `null`로 유지한다.
+
+## 45차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 신청 안내에서 공식 신청 사이트 CTA 문구를 보존하는 방식이다.
+
+- 리서치 근거: 기업마당 공고는 `사업신청 사이트` 항목에 `온라인신청 바로가기`를 표시한다. 현재 `applicationGuide`는 신청 URL과 신청 방식은 담고 있지만, 버튼이나 상담 CTA에 바로 쓸 공식 신청 문구는 담지 않아 UI가 임의 문구를 다시 정해야 한다.
+- A안: `applicationGuide`가 신청 URL만 반환하고 CTA 라벨은 화면에서 임의로 만든다.
+- B안: `applicationGuide`가 `applicationSiteCtaLabel`을 함께 반환한다.
+- 성공 기준: B안이 적격 기초/종합 트랙 모두 `온라인신청 바로가기`를 반환하고, 미자격은 기존처럼 `applicationGuide: null`을 유지해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 신청 버튼 문구 별도 결정 필요 | 공식 CTA 문구 제공 | B안이 기초 신청 버튼을 공고와 일치시킴 |
+| 적격, 교섭 대상 있음 | 종합 신청도 버튼 문구 재매핑 필요 | 같은 공식 CTA 문구 제공 | B안이 종합 신청 CTA의 신뢰도를 높임 |
+| 미자격 | CTA 라벨 노출 예외 처리 필요 | `applicationGuide: null` | B안이 신청 안내 오노출을 방지 |
+
+출처:
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342
+
+## 45차 기능 업그레이드 결정
+
+- `SuccessionConsultingApplicationGuide`에 `applicationSiteCtaLabel`을 추가한다.
+- 적격 트랙은 공식 신청 사이트 CTA `온라인신청 바로가기`를 반환한다.
+- 미자격은 기존처럼 신청 안내 객체를 `null`로 유지한다.

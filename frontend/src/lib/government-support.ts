@@ -12,6 +12,7 @@ export interface SuccessionConsultingApplicationGuide {
   applicationMethodLabel: string;
   applicationPeriodLabel: string;
   applicationPreparationDocumentLabels: string[];
+  applicationSiteCtaLabel: string;
   buyerEligibilityLabel: string;
   contactEmail: string;
   contactLabel: string;
@@ -190,6 +191,7 @@ const SUCCESSION_CONSULTING_APPLICATION_GUIDE: SuccessionConsultingApplicationGu
     SUCCESSION_CONSULTING_NOTICE_ATTACHMENT_LABEL,
     SUCCESSION_CONSULTING_APPLICATION_FORM_ATTACHMENT_LABEL,
   ],
+  applicationSiteCtaLabel: "온라인신청 바로가기",
   buyerEligibilityLabel: "중소기업 인수를 희망하는 중소기업 또는 개인",
   contactEmail: "mna@kibo.or.kr",
   contactLabel: "기술보증기금 M&A지원센터",
