@@ -1070,3 +1070,27 @@
 - `SuccessionConsultingEligibilityResult`에 `sellerEligibilityCriteria`를 추가한다.
 - 적격과 미자격 모두 공식 기준값 `대표자 만 55세 이상`, `업력 만 5년 이상`, `중소기업`을 구조화해 반환한다.
 - 기존 `missingRequirements` 문구는 유지하되, 판정 조건도 같은 기준 객체를 참조하도록 정리한다.
+
+## 48차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 신청 안내에서 매수희망기업 대상 기준을 구조화해 제공하는 방식이다.
+
+- 리서치 근거: 기업마당 공고는 매수희망기업 지원대상을 `중소기업 인수를 희망하는 중소기업 또는 개인`으로 명시한다. 현재 `applicationGuide`는 이 내용을 `buyerEligibilityLabel` 문구로만 반환하므로, 매수자용 상담 화면이나 매칭 안내가 대상 유형을 표시하려면 문구를 다시 해석해야 한다.
+- A안: `applicationGuide`가 `buyerEligibilityLabel` 문구만 반환한다.
+- B안: `applicationGuide`가 `buyerEligibilityCriteria`로 대상 유형과 인수 의향 조건을 함께 반환한다.
+- 성공 기준: B안이 적격 기초/종합 트랙 모두 `eligibleBuyerTypes: ["sme", "individual"]`, `acquisitionIntentLabel: "중소기업 인수 희망"`을 반환하고, 미자격은 기존처럼 `applicationGuide: null`을 유지해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 매수자 유형을 라벨에서 재해석 필요 | 대상 유형 배열과 인수 의향 조건 제공 | B안이 기초 상담의 매수자 안내를 구조화 |
+| 적격, 교섭 대상 있음 | 종합 상담도 매수자 유형 재매핑 필요 | 같은 기준 객체 제공 | B안이 종합 상담의 매수자 적합성 안내를 명확화 |
+| 미자격 | 신청 안내 객체 없음 | `applicationGuide: null` 유지 | B안이 신청 안내 오노출을 방지 |
+
+출처:
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342
+
+## 48차 기능 업그레이드 결정
+
+- `SuccessionConsultingApplicationGuide`에 `buyerEligibilityCriteria`를 추가한다.
+- 적격 트랙은 공식 매수희망기업 기준인 `중소기업 또는 개인`, `중소기업 인수 희망`을 구조화해 반환한다.
+- 미자격은 기존처럼 신청 안내 객체를 `null`로 유지한다.

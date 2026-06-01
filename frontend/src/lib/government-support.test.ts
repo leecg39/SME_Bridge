@@ -102,6 +102,53 @@ describe("evaluateSuccessionConsultingEligibility", () => {
     });
   });
 
+  it("returns the official buyer eligibility criteria in the application guide", () => {
+    const buyerEligibilityCriteria = {
+      acquisitionIntentLabel: "중소기업 인수 희망",
+      eligibleBuyerTypes: ["sme", "individual"],
+    };
+
+    expect(
+      evaluateSuccessionConsultingEligibility({
+        companyAgeYears: 12,
+        hasNegotiationTarget: false,
+        isSme: true,
+        representativeAge: 63,
+      }),
+    ).toMatchObject({
+      applicationGuide: {
+        buyerEligibilityCriteria,
+      },
+      track: "basic",
+    });
+
+    expect(
+      evaluateSuccessionConsultingEligibility({
+        companyAgeYears: 8,
+        hasNegotiationTarget: true,
+        isSme: true,
+        representativeAge: 57,
+      }),
+    ).toMatchObject({
+      applicationGuide: {
+        buyerEligibilityCriteria,
+      },
+      track: "comprehensive",
+    });
+
+    expect(
+      evaluateSuccessionConsultingEligibility({
+        companyAgeYears: 3,
+        hasNegotiationTarget: false,
+        isSme: false,
+        representativeAge: 51,
+      }),
+    ).toMatchObject({
+      applicationGuide: null,
+      track: "not-eligible",
+    });
+  });
+
   it("returns the official support scope for eligible succession consulting tracks", () => {
     expect(
       evaluateSuccessionConsultingEligibility({

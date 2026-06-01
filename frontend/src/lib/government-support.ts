@@ -7,12 +7,20 @@ export interface SuccessionConsultingEligibilityInput {
   representativeAge: number;
 }
 
+export type SuccessionConsultingBuyerType = "individual" | "sme";
+
+export interface SuccessionConsultingBuyerEligibilityCriteria {
+  acquisitionIntentLabel: string;
+  eligibleBuyerTypes: SuccessionConsultingBuyerType[];
+}
+
 export interface SuccessionConsultingApplicationGuide {
   applicationFormAttachmentLabel: string;
   applicationMethodLabel: string;
   applicationPeriodLabel: string;
   applicationPreparationDocumentLabels: string[];
   applicationSiteCtaLabel: string;
+  buyerEligibilityCriteria: SuccessionConsultingBuyerEligibilityCriteria;
   buyerEligibilityLabel: string;
   contactEmail: string;
   contactLabel: string;
@@ -195,6 +203,11 @@ const SUCCESSION_CONSULTING_NOTICE_ATTACHMENT_LABEL =
   "(붙임1) 2026년도 컨설팅 지원사업 시행계획 공고.hwp";
 const SUCCESSION_CONSULTING_APPLICATION_FORM_ATTACHMENT_LABEL =
   "(붙임2) 2026년도 컨설팅 지원사업 시행계획 공고 첨부서식.hwp";
+const SUCCESSION_CONSULTING_BUYER_ELIGIBILITY_CRITERIA: SuccessionConsultingBuyerEligibilityCriteria =
+  {
+    acquisitionIntentLabel: "중소기업 인수 희망",
+    eligibleBuyerTypes: ["sme", "individual"],
+  };
 const SUCCESSION_CONSULTING_APPLICATION_GUIDE: SuccessionConsultingApplicationGuide = {
   applicationFormAttachmentLabel: SUCCESSION_CONSULTING_APPLICATION_FORM_ATTACHMENT_LABEL,
   applicationMethodLabel: "온라인 접수 (스마트 테크브릿지)",
@@ -204,6 +217,7 @@ const SUCCESSION_CONSULTING_APPLICATION_GUIDE: SuccessionConsultingApplicationGu
     SUCCESSION_CONSULTING_APPLICATION_FORM_ATTACHMENT_LABEL,
   ],
   applicationSiteCtaLabel: "온라인신청 바로가기",
+  buyerEligibilityCriteria: SUCCESSION_CONSULTING_BUYER_ELIGIBILITY_CRITERIA,
   buyerEligibilityLabel: "중소기업 인수를 희망하는 중소기업 또는 개인",
   contactEmail: "mna@kibo.or.kr",
   contactLabel: "기술보증기금 M&A지원센터",
