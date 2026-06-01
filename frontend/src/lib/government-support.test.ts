@@ -351,6 +351,44 @@ describe("evaluateSuccessionConsultingEligibility", () => {
     });
   });
 
+  it("returns the official track-specific application CTA label for eligible tracks", () => {
+    expect(
+      evaluateSuccessionConsultingEligibility({
+        companyAgeYears: 12,
+        hasNegotiationTarget: false,
+        isSme: true,
+        representativeAge: 63,
+      }),
+    ).toMatchObject({
+      track: "basic",
+      trackApplicationCtaLabel: "기초컨설팅 신청경로",
+    });
+
+    expect(
+      evaluateSuccessionConsultingEligibility({
+        companyAgeYears: 8,
+        hasNegotiationTarget: true,
+        isSme: true,
+        representativeAge: 57,
+      }),
+    ).toMatchObject({
+      track: "comprehensive",
+      trackApplicationCtaLabel: "종합컨설팅 신청경로",
+    });
+
+    expect(
+      evaluateSuccessionConsultingEligibility({
+        companyAgeYears: 3,
+        hasNegotiationTarget: false,
+        isSme: false,
+        representativeAge: 51,
+      }),
+    ).toMatchObject({
+      track: "not-eligible",
+      trackApplicationCtaLabel: null,
+    });
+  });
+
   it("returns the official budget-exhaustion application period status", () => {
     const applicationPeriodStatus = {
       label: "예산 소진시까지",

@@ -1215,3 +1215,27 @@
 - `SuccessionConsultingEligibilityResult`에 `trackApplicationUrl`을 추가한다.
 - 기초 트랙은 스마트 테크브릿지 기초컨설팅 신청경로를, 종합 트랙은 종합컨설팅 신청경로를 반환한다.
 - 미자격은 기존 신청 안내 분리 원칙에 맞춰 `trackApplicationUrl: null`을 반환한다.
+
+## 54차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 자격 판정 결과에서 트랙별 신청경로의 공식 CTA 라벨을 함께 제공하는 방식이다.
+
+- 리서치 근거: 기술보증기금 스마트 테크브릿지 공지는 실제 신청 링크를 `(기초컨설팅 신청경로)`와 `(종합컨설팅 신청경로)`라는 라벨로 분리해 제공한다. 현재 `trackApplicationUrl`은 트랙별 URL만 반환하므로, 화면이 링크 텍스트를 만들 때 `track`이나 URL을 다시 해석해야 한다.
+- A안: 적격 결과가 트랙별 신청 URL만 반환한다.
+- B안: 적격 결과가 트랙별 `trackApplicationCtaLabel`을 함께 반환한다.
+- 성공 기준: B안이 기초 트랙은 `기초컨설팅 신청경로`, 종합 트랙은 `종합컨설팅 신청경로`를 반환하고, 미자격은 `trackApplicationCtaLabel: null`을 반환해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 화면이 기초 신청 버튼 문구를 재생성 | 공식 기초컨설팅 신청경로 라벨 제공 | B안이 기초 신청 CTA를 공지와 일치시킴 |
+| 적격, 교섭 대상 있음 | 화면이 종합 신청 버튼 문구를 재생성 | 공식 종합컨설팅 신청경로 라벨 제공 | B안이 종합 신청 CTA를 공지와 일치시킴 |
+| 미자격 | 신청 CTA 라벨 오노출 위험 | `trackApplicationCtaLabel: null` | B안이 자격 보완 상담과 신청 CTA를 분리 |
+
+출처:
+- 기술보증기금 스마트 테크브릿지, "기업승계 M&A 활성화를 위한 2026년도 컨설팅 지원사업 시행계획 공고", 2026-03-25, https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&mode=view&title=%EA%B8%B0%EC%97%85%EC%8A%B9%EA%B3%84+M%26A+%ED%99%9C%EC%84%B1%ED%99%94%EB%A5%BC+%EC%9C%84%ED%95%9C++2026%EB%85%84%EB%8F%84+%EC%BB%A8%EC%84%A4%ED%8C%85+%EC%A7%80%EC%9B%90%EC%82%AC%EC%97%85+%EC%8B%9C%ED%96%89%EA%B3%84%ED%9A%8D+%EA%B3%B5%EA%B3%A0
+
+## 54차 기능 업그레이드 결정
+
+- `SuccessionConsultingEligibilityResult`에 `trackApplicationCtaLabel`을 추가한다.
+- 기초 트랙은 `기초컨설팅 신청경로`, 종합 트랙은 `종합컨설팅 신청경로`를 반환한다.
+- 미자격은 기존 신청 안내 분리 원칙에 맞춰 `trackApplicationCtaLabel: null`을 반환한다.
