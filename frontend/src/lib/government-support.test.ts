@@ -70,6 +70,40 @@ describe("evaluateSuccessionConsultingEligibility", () => {
     });
   });
 
+  it("returns the official application guide for eligible succession consulting tracks", () => {
+    expect(
+      evaluateSuccessionConsultingEligibility({
+        companyAgeYears: 12,
+        hasNegotiationTarget: false,
+        isSme: true,
+        representativeAge: 63,
+      }),
+    ).toMatchObject({
+      applicationGuide: {
+        contactLabel: "기술보증기금 M&A지원센터",
+        contactPhoneNumbers: ["02-3215-5917", "02-3215-5999", "02-3215-5995"],
+        url: "https://tb.kibo.or.kr",
+      },
+      track: "basic",
+    });
+
+    expect(
+      evaluateSuccessionConsultingEligibility({
+        companyAgeYears: 8,
+        hasNegotiationTarget: true,
+        isSme: true,
+        representativeAge: 57,
+      }),
+    ).toMatchObject({
+      applicationGuide: {
+        contactLabel: "기술보증기금 M&A지원센터",
+        contactPhoneNumbers: ["02-3215-5917", "02-3215-5999", "02-3215-5995"],
+        url: "https://tb.kibo.or.kr",
+      },
+      track: "comprehensive",
+    });
+  });
+
   it("returns missing requirements for companies outside the seller criteria", () => {
     const result = evaluateSuccessionConsultingEligibility({
       companyAgeYears: 3,
@@ -84,6 +118,7 @@ describe("evaluateSuccessionConsultingEligibility", () => {
     expect(result.companyContributionRate).toBeNull();
     expect(result.companyContributionWon).toBeNull();
     expect(result.governmentContributionWon).toBeNull();
+    expect(result.applicationGuide).toBeNull();
     expect(result.missingRequirements).toEqual([
       "중소기업 여부 확인",
       "대표자 만 55세 이상",

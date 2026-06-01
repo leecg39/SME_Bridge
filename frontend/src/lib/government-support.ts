@@ -7,7 +7,14 @@ export interface SuccessionConsultingEligibilityInput {
   representativeAge: number;
 }
 
+export interface SuccessionConsultingApplicationGuide {
+  contactLabel: string;
+  contactPhoneNumbers: string[];
+  url: string;
+}
+
 export interface SuccessionConsultingEligibilityResult {
+  applicationGuide: SuccessionConsultingApplicationGuide | null;
   companyContributionRate: number | null;
   companyContributionWon: number | null;
   consultingFeeWon: number | null;
@@ -130,6 +137,11 @@ const SUCCESSION_CONSULTING_FEES_WON: Record<
   basic: 1000000,
   comprehensive: 10000000,
 };
+const SUCCESSION_CONSULTING_APPLICATION_GUIDE: SuccessionConsultingApplicationGuide = {
+  contactLabel: "기술보증기금 M&A지원센터",
+  contactPhoneNumbers: ["02-3215-5917", "02-3215-5999", "02-3215-5995"],
+  url: "https://tb.kibo.or.kr",
+};
 export const MNA_ACTIVATION_SUPPORT_SOURCE_URL =
   "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156748624";
 
@@ -157,6 +169,8 @@ export function evaluateSuccessionConsultingEligibility(
       : Math.round(consultingFeeWon * companyContributionRate);
 
   return {
+    applicationGuide:
+      track === "not-eligible" ? null : SUCCESSION_CONSULTING_APPLICATION_GUIDE,
     companyContributionRate,
     companyContributionWon,
     consultingFeeWon,

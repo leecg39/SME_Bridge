@@ -542,3 +542,27 @@
 - `SuccessionConsultingEligibilityResult`에 `governmentContributionWon`을 추가한다.
 - 산식은 기존 컨설팅 총액과 기업 부담액을 재사용해 `consultingFeeWon - companyContributionWon`으로 계산한다.
 - 미자격은 컨설팅 비용과 동일하게 `null`을 반환한다.
+
+## 26차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 자격 판정 이후 신청 채널과 문의처를 안내하는 방식이다.
+
+- 리서치 근거: 정책브리핑은 기업승계 M&A 컨설팅 지원사업이 기술보증기금의 스마트테크브릿지 누리집을 통해 신청되고, 문의처는 기술보증기금 M&A지원센터라고 안내했다. 비용/트랙 판정만으로는 사용자가 다음 신청 경로를 별도 검색해야 한다.
+- A안: `evaluateSuccessionConsultingEligibility()`은 자격/트랙/비용만 반환하고, UI나 상담 로직이 신청 URL과 문의처를 따로 보관한다.
+- B안: 적격 판정 결과가 신청 안내 객체를 함께 반환하고, 미자격 결과는 신청 안내를 `null`로 반환한다.
+- 성공 기준: B안이 적격 기초/종합 트랙 모두 `https://tb.kibo.or.kr`와 기술보증기금 M&A지원센터 번호를 반환하고, 미자격은 신청 안내를 반환하지 않아야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 신청 채널 별도 매핑 필요 | 스마트테크브릿지 URL과 문의처 제공 | B안이 기초 상담 CTA를 안정화 |
+| 적격, 교섭 대상 있음 | 종합컨설팅 안내와 신청 안내 분리 | 같은 신청 안내 객체 제공 | B안이 종합 상담 CTA도 일관화 |
+| 미자격 | 신청 CTA 노출 위험 | `applicationGuide: null` | B안이 자격 보완 안내와 신청 안내를 분리 |
+
+출처:
+- 대한민국 정책브리핑, "중기부, 기업승계 M&A 컨설팅 지원...140개사 선정", 2026-03-24, https://www.korea.kr/news/policyNewsView.do?newsId=148961348
+
+## 26차 기능 업그레이드 결정
+
+- `SuccessionConsultingApplicationGuide`와 `applicationGuide` 필드를 추가한다.
+- 적격 트랙은 스마트테크브릿지 URL, 기술보증기금 M&A지원센터, 문의번호 3개를 반환한다.
+- 미자격 트랙은 기존 일반 상담 nextAction을 유지하고 신청 안내는 `null`로 둔다.
