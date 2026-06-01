@@ -614,3 +614,27 @@
 - `SuccessionConsultingApplicationGuide`에 `applicationPeriodLabel`을 추가한다.
 - 적격 트랙은 `예산 소진시까지` 문구를 반환해 신청 CTA가 예산 소진형 사업임을 바로 설명하게 한다.
 - 미자격은 기존처럼 신청 안내 객체를 `null`로 유지한다.
+
+## 29차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 신청 안내에서 접수 방식을 설명하는 방식이다.
+
+- 리서치 근거: 기업마당 공고는 신청방법을 온라인 접수로 안내하고, 접수처는 기술보증기금 스마트 테크브릿지로 제시한다. 현재 `applicationGuide`는 URL과 기간, 문의처를 제공하지만 상담 문구에서 “온라인 접수”인지 다시 조립해야 한다.
+- A안: `applicationGuide`가 URL만 반환하고, UI나 상담 로직이 접수 방식 문구를 별도로 보관한다.
+- B안: `applicationGuide`가 `applicationMethodLabel`을 함께 반환한다.
+- 성공 기준: B안이 적격 기초/종합 트랙 모두 `스마트테크브릿지 온라인 신청`을 반환하고, 미자격은 기존처럼 `applicationGuide: null`을 유지해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | URL을 보고 접수 방식 문구 재작성 | `스마트테크브릿지 온라인 신청` | B안이 기초 상담 CTA 문구를 즉시 생성 |
+| 적격, 교섭 대상 있음 | 종합 접수 방식도 별도 매핑 | 같은 접수 방식 문구 제공 | B안이 종합 상담 CTA도 일관화 |
+| 미자격 | 접수 방식 노출 예외 처리 필요 | `applicationGuide: null` | B안이 신청 안내 오노출을 방지 |
+
+출처:
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342
+
+## 29차 기능 업그레이드 결정
+
+- `SuccessionConsultingApplicationGuide`에 `applicationMethodLabel`을 추가한다.
+- 적격 트랙은 `스마트테크브릿지 온라인 신청`을 반환한다.
+- 미자격은 기존처럼 신청 안내 객체를 `null`로 유지한다.

@@ -106,6 +106,7 @@ describe("evaluateSuccessionConsultingEligibility", () => {
       }),
     ).toMatchObject({
       applicationGuide: {
+        applicationMethodLabel: "스마트테크브릿지 온라인 신청",
         applicationPeriodLabel: "예산 소진시까지",
         contactLabel: "기술보증기금 M&A지원센터",
         contactPhoneNumbers: ["02-3215-5917", "02-3215-5999", "02-3215-5995"],
@@ -123,6 +124,7 @@ describe("evaluateSuccessionConsultingEligibility", () => {
       }),
     ).toMatchObject({
       applicationGuide: {
+        applicationMethodLabel: "스마트테크브릿지 온라인 신청",
         applicationPeriodLabel: "예산 소진시까지",
         contactLabel: "기술보증기금 M&A지원센터",
         contactPhoneNumbers: ["02-3215-5917", "02-3215-5999", "02-3215-5995"],
