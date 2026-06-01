@@ -108,6 +108,7 @@ describe("evaluateSuccessionConsultingEligibility", () => {
       applicationGuide: {
         applicationMethodLabel: "스마트테크브릿지 온라인 신청",
         applicationPeriodLabel: "예산 소진시까지",
+        buyerEligibilityLabel: "중소기업 인수를 희망하는 중소기업 또는 개인",
         contactEmail: "mna@kibo.or.kr",
         contactLabel: "기술보증기금 M&A지원센터",
         contactPhoneNumbers: ["02-3215-5917", "02-3215-5999", "02-3215-5995"],
@@ -139,6 +140,7 @@ describe("evaluateSuccessionConsultingEligibility", () => {
       applicationGuide: {
         applicationMethodLabel: "스마트테크브릿지 온라인 신청",
         applicationPeriodLabel: "예산 소진시까지",
+        buyerEligibilityLabel: "중소기업 인수를 희망하는 중소기업 또는 개인",
         contactEmail: "mna@kibo.or.kr",
         contactLabel: "기술보증기금 M&A지원센터",
         contactPhoneNumbers: ["02-3215-5917", "02-3215-5999", "02-3215-5995"],

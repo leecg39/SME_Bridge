@@ -806,3 +806,27 @@
 - `SuccessionConsultingApplicationGuide`에 `sellerEligibilityLabel`을 추가한다.
 - 적격 트랙은 공식 매도희망기업 지원대상 `대표자 만 55세 이상 및 업력 만 5년 이상인 중소기업`을 반환한다.
 - 미자격은 기존처럼 신청 안내 객체를 `null`로 유지한다.
+
+## 37차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 신청 안내에서 매수희망기업 지원대상 문구를 보존하는 방식이다.
+
+- 리서치 근거: 기업마당 공고는 매수희망기업 지원대상을 `중소기업 인수를 희망하는 중소기업 또는 개인`으로 명시한다. 현재 `applicationGuide`는 매도희망기업 자격 문구만 담고 있어, 인수 후보 탐색이나 매수자 상담 CTA에서 공식 매수자 지원대상 문구를 별도로 매핑해야 한다.
+- A안: `applicationGuide`가 매도희망기업 지원대상만 반환하고, UI나 상담 로직이 매수희망기업 조건을 따로 보관한다.
+- B안: `applicationGuide`가 `buyerEligibilityLabel`을 함께 반환한다.
+- 성공 기준: B안이 적격 기초/종합 트랙 모두 공식 매수희망기업 지원대상 문구를 반환하고, 미자격은 기존처럼 `applicationGuide: null`을 유지해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 매수자 지원대상 별도 매핑 필요 | `buyerEligibilityLabel` 제공 | B안이 기초 상담의 후보 탐색 설명을 강화 |
+| 적격, 교섭 대상 있음 | 종합 상담도 매수자 문구 별도 매핑 필요 | 같은 매수자 지원대상 문구 제공 | B안이 종합 상담 로그도 공식 문구로 정리 |
+| 미자격 | 매수자 문구 노출 예외 처리 필요 | `applicationGuide: null` | B안이 자격 보완 상담과 신청 안내를 분리 |
+
+출처:
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342
+
+## 37차 기능 업그레이드 결정
+
+- `SuccessionConsultingApplicationGuide`에 `buyerEligibilityLabel`을 추가한다.
+- 적격 트랙은 공식 매수희망기업 지원대상 `중소기업 인수를 희망하는 중소기업 또는 개인`을 반환한다.
+- 미자격은 기존처럼 신청 안내 객체를 `null`로 유지한다.
