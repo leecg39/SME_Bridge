@@ -12,6 +12,7 @@ export interface SuccessionConsultingApplicationGuide {
   applicationPeriodLabel: string;
   contactLabel: string;
   contactPhoneNumbers: string[];
+  noticePublishedDate: string;
   url: string;
 }
 
@@ -152,6 +153,7 @@ const SUCCESSION_CONSULTING_APPLICATION_GUIDE: SuccessionConsultingApplicationGu
   applicationPeriodLabel: "예산 소진시까지",
   contactLabel: "기술보증기금 M&A지원센터",
   contactPhoneNumbers: ["02-3215-5917", "02-3215-5999", "02-3215-5995"],
+  noticePublishedDate: "2026-04-03",
   url: "https://tb.kibo.or.kr",
 };
 export const MNA_ACTIVATION_SUPPORT_SOURCE_URL =
