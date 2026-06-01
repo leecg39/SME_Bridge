@@ -453,3 +453,23 @@
 - `MnaRoadmapSupportFundingPlan`과 `MnaRoadmapSupportFundingStatus`를 추가한다.
 - 로드맵 총액은 phase 산출 결과를 재사용해 정책 금액 계산 원천을 하나로 유지한다.
 - 다음 병목은 선택한 phase 순서에서 가장 먼저 `needs-expense`인 phase를 고르게 한다.
+
+## 22차 A/B 테스트 기준
+
+비교 대상은 로드맵 비용지원 예산 입력의 완성도를 표시하는 방식이다.
+
+- A안: 전체 지원금 플랜은 총액과 다음 병목만 제공하고, UI나 상담 로직이 몇 개의 금전 지원사업 비용을 입력했는지 다시 계산한다.
+- B안: `estimateMnaRoadmapSupportFunding()`이 금전 지원사업 수, 입력 완료 수, 미입력 수, 입력률을 함께 반환한다.
+- 성공 기준: B안이 준비·실사·PMI 3개 지원사업 모두 입력 시 100%, PMI 누락 시 67%, 지원사업 없는 구간은 0%와 0개 카운트를 단위 테스트로 재현해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 준비·실사·PMI 비용 모두 입력 | 입력률 별도 계산 필요 | 3/3, 100% | B안이 상담 전 예산 질문 완료 상태를 표시 |
+| 준비·실사 입력, PMI 누락 | 누락 개수 별도 계산 필요 | 2/3, 67%, 미입력 1개 | B안이 다음 질문과 진행률을 함께 제공 |
+| 마케팅 phase만 선택 | 지원사업 없음과 입력률 혼동 가능 | 0/0, 0%, `no-support-program` | B안이 예외 구간을 안전하게 처리 |
+
+## 22차 기능 업그레이드 결정
+
+- `MnaRoadmapSupportFundingPlan`에 `monetaryProgramCount`, `completedExpenseProgramCount`, `missingExpenseProgramCount`, `expenseInputPercent`를 추가한다.
+- 입력률은 phase별 `estimates`와 `missingExpenseProgramKeys`를 재사용해 계산 원천을 하나로 유지한다.
+- 금전 지원사업이 없는 구간은 입력률 0%로 두고 `no-support-program` 상태와 함께 해석하게 한다.

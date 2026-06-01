@@ -74,9 +74,13 @@ export type MnaPhaseSupportFundingStatus =
   | "no-program";
 
 export interface MnaRoadmapSupportFundingPlan {
+  completedExpenseProgramCount: number;
   estimatedSupportWon: number;
   expenseAmountWon: number;
+  expenseInputPercent: number;
   missingExpensePhaseCodes: string[];
+  missingExpenseProgramCount: number;
+  monetaryProgramCount: number;
   nextAction: string;
   nextExpenseProgramKey: string | null;
   nextPhaseCode: string | null;
@@ -275,6 +279,15 @@ export function estimateMnaRoadmapSupportFunding(
     .map((phaseEstimate) => phaseEstimate.phaseCode);
   const nextPhaseEstimate =
     phaseEstimates.find((phaseEstimate) => phaseEstimate.status === "needs-expense") ?? null;
+  const completedExpenseProgramCount = sumBy(
+    phaseEstimates,
+    (phaseEstimate) => phaseEstimate.estimates.length,
+  );
+  const missingExpenseProgramCount = sumBy(
+    phaseEstimates,
+    (phaseEstimate) => phaseEstimate.missingExpenseProgramKeys.length,
+  );
+  const monetaryProgramCount = completedExpenseProgramCount + missingExpenseProgramCount;
   const status = getRoadmapSupportFundingStatus(
     phaseEstimates.length,
     phaseEstimates.some((phaseEstimate) => phaseEstimate.status !== "no-program"),
@@ -282,12 +295,19 @@ export function estimateMnaRoadmapSupportFunding(
   );
 
   return {
+    completedExpenseProgramCount,
     estimatedSupportWon: sumBy(
       phaseEstimates,
       (phaseEstimate) => phaseEstimate.estimatedSupportWon,
     ),
     expenseAmountWon: sumBy(phaseEstimates, (phaseEstimate) => phaseEstimate.expenseAmountWon),
+    expenseInputPercent:
+      monetaryProgramCount === 0
+        ? 0
+        : Math.round((completedExpenseProgramCount / monetaryProgramCount) * 100),
     missingExpensePhaseCodes,
+    missingExpenseProgramCount,
+    monetaryProgramCount,
     nextAction: getRoadmapSupportFundingNextAction(status, nextPhaseEstimate),
     nextExpenseProgramKey: nextPhaseEstimate?.nextExpenseProgramKey ?? null,
     nextPhaseCode: nextPhaseEstimate?.phaseCode ?? null,

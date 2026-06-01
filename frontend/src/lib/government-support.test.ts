@@ -274,9 +274,13 @@ describe("estimateMnaRoadmapSupportFunding", () => {
         },
       ),
     ).toMatchObject({
+      completedExpenseProgramCount: 3,
       estimatedSupportWon: 50000000,
+      expenseInputPercent: 100,
       expenseAmountWon: 120000000,
+      missingExpenseProgramCount: 0,
       missingExpensePhaseCodes: [],
+      monetaryProgramCount: 3,
       nextAction: "전 구간 예상 지원금과 자부담을 상담 스냅샷에 반영합니다.",
       nextExpenseProgramKey: null,
       nextPhaseCode: null,
@@ -299,9 +303,13 @@ describe("estimateMnaRoadmapSupportFunding", () => {
         },
       ),
     ).toMatchObject({
+      completedExpenseProgramCount: 2,
       estimatedSupportWon: 35000000,
+      expenseInputPercent: 67,
       expenseAmountWon: 90000000,
+      missingExpenseProgramCount: 1,
       missingExpensePhaseCodes: ["closing-pmi"],
+      monetaryProgramCount: 3,
       nextAction:
         "closing-pmi 단계의 PMI 컨설팅 비용지원 예상 비용을 입력해 지원금과 자부담을 산출합니다.",
       nextExpenseProgramKey: "pmi-consulting-support",
@@ -313,9 +321,13 @@ describe("estimateMnaRoadmapSupportFunding", () => {
 
   it("returns a no-support state for roadmap sections without support programs", () => {
     expect(estimateMnaRoadmapSupportFunding(["marketing"], {})).toMatchObject({
+      completedExpenseProgramCount: 0,
       estimatedSupportWon: 0,
+      expenseInputPercent: 0,
       expenseAmountWon: 0,
+      missingExpenseProgramCount: 0,
       missingExpensePhaseCodes: [],
+      monetaryProgramCount: 0,
       nextAction: "선택한 구간에는 직접 연결된 비용지원 프로그램이 없습니다.",
       nextExpenseProgramKey: null,
       nextPhaseCode: null,
