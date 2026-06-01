@@ -106,6 +106,7 @@ describe("evaluateSuccessionConsultingEligibility", () => {
       }),
     ).toMatchObject({
       applicationGuide: {
+        applicationPeriodLabel: "예산 소진시까지",
         contactLabel: "기술보증기금 M&A지원센터",
         contactPhoneNumbers: ["02-3215-5917", "02-3215-5999", "02-3215-5995"],
         url: "https://tb.kibo.or.kr",
@@ -122,6 +123,7 @@ describe("evaluateSuccessionConsultingEligibility", () => {
       }),
     ).toMatchObject({
       applicationGuide: {
+        applicationPeriodLabel: "예산 소진시까지",
         contactLabel: "기술보증기금 M&A지원센터",
         contactPhoneNumbers: ["02-3215-5917", "02-3215-5999", "02-3215-5995"],
         url: "https://tb.kibo.or.kr",
