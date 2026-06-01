@@ -710,3 +710,27 @@
 - `SuccessionConsultingApplicationGuide`에 `operatingAgencyLabel`을 추가한다.
 - 적격 트랙은 공식 사업수행기관 `기술보증기금`을 반환한다.
 - 미자격은 기존처럼 신청 안내 객체를 `null`로 유지한다.
+
+## 33차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 신청 안내에서 공식 공고 출처 URL을 보존하는 방식이다.
+
+- 리서치 근거: 기업마당 공고는 사업명, 소관부처, 수행기관, 신청기간, 지원대상을 한 페이지에 제공하고, 스마트 테크브릿지는 실제 접수처 역할을 한다. 현재 `applicationGuide.url`은 신청 포털만 가리켜 상담 스냅샷에서 공고 원문 검증 링크를 별도로 매핑해야 한다.
+- A안: `applicationGuide`가 신청 URL만 반환하고, UI나 상담 로그가 기업마당 공고 URL을 따로 보관한다.
+- B안: `applicationGuide`가 `noticeSourceUrl`을 함께 반환한다.
+- 성공 기준: B안이 적격 기초/종합 트랙 모두 기업마당 공고 URL을 반환하고, 미자격은 기존처럼 `applicationGuide: null`을 유지해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 공고 원문 링크 별도 매핑 필요 | `noticeSourceUrl`로 기업마당 공고 제공 | B안이 기초 상담 스냅샷의 근거 추적성을 강화 |
+| 적격, 교섭 대상 있음 | 종합 안내도 공고 링크 별도 매핑 필요 | 같은 공고 원문 제공 | B안이 종합 상담 로그도 같은 출처로 검증 |
+| 미자격 | 공고 링크 노출 예외 처리 필요 | `applicationGuide: null` | B안이 신청 안내 오노출을 방지 |
+
+출처:
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342
+
+## 33차 기능 업그레이드 결정
+
+- `SuccessionConsultingApplicationGuide`에 `noticeSourceUrl`을 추가한다.
+- 적격 트랙은 공식 기업마당 공고 URL을 반환해 신청 포털 URL과 출처 URL을 분리한다.
+- 미자격은 기존처럼 신청 안내 객체를 `null`로 유지한다.

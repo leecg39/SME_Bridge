@@ -14,6 +14,7 @@ export interface SuccessionConsultingApplicationGuide {
   contactLabel: string;
   contactPhoneNumbers: string[];
   noticePublishedDate: string;
+  noticeSourceUrl: string;
   operatingAgencyLabel: string;
   url: string;
 }
@@ -157,6 +158,8 @@ const SUCCESSION_CONSULTING_APPLICATION_GUIDE: SuccessionConsultingApplicationGu
   contactLabel: "기술보증기금 M&A지원센터",
   contactPhoneNumbers: ["02-3215-5917", "02-3215-5999", "02-3215-5995"],
   noticePublishedDate: "2026-04-03",
+  noticeSourceUrl:
+    "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342",
   operatingAgencyLabel: "기술보증기금",
   url: "https://tb.kibo.or.kr",
 };
