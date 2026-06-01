@@ -15,6 +15,7 @@ export interface SuccessionConsultingApplicationGuide {
   contactEmail: string;
   contactLabel: string;
   contactPhoneNumbers: string[];
+  noticeAttachmentLabel: string;
   noticePublishedDate: string;
   noticeSourceUrl: string;
   onlineApplicationContactLabel: string;
@@ -185,6 +186,7 @@ const SUCCESSION_CONSULTING_APPLICATION_GUIDE: SuccessionConsultingApplicationGu
   contactEmail: "mna@kibo.or.kr",
   contactLabel: "기술보증기금 M&A지원센터",
   contactPhoneNumbers: ["02-3215-5917", "02-3215-5999", "02-3215-5995"],
+  noticeAttachmentLabel: "(붙임1) 2026년도 컨설팅 지원사업 시행계획 공고.hwp",
   noticePublishedDate: "2026-04-03",
   noticeSourceUrl:
     "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342",

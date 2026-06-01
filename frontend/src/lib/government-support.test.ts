@@ -171,6 +171,7 @@ describe("evaluateSuccessionConsultingEligibility", () => {
         noticePublishedDate: "2026-04-03",
         noticeSourceUrl:
           "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342",
+        noticeAttachmentLabel: "(붙임1) 2026년도 컨설팅 지원사업 시행계획 공고.hwp",
         onlineApplicationContactLabel: "기술보증기금 기술거래보호부 플랫폼팀",
         onlineApplicationContactPhoneNumbers: [
           "051-606-7429",
@@ -207,6 +208,7 @@ describe("evaluateSuccessionConsultingEligibility", () => {
         noticePublishedDate: "2026-04-03",
         noticeSourceUrl:
           "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342",
+        noticeAttachmentLabel: "(붙임1) 2026년도 컨설팅 지원사업 시행계획 공고.hwp",
         onlineApplicationContactLabel: "기술보증기금 기술거래보호부 플랫폼팀",
         onlineApplicationContactPhoneNumbers: [
           "051-606-7429",
