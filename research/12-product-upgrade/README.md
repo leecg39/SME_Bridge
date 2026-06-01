@@ -878,3 +878,27 @@
 - `SuccessionConsultingApplicationGuide.url`을 공식 온라인 신청 진입점으로 정밀화한다.
 - 적격 트랙은 `https://tb.kibo.or.kr/ktbs/index.do`를 반환한다.
 - 미자격은 기존처럼 신청 안내 객체를 `null`로 유지한다.
+
+## 40차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 자격 판정 결과에서 트랙 선택 기준을 설명하는 방식이다.
+
+- 리서치 근거: 기업마당 공고는 기초컨설팅을 `M&A 교섭 대상이 없는 기업`, 종합컨설팅을 `M&A 교섭 대상이 있는 기업`으로 구분한다. 현재 자격 판정 결과는 `track`만 반환하므로, 상담 화면이나 로드맵이 트랙 선택 이유를 별도로 매핑해야 한다.
+- A안: `evaluateSuccessionConsultingEligibility()`가 `basic`/`comprehensive` 트랙만 반환한다.
+- B안: 자격 판정 결과가 트랙별 `trackQualificationLabel`을 함께 반환하고, 미자격은 `null`을 반환한다.
+- 성공 기준: B안이 기초 트랙은 `기초컨설팅(M&A 교섭 대상이 없는 기업)`, 종합 트랙은 `종합컨설팅(M&A 교섭 대상이 있는 기업)`, 미자격은 `trackQualificationLabel: null`을 반환해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | `basic`만 표시 | 기초컨설팅 선택 기준 제공 | B안이 기초 라우팅 이유를 즉시 설명 |
+| 적격, 교섭 대상 있음 | `comprehensive`만 표시 | 종합컨설팅 선택 기준 제공 | B안이 종합 라우팅 이유를 명확화 |
+| 미자격 | 트랙 기준 노출 예외 처리 필요 | `trackQualificationLabel: null` | B안이 자격 보완 상담과 트랙 안내를 분리 |
+
+출처:
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342
+
+## 40차 기능 업그레이드 결정
+
+- `SuccessionConsultingEligibilityResult`에 `trackQualificationLabel`을 추가한다.
+- 기초 트랙은 `기초컨설팅(M&A 교섭 대상이 없는 기업)`, 종합 트랙은 `종합컨설팅(M&A 교섭 대상이 있는 기업)`을 반환한다.
+- 미자격은 비용/신청 안내와 동일하게 `null`을 반환한다.
