@@ -854,3 +854,27 @@
 - `SuccessionConsultingEligibilityResult`에 `supportScopeLabel`을 추가한다.
 - 기초 트랙은 공식 기초컨설팅 지원내용을, 종합 트랙은 공식 종합컨설팅 지원내용을 반환한다.
 - 미자격은 비용/신청 안내와 동일하게 `null`을 반환한다.
+
+## 39차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 신청 CTA가 스마트 테크브릿지의 실제 신청 진입점으로 이동하는 방식이다.
+
+- 리서치 근거: 기업마당 공고의 `사업신청 사이트` 링크는 `https://tb.kibo.or.kr/ktbs/index.do`이며, 현재 `applicationGuide.url`은 상위 도메인 `https://tb.kibo.or.kr`만 반환한다. 상담 CTA가 상위 포털로만 이동하면 사용자가 신청 메뉴를 다시 찾아야 하므로 이탈 가능성이 생긴다.
+- A안: `applicationGuide.url`이 상위 도메인만 반환한다.
+- B안: `applicationGuide.url`이 공식 `온라인신청 바로가기` URL을 반환한다.
+- 성공 기준: B안이 적격 기초/종합 트랙 모두 `https://tb.kibo.or.kr/ktbs/index.do`를 반환하고, 미자격은 기존처럼 `applicationGuide: null`을 유지해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 포털 진입 후 메뉴 재탐색 필요 | 신청 진입점 URL로 이동 | B안이 기초 상담의 신청 완료 가능성을 강화 |
+| 적격, 교섭 대상 있음 | 종합 신청도 메뉴 재탐색 필요 | 같은 신청 진입점 URL 제공 | B안이 종합 상담 CTA도 바로 실행 가능 |
+| 미자격 | 신청 URL 노출 예외 처리 필요 | `applicationGuide: null` | B안이 신청 안내 오노출을 방지 |
+
+출처:
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342
+
+## 39차 기능 업그레이드 결정
+
+- `SuccessionConsultingApplicationGuide.url`을 공식 온라인 신청 진입점으로 정밀화한다.
+- 적격 트랙은 `https://tb.kibo.or.kr/ktbs/index.do`를 반환한다.
+- 미자격은 기존처럼 신청 안내 객체를 `null`로 유지한다.

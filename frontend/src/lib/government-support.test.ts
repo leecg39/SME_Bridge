@@ -152,7 +152,7 @@ describe("evaluateSuccessionConsultingEligibility", () => {
         operatingAgencyLabel: "기술보증기금",
         sellerEligibilityLabel: "대표자 만 55세 이상 및 업력 만 5년 이상인 중소기업",
         supervisingMinistryLabel: "중소벤처기업부",
-        url: "https://tb.kibo.or.kr",
+        url: "https://tb.kibo.or.kr/ktbs/index.do",
       },
       track: "basic",
     });
@@ -184,7 +184,7 @@ describe("evaluateSuccessionConsultingEligibility", () => {
         operatingAgencyLabel: "기술보증기금",
         sellerEligibilityLabel: "대표자 만 55세 이상 및 업력 만 5년 이상인 중소기업",
         supervisingMinistryLabel: "중소벤처기업부",
-        url: "https://tb.kibo.or.kr",
+        url: "https://tb.kibo.or.kr/ktbs/index.do",
       },
       track: "comprehensive",
     });
