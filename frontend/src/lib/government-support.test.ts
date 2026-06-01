@@ -50,6 +50,7 @@ describe("evaluateSuccessionConsultingEligibility", () => {
       companyContributionRate: 0.3,
       companyContributionWon: 300000,
       consultingFeeWon: 1000000,
+      governmentContributionWon: 700000,
       track: "basic",
     });
 
@@ -64,6 +65,7 @@ describe("evaluateSuccessionConsultingEligibility", () => {
       companyContributionRate: 0.3,
       companyContributionWon: 3000000,
       consultingFeeWon: 10000000,
+      governmentContributionWon: 7000000,
       track: "comprehensive",
     });
   });
@@ -81,6 +83,7 @@ describe("evaluateSuccessionConsultingEligibility", () => {
     expect(result.consultingFeeWon).toBeNull();
     expect(result.companyContributionRate).toBeNull();
     expect(result.companyContributionWon).toBeNull();
+    expect(result.governmentContributionWon).toBeNull();
     expect(result.missingRequirements).toEqual([
       "중소기업 여부 확인",
       "대표자 만 55세 이상",

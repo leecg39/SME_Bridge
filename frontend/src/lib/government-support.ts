@@ -11,6 +11,7 @@ export interface SuccessionConsultingEligibilityResult {
   companyContributionRate: number | null;
   companyContributionWon: number | null;
   consultingFeeWon: number | null;
+  governmentContributionWon: number | null;
   isEligible: boolean;
   missingRequirements: string[];
   nextAction: string;
@@ -150,14 +151,19 @@ export function evaluateSuccessionConsultingEligibility(
     track === "not-eligible" ? null : SUCCESSION_CONSULTING_FEES_WON[track];
   const companyContributionRate =
     consultingFeeWon === null ? null : SUCCESSION_CONSULTING_COMPANY_CONTRIBUTION_RATE;
+  const companyContributionWon =
+    consultingFeeWon === null || companyContributionRate === null
+      ? null
+      : Math.round(consultingFeeWon * companyContributionRate);
 
   return {
     companyContributionRate,
-    companyContributionWon:
-      consultingFeeWon === null || companyContributionRate === null
-        ? null
-        : Math.round(consultingFeeWon * companyContributionRate),
+    companyContributionWon,
     consultingFeeWon,
+    governmentContributionWon:
+      consultingFeeWon === null || companyContributionWon === null
+        ? null
+        : consultingFeeWon - companyContributionWon,
     isEligible,
     missingRequirements,
     nextAction: supportNextAction(track),
