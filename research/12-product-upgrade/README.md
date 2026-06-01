@@ -1022,3 +1022,27 @@
 - `SuccessionConsultingApplicationGuide`에 `applicationSiteCtaLabel`을 추가한다.
 - 적격 트랙은 공식 신청 사이트 CTA `온라인신청 바로가기`를 반환한다.
 - 미자격은 기존처럼 신청 안내 객체를 `null`로 유지한다.
+
+## 46차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 신청 안내의 신청 방식 문구를 공식 공고와 일치시키는 방식이다.
+
+- 리서치 근거: 기업마당 공고는 `사업신청 방법`을 `온라인 접수 (스마트 테크브릿지)`로 표시한다. 현재 `applicationGuide.applicationMethodLabel`은 `스마트테크브릿지 온라인 신청`이라는 내부식 문구라, 상담 화면이 공식 공고와 다른 표현을 노출한다.
+- A안: `applicationMethodLabel`이 내부식 문구 `스마트테크브릿지 온라인 신청`을 반환한다.
+- B안: `applicationMethodLabel`이 공식 문구 `온라인 접수 (스마트 테크브릿지)`를 반환한다.
+- 성공 기준: B안이 적격 기초/종합 트랙 모두 공식 신청 방식 문구를 반환하고, 미자격은 기존처럼 `applicationGuide: null`을 유지해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 공고와 다른 신청 방식 문구 표시 | 공식 신청 방식 문구 제공 | B안이 기초 신청 안내의 신뢰도를 높임 |
+| 적격, 교섭 대상 있음 | 종합 신청도 내부식 문구 노출 | 같은 공식 신청 방식 문구 제공 | B안이 종합 신청 안내를 공고와 일치시킴 |
+| 미자격 | 신청 방식 문구 노출 예외 처리 필요 | `applicationGuide: null` | B안이 신청 안내 오노출을 방지 |
+
+출처:
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342
+
+## 46차 기능 업그레이드 결정
+
+- `SuccessionConsultingApplicationGuide.applicationMethodLabel`을 공식 공고의 `온라인 접수 (스마트 테크브릿지)`로 정밀화한다.
+- 적격 트랙은 공식 신청 방식 문구를 반환한다.
+- 미자격은 기존처럼 신청 안내 객체를 `null`로 유지한다.

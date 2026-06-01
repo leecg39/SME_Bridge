@@ -162,7 +162,7 @@ describe("evaluateSuccessionConsultingEligibility", () => {
       applicationGuide: {
         applicationFormAttachmentLabel:
           "(붙임2) 2026년도 컨설팅 지원사업 시행계획 공고 첨부서식.hwp",
-        applicationMethodLabel: "스마트테크브릿지 온라인 신청",
+        applicationMethodLabel: "온라인 접수 (스마트 테크브릿지)",
         applicationPeriodLabel: "예산 소진시까지",
         applicationPreparationDocumentLabels: [
           "(붙임1) 2026년도 컨설팅 지원사업 시행계획 공고.hwp",
@@ -204,7 +204,7 @@ describe("evaluateSuccessionConsultingEligibility", () => {
       applicationGuide: {
         applicationFormAttachmentLabel:
           "(붙임2) 2026년도 컨설팅 지원사업 시행계획 공고 첨부서식.hwp",
-        applicationMethodLabel: "스마트테크브릿지 온라인 신청",
+        applicationMethodLabel: "온라인 접수 (스마트 테크브릿지)",
         applicationPeriodLabel: "예산 소진시까지",
         applicationPreparationDocumentLabels: [
           "(붙임1) 2026년도 컨설팅 지원사업 시행계획 공고.hwp",
