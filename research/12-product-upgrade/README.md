@@ -686,3 +686,27 @@
 - `SuccessionConsultingApplicationGuide`에 `contactEmail`을 추가한다.
 - 적격 트랙은 사업 문의 이메일 `mna@kibo.or.kr`을 반환한다.
 - 미자격은 기존처럼 신청 안내 객체를 `null`로 유지한다.
+
+## 32차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 신청 안내에서 사업수행기관을 보존하는 방식이다.
+
+- 리서치 근거: 기업마당 공고는 소관부처를 중소벤처기업부, 사업수행기관을 기술보증기금으로 표시하며, 문의와 신청 절차는 수행기관에서 전담한다고 안내한다. 현재 `applicationGuide`는 문의처 부서명만 담고 있어 상담 로그나 신청 CTA에서 공식 수행기관명을 별도로 매핑해야 한다.
+- A안: `applicationGuide`가 문의처만 반환하고, UI나 상담 로직이 사업수행기관을 따로 보관한다.
+- B안: `applicationGuide`가 `operatingAgencyLabel`을 함께 반환한다.
+- 성공 기준: B안이 적격 기초/종합 트랙 모두 `기술보증기금`을 반환하고, 미자격은 기존처럼 `applicationGuide: null`을 유지해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 수행기관명 별도 매핑 필요 | `operatingAgencyLabel: "기술보증기금"` | B안이 기초 상담의 공식 기관명을 보존 |
+| 적격, 교섭 대상 있음 | 종합 안내도 수행기관명 별도 매핑 필요 | 같은 수행기관명 제공 | B안이 종합 상담 로그도 일관화 |
+| 미자격 | 수행기관명 노출 예외 처리 필요 | `applicationGuide: null` | B안이 신청 안내 오노출을 방지 |
+
+출처:
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342
+
+## 32차 기능 업그레이드 결정
+
+- `SuccessionConsultingApplicationGuide`에 `operatingAgencyLabel`을 추가한다.
+- 적격 트랙은 공식 사업수행기관 `기술보증기금`을 반환한다.
+- 미자격은 기존처럼 신청 안내 객체를 `null`로 유지한다.
