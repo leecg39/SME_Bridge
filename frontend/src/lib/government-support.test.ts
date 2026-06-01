@@ -311,6 +311,46 @@ describe("evaluateSuccessionConsultingEligibility", () => {
     });
   });
 
+  it("returns the official track-specific application URL for eligible tracks", () => {
+    expect(
+      evaluateSuccessionConsultingEligibility({
+        companyAgeYears: 12,
+        hasNegotiationTarget: false,
+        isSme: true,
+        representativeAge: 63,
+      }),
+    ).toMatchObject({
+      track: "basic",
+      trackApplicationUrl:
+        "https://tb.kibo.or.kr/ktbs/bsConsFndApplication/bsConsFndInsert.do?pblictnId=1850&pbrecuNum=1848&bsnsClCd=18&bsnsClNm=%EA%B8%B0%EC%B4%88%EC%BB%A8%EC%84%A4%ED%8C%85&stDt=2026-04-01&enDt=2026-12-31",
+    });
+
+    expect(
+      evaluateSuccessionConsultingEligibility({
+        companyAgeYears: 8,
+        hasNegotiationTarget: true,
+        isSme: true,
+        representativeAge: 57,
+      }),
+    ).toMatchObject({
+      track: "comprehensive",
+      trackApplicationUrl:
+        "https://tb.kibo.or.kr/ktbs/bsConsOvrApplication/bsConsOvrInsert.do?pblictnId=1850&pbrecuNum=1849&bsnsClCd=19&bsnsClNm=%EC%A2%85%ED%95%A9%EC%BB%A8%EC%84%A4%ED%8C%85&stDt=2026-04-01&enDt=2026-12-31",
+    });
+
+    expect(
+      evaluateSuccessionConsultingEligibility({
+        companyAgeYears: 3,
+        hasNegotiationTarget: false,
+        isSme: false,
+        representativeAge: 51,
+      }),
+    ).toMatchObject({
+      track: "not-eligible",
+      trackApplicationUrl: null,
+    });
+  });
+
   it("returns the official budget-exhaustion application period status", () => {
     const applicationPeriodStatus = {
       label: "예산 소진시까지",

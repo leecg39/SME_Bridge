@@ -80,6 +80,7 @@ export interface SuccessionConsultingEligibilityResult {
   supportScopeByRole: SuccessionConsultingSupportScopeByRole | null;
   supportScopeLabel: string | null;
   track: SuccessionConsultingTrack;
+  trackApplicationUrl: string | null;
   trackQualificationLabel: string | null;
 }
 
@@ -238,6 +239,15 @@ const SUCCESSION_CONSULTING_TRACK_QUALIFICATION_LABELS: Record<
   basic: "기초컨설팅(M&A 교섭 대상이 없는 기업)",
   comprehensive: "종합컨설팅(M&A 교섭 대상이 있는 기업)",
 };
+const SUCCESSION_CONSULTING_TRACK_APPLICATION_URLS: Record<
+  Exclude<SuccessionConsultingTrack, "not-eligible">,
+  string
+> = {
+  basic:
+    "https://tb.kibo.or.kr/ktbs/bsConsFndApplication/bsConsFndInsert.do?pblictnId=1850&pbrecuNum=1848&bsnsClCd=18&bsnsClNm=%EA%B8%B0%EC%B4%88%EC%BB%A8%EC%84%A4%ED%8C%85&stDt=2026-04-01&enDt=2026-12-31",
+  comprehensive:
+    "https://tb.kibo.or.kr/ktbs/bsConsOvrApplication/bsConsOvrInsert.do?pblictnId=1850&pbrecuNum=1849&bsnsClCd=19&bsnsClNm=%EC%A2%85%ED%95%A9%EC%BB%A8%EC%84%A4%ED%8C%85&stDt=2026-04-01&enDt=2026-12-31",
+};
 const SUCCESSION_CONSULTING_NOTICE_ATTACHMENT_LABEL =
   "(붙임1) 2026년도 컨설팅 지원사업 시행계획 공고.hwp";
 const SUCCESSION_CONSULTING_APPLICATION_FORM_ATTACHMENT_LABEL =
@@ -339,6 +349,8 @@ export function evaluateSuccessionConsultingEligibility(
     supportScopeLabel:
       track === "not-eligible" ? null : SUCCESSION_CONSULTING_SUPPORT_SCOPE_LABELS[track],
     track,
+    trackApplicationUrl:
+      track === "not-eligible" ? null : SUCCESSION_CONSULTING_TRACK_APPLICATION_URLS[track],
     trackQualificationLabel:
       track === "not-eligible"
         ? null

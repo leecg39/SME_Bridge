@@ -1190,3 +1190,28 @@
 - `SuccessionConsultingApplicationGuide`에 `applicationMethodStatus`를 추가한다.
 - 적격 트랙은 공식 신청방법 문구와 함께 온라인 접수 채널, 스마트 테크브릿지 포털명을 구조화해 반환한다.
 - 기존 `applicationMethodLabel`, `url`, `applicationSiteCtaLabel`은 호환성을 위해 유지하고, 미자격은 기존처럼 `applicationGuide: null`을 유지한다.
+
+## 53차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 자격 판정 결과에서 기초/종합 트랙별 실제 신청경로를 직접 제공하는 방식이다.
+
+- 리서치 근거: 기술보증기금 스마트 테크브릿지 공지는 `기초컨설팅 신청경로`와 `종합컨설팅 신청경로`를 별도 링크로 제공한다. 현재 `applicationGuide.url`은 스마트 테크브릿지 포털 진입점만 반환하므로, 기초/종합 판정 후에도 사용자가 맞는 신청 메뉴를 다시 찾아야 한다.
+- A안: 적격 결과가 공통 신청 포털 URL만 반환한다.
+- B안: 적격 결과가 트랙에 맞는 `trackApplicationUrl`을 함께 반환한다.
+- 성공 기준: B안이 기초 트랙은 기초컨설팅 신청경로, 종합 트랙은 종합컨설팅 신청경로를 반환하고, 미자격은 `trackApplicationUrl: null`을 반환해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 포털 진입 후 기초 메뉴 탐색 필요 | 기초컨설팅 신청경로 제공 | B안이 기초 신청 이탈을 줄임 |
+| 적격, 교섭 대상 있음 | 포털 진입 후 종합 메뉴 탐색 필요 | 종합컨설팅 신청경로 제공 | B안이 종합 신청 연결을 정확화 |
+| 미자격 | 신청경로 오노출 위험 | `trackApplicationUrl: null` | B안이 자격 보완 상담과 신청 CTA를 분리 |
+
+출처:
+- 기술보증기금 스마트 테크브릿지, "기업승계 M&A 활성화를 위한 2026년도 컨설팅 지원사업 시행계획 공고", 2026-03-25, https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&mode=view&title=%EA%B8%B0%EC%97%85%EC%8A%B9%EA%B3%84+M%26A+%ED%99%9C%EC%84%B1%ED%99%94%EB%A5%BC+%EC%9C%84%ED%95%9C++2026%EB%85%84%EB%8F%84+%EC%BB%A8%EC%84%A4%ED%8C%85+%EC%A7%80%EC%9B%90%EC%82%AC%EC%97%85+%EC%8B%9C%ED%96%89%EA%B3%84%ED%9A%8D+%EA%B3%B5%EA%B3%A0
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342
+
+## 53차 기능 업그레이드 결정
+
+- `SuccessionConsultingEligibilityResult`에 `trackApplicationUrl`을 추가한다.
+- 기초 트랙은 스마트 테크브릿지 기초컨설팅 신청경로를, 종합 트랙은 종합컨설팅 신청경로를 반환한다.
+- 미자격은 기존 신청 안내 분리 원칙에 맞춰 `trackApplicationUrl: null`을 반환한다.
