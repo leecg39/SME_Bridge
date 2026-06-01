@@ -70,6 +70,32 @@ describe("evaluateSuccessionConsultingEligibility", () => {
     });
   });
 
+  it("returns the track-specific selection limit for eligible succession consulting tracks", () => {
+    expect(
+      evaluateSuccessionConsultingEligibility({
+        companyAgeYears: 12,
+        hasNegotiationTarget: false,
+        isSme: true,
+        representativeAge: 63,
+      }),
+    ).toMatchObject({
+      selectionLimitCompanies: 100,
+      track: "basic",
+    });
+
+    expect(
+      evaluateSuccessionConsultingEligibility({
+        companyAgeYears: 8,
+        hasNegotiationTarget: true,
+        isSme: true,
+        representativeAge: 57,
+      }),
+    ).toMatchObject({
+      selectionLimitCompanies: 40,
+      track: "comprehensive",
+    });
+  });
+
   it("returns the official application guide for eligible succession consulting tracks", () => {
     expect(
       evaluateSuccessionConsultingEligibility({
@@ -119,6 +145,7 @@ describe("evaluateSuccessionConsultingEligibility", () => {
     expect(result.companyContributionWon).toBeNull();
     expect(result.governmentContributionWon).toBeNull();
     expect(result.applicationGuide).toBeNull();
+    expect(result.selectionLimitCompanies).toBeNull();
     expect(result.missingRequirements).toEqual([
       "중소기업 여부 확인",
       "대표자 만 55세 이상",

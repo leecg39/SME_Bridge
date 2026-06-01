@@ -22,6 +22,7 @@ export interface SuccessionConsultingEligibilityResult {
   isEligible: boolean;
   missingRequirements: string[];
   nextAction: string;
+  selectionLimitCompanies: number | null;
   track: SuccessionConsultingTrack;
 }
 
@@ -137,6 +138,13 @@ const SUCCESSION_CONSULTING_FEES_WON: Record<
   basic: 1000000,
   comprehensive: 10000000,
 };
+const SUCCESSION_CONSULTING_SELECTION_LIMITS: Record<
+  Exclude<SuccessionConsultingTrack, "not-eligible">,
+  number
+> = {
+  basic: 100,
+  comprehensive: 40,
+};
 const SUCCESSION_CONSULTING_APPLICATION_GUIDE: SuccessionConsultingApplicationGuide = {
   contactLabel: "기술보증기금 M&A지원센터",
   contactPhoneNumbers: ["02-3215-5917", "02-3215-5999", "02-3215-5995"],
@@ -181,6 +189,8 @@ export function evaluateSuccessionConsultingEligibility(
     isEligible,
     missingRequirements,
     nextAction: supportNextAction(track),
+    selectionLimitCompanies:
+      track === "not-eligible" ? null : SUCCESSION_CONSULTING_SELECTION_LIMITS[track],
     track,
   };
 }
