@@ -974,3 +974,27 @@
 - `SuccessionConsultingApplicationGuide`에 `noticeAttachmentLabel`을 추가한다.
 - 적격 트랙은 공식 원문 공고 파일명 `(붙임1) 2026년도 컨설팅 지원사업 시행계획 공고.hwp`를 반환한다.
 - 미자격은 기존처럼 신청 안내 객체를 `null`로 유지한다.
+
+## 44차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 신청 안내에서 신청 준비 문서를 순서 있는 목록으로 제공하는 방식이다.
+
+- 리서치 근거: 기업마당 공고는 본문출력파일 `(붙임1) 2026년도 컨설팅 지원사업 시행계획 공고.hwp`와 첨부파일 `(붙임2) 2026년도 컨설팅 지원사업 시행계획 공고 첨부서식.hwp`를 함께 제공한다. 현재 `applicationGuide`는 두 파일명을 개별 필드로만 담고 있어 상담 화면이 신청 준비 체크리스트를 만들 때 두 필드를 다시 조합해야 한다.
+- A안: `applicationGuide`가 원문 공고 파일명과 신청 첨부서식 파일명을 개별 필드로만 반환한다.
+- B안: `applicationGuide`가 `applicationPreparationDocumentLabels` 배열을 함께 반환한다.
+- 성공 기준: B안이 적격 기초/종합 트랙 모두 원문 공고와 첨부서식 파일명을 순서대로 반환하고, 미자격은 기존처럼 `applicationGuide: null`을 유지해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | UI가 두 파일명을 다시 조합 | 신청 준비 문서 목록 제공 | B안이 기초 신청 준비 체크리스트를 즉시 구성 |
+| 적격, 교섭 대상 있음 | 종합 상담도 문서 목록 재조합 필요 | 같은 문서 목록 제공 | B안이 종합 신청 검토의 누락을 줄임 |
+| 미자격 | 준비 문서 목록 노출 예외 처리 필요 | `applicationGuide: null` | B안이 신청 안내 오노출을 방지 |
+
+출처:
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342
+
+## 44차 기능 업그레이드 결정
+
+- `SuccessionConsultingApplicationGuide`에 `applicationPreparationDocumentLabels`를 추가한다.
+- 적격 트랙은 원문 공고 파일명과 신청 첨부서식 파일명을 순서대로 반환한다.
+- 미자격은 기존처럼 신청 안내 객체를 `null`로 유지한다.

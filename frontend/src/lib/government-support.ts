@@ -11,6 +11,7 @@ export interface SuccessionConsultingApplicationGuide {
   applicationFormAttachmentLabel: string;
   applicationMethodLabel: string;
   applicationPeriodLabel: string;
+  applicationPreparationDocumentLabels: string[];
   buyerEligibilityLabel: string;
   contactEmail: string;
   contactLabel: string;
@@ -177,16 +178,23 @@ const SUCCESSION_CONSULTING_TRACK_QUALIFICATION_LABELS: Record<
   basic: "기초컨설팅(M&A 교섭 대상이 없는 기업)",
   comprehensive: "종합컨설팅(M&A 교섭 대상이 있는 기업)",
 };
+const SUCCESSION_CONSULTING_NOTICE_ATTACHMENT_LABEL =
+  "(붙임1) 2026년도 컨설팅 지원사업 시행계획 공고.hwp";
+const SUCCESSION_CONSULTING_APPLICATION_FORM_ATTACHMENT_LABEL =
+  "(붙임2) 2026년도 컨설팅 지원사업 시행계획 공고 첨부서식.hwp";
 const SUCCESSION_CONSULTING_APPLICATION_GUIDE: SuccessionConsultingApplicationGuide = {
-  applicationFormAttachmentLabel:
-    "(붙임2) 2026년도 컨설팅 지원사업 시행계획 공고 첨부서식.hwp",
+  applicationFormAttachmentLabel: SUCCESSION_CONSULTING_APPLICATION_FORM_ATTACHMENT_LABEL,
   applicationMethodLabel: "스마트테크브릿지 온라인 신청",
   applicationPeriodLabel: "예산 소진시까지",
+  applicationPreparationDocumentLabels: [
+    SUCCESSION_CONSULTING_NOTICE_ATTACHMENT_LABEL,
+    SUCCESSION_CONSULTING_APPLICATION_FORM_ATTACHMENT_LABEL,
+  ],
   buyerEligibilityLabel: "중소기업 인수를 희망하는 중소기업 또는 개인",
   contactEmail: "mna@kibo.or.kr",
   contactLabel: "기술보증기금 M&A지원센터",
   contactPhoneNumbers: ["02-3215-5917", "02-3215-5999", "02-3215-5995"],
-  noticeAttachmentLabel: "(붙임1) 2026년도 컨설팅 지원사업 시행계획 공고.hwp",
+  noticeAttachmentLabel: SUCCESSION_CONSULTING_NOTICE_ATTACHMENT_LABEL,
   noticePublishedDate: "2026-04-03",
   noticeSourceUrl:
     "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342",

@@ -164,6 +164,10 @@ describe("evaluateSuccessionConsultingEligibility", () => {
           "(붙임2) 2026년도 컨설팅 지원사업 시행계획 공고 첨부서식.hwp",
         applicationMethodLabel: "스마트테크브릿지 온라인 신청",
         applicationPeriodLabel: "예산 소진시까지",
+        applicationPreparationDocumentLabels: [
+          "(붙임1) 2026년도 컨설팅 지원사업 시행계획 공고.hwp",
+          "(붙임2) 2026년도 컨설팅 지원사업 시행계획 공고 첨부서식.hwp",
+        ],
         buyerEligibilityLabel: "중소기업 인수를 희망하는 중소기업 또는 개인",
         contactEmail: "mna@kibo.or.kr",
         contactLabel: "기술보증기금 M&A지원센터",
@@ -201,6 +205,10 @@ describe("evaluateSuccessionConsultingEligibility", () => {
           "(붙임2) 2026년도 컨설팅 지원사업 시행계획 공고 첨부서식.hwp",
         applicationMethodLabel: "스마트테크브릿지 온라인 신청",
         applicationPeriodLabel: "예산 소진시까지",
+        applicationPreparationDocumentLabels: [
+          "(붙임1) 2026년도 컨설팅 지원사업 시행계획 공고.hwp",
+          "(붙임2) 2026년도 컨설팅 지원사업 시행계획 공고 첨부서식.hwp",
+        ],
         buyerEligibilityLabel: "중소기업 인수를 희망하는 중소기업 또는 개인",
         contactEmail: "mna@kibo.or.kr",
         contactLabel: "기술보증기금 M&A지원센터",
