@@ -8,6 +8,7 @@ export interface SuccessionConsultingEligibilityInput {
 }
 
 export interface SuccessionConsultingApplicationGuide {
+  applicationFormAttachmentLabel: string;
   applicationMethodLabel: string;
   applicationPeriodLabel: string;
   buyerEligibilityLabel: string;
@@ -175,6 +176,8 @@ const SUCCESSION_CONSULTING_TRACK_QUALIFICATION_LABELS: Record<
   comprehensive: "종합컨설팅(M&A 교섭 대상이 있는 기업)",
 };
 const SUCCESSION_CONSULTING_APPLICATION_GUIDE: SuccessionConsultingApplicationGuide = {
+  applicationFormAttachmentLabel:
+    "(붙임2) 2026년도 컨설팅 지원사업 시행계획 공고 첨부서식.hwp",
   applicationMethodLabel: "스마트테크브릿지 온라인 신청",
   applicationPeriodLabel: "예산 소진시까지",
   buyerEligibilityLabel: "중소기업 인수를 희망하는 중소기업 또는 개인",

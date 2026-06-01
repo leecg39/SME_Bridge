@@ -902,3 +902,27 @@
 - `SuccessionConsultingEligibilityResult`에 `trackQualificationLabel`을 추가한다.
 - 기초 트랙은 `기초컨설팅(M&A 교섭 대상이 없는 기업)`, 종합 트랙은 `종합컨설팅(M&A 교섭 대상이 있는 기업)`을 반환한다.
 - 미자격은 비용/신청 안내와 동일하게 `null`을 반환한다.
+
+## 41차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 신청 안내에서 신청 첨부서식 파일명을 보존하는 방식이다.
+
+- 리서치 근거: 기업마당 공고는 첨부파일로 `(붙임2) 2026년도 컨설팅 지원사업 시행계획 공고 첨부서식.hwp`를 제공한다. 현재 `applicationGuide`는 신청 사이트와 문의처는 담고 있지만, 실제 신청 준비에 필요한 첨부서식 파일명은 담지 않아 상담 화면이나 후속 안내가 별도로 매핑해야 한다.
+- A안: `applicationGuide`가 온라인 신청 URL과 문의처만 반환한다.
+- B안: `applicationGuide`가 `applicationFormAttachmentLabel`을 함께 반환한다.
+- 성공 기준: B안이 적격 기초/종합 트랙 모두 `(붙임2) 2026년도 컨설팅 지원사업 시행계획 공고 첨부서식.hwp`를 반환하고, 미자격은 기존처럼 `applicationGuide: null`을 유지해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 신청 사이트 이동 후 서식 재탐색 필요 | 첨부서식 파일명 제공 | B안이 기초 신청 준비를 즉시 실행 가능하게 함 |
+| 적격, 교섭 대상 있음 | 종합 신청도 서식 재탐색 필요 | 같은 첨부서식 파일명 제공 | B안이 종합 상담의 신청 준비 누락을 줄임 |
+| 미자격 | 서식 노출 예외 처리 필요 | `applicationGuide: null` | B안이 신청 안내 오노출을 방지 |
+
+출처:
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342
+
+## 41차 기능 업그레이드 결정
+
+- `SuccessionConsultingApplicationGuide`에 `applicationFormAttachmentLabel`을 추가한다.
+- 적격 트랙은 공식 첨부서식 파일명 `(붙임2) 2026년도 컨설팅 지원사업 시행계획 공고 첨부서식.hwp`를 반환한다.
+- 미자격은 기존처럼 신청 안내 객체를 `null`로 유지한다.
