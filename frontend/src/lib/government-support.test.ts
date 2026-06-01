@@ -102,6 +102,44 @@ describe("evaluateSuccessionConsultingEligibility", () => {
     });
   });
 
+  it("returns the official detailed eligibility notice for all pre-check outcomes", () => {
+    expect(
+      evaluateSuccessionConsultingEligibility({
+        companyAgeYears: 12,
+        hasNegotiationTarget: false,
+        isSme: true,
+        representativeAge: 63,
+      }),
+    ).toMatchObject({
+      eligibilityDetailNoticeLabel: "자세한 지원대상 공고문 참조",
+      track: "basic",
+    });
+
+    expect(
+      evaluateSuccessionConsultingEligibility({
+        companyAgeYears: 8,
+        hasNegotiationTarget: true,
+        isSme: true,
+        representativeAge: 57,
+      }),
+    ).toMatchObject({
+      eligibilityDetailNoticeLabel: "자세한 지원대상 공고문 참조",
+      track: "comprehensive",
+    });
+
+    expect(
+      evaluateSuccessionConsultingEligibility({
+        companyAgeYears: 3,
+        hasNegotiationTarget: false,
+        isSme: false,
+        representativeAge: 51,
+      }),
+    ).toMatchObject({
+      eligibilityDetailNoticeLabel: "자세한 지원대상 공고문 참조",
+      track: "not-eligible",
+    });
+  });
+
   it("returns the official buyer eligibility criteria in the application guide", () => {
     const buyerEligibilityCriteria = {
       acquisitionIntentLabel: "중소기업 인수 희망",

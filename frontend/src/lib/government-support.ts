@@ -53,6 +53,7 @@ export interface SuccessionConsultingEligibilityResult {
   companyContributionRate: number | null;
   companyContributionWon: number | null;
   consultingFeeWon: number | null;
+  eligibilityDetailNoticeLabel: string;
   governmentContributionWon: number | null;
   isEligible: boolean;
   missingRequirements: string[];
@@ -170,6 +171,8 @@ export const SUCCESSION_SUPPORT_CHECK_TASK =
 
 export const SUCCESSION_SUPPORT_RULE_BASE_DATE = "2026-05-31";
 const SUCCESSION_CONSULTING_COMPANY_CONTRIBUTION_RATE = 0.3;
+const SUCCESSION_CONSULTING_ELIGIBILITY_DETAIL_NOTICE_LABEL =
+  "자세한 지원대상 공고문 참조";
 const SUCCESSION_CONSULTING_FEES_WON: Record<
   Exclude<SuccessionConsultingTrack, "not-eligible">,
   number
@@ -292,6 +295,7 @@ export function evaluateSuccessionConsultingEligibility(
     companyContributionRate,
     companyContributionWon,
     consultingFeeWon,
+    eligibilityDetailNoticeLabel: SUCCESSION_CONSULTING_ELIGIBILITY_DETAIL_NOTICE_LABEL,
     governmentContributionWon:
       consultingFeeWon === null || companyContributionWon === null
         ? null

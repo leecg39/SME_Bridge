@@ -1118,3 +1118,27 @@
 - `SuccessionConsultingEligibilityResult`에 `supportScopeByRole`을 추가한다.
 - 적격 트랙은 공식 지원내용을 `seller`와 `buyer`로 분리해 반환한다.
 - 기존 `supportScopeLabel`은 호환성을 위해 유지하고, 미자격은 `supportScopeByRole: null`을 반환한다.
+
+## 50차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 자격 사전진단 결과가 상세 공고 확인 필요성을 함께 안내하는 방식이다.
+
+- 리서치 근거: 기업마당 공고의 지원대상 영역은 매도희망기업·매수희망기업 기준을 요약한 뒤 `※ 자세한 지원대상 공고문 참조`를 별도로 안내한다. 현재 `evaluateSuccessionConsultingEligibility()`는 핵심 기준으로 `isEligible`과 트랙을 판정하지만, 상세 공고 확인 문구가 없어서 화면이 사전진단을 최종 적격 판정처럼 오해시킬 수 있다.
+- A안: 자격 판정 결과가 핵심 기준 통과 여부와 신청 안내만 반환한다.
+- B안: 자격 판정 결과가 `eligibilityDetailNoticeLabel`로 상세 공고 확인 문구를 함께 반환한다.
+- 성공 기준: B안이 적격 기초/종합 및 미자격 결과 모두 `자세한 지원대상 공고문 참조`를 반환해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 기초컨설팅 가능으로만 보임 | 상세 공고 확인 필요 문구 제공 | B안이 사전진단의 한계를 명확화 |
+| 적격, 교섭 대상 있음 | 종합컨설팅 가능으로만 보임 | 같은 상세 공고 확인 문구 제공 | B안이 종합 상담 전 확인 절차를 보강 |
+| 미자격 | 누락 요건만 표시 | 상세 공고 확인 문구도 제공 | B안이 예외·세부요건 확인을 유도 |
+
+출처:
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342
+
+## 50차 기능 업그레이드 결정
+
+- `SuccessionConsultingEligibilityResult`에 `eligibilityDetailNoticeLabel`을 추가한다.
+- 적격과 미자격 모두 공식 안내 문구 `자세한 지원대상 공고문 참조`를 반환한다.
+- 기존 `isEligible`, `missingRequirements`, 트랙 판정은 변경하지 않는다.
