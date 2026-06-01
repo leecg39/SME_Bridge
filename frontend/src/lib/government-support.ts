@@ -14,10 +14,18 @@ export interface SuccessionConsultingBuyerEligibilityCriteria {
   eligibleBuyerTypes: SuccessionConsultingBuyerType[];
 }
 
+export type SuccessionConsultingApplicationPeriodType = "until-budget-exhausted";
+
+export interface SuccessionConsultingApplicationPeriodStatus {
+  label: string;
+  type: SuccessionConsultingApplicationPeriodType;
+}
+
 export interface SuccessionConsultingApplicationGuide {
   applicationFormAttachmentLabel: string;
   applicationMethodLabel: string;
   applicationPeriodLabel: string;
+  applicationPeriodStatus: SuccessionConsultingApplicationPeriodStatus;
   applicationPreparationDocumentLabels: string[];
   applicationSiteCtaLabel: string;
   buyerEligibilityCriteria: SuccessionConsultingBuyerEligibilityCriteria;
@@ -225,6 +233,10 @@ const SUCCESSION_CONSULTING_NOTICE_ATTACHMENT_LABEL =
   "(붙임1) 2026년도 컨설팅 지원사업 시행계획 공고.hwp";
 const SUCCESSION_CONSULTING_APPLICATION_FORM_ATTACHMENT_LABEL =
   "(붙임2) 2026년도 컨설팅 지원사업 시행계획 공고 첨부서식.hwp";
+const SUCCESSION_CONSULTING_APPLICATION_PERIOD_STATUS = {
+  label: "예산 소진시까지",
+  type: "until-budget-exhausted",
+} satisfies SuccessionConsultingApplicationPeriodStatus;
 const SUCCESSION_CONSULTING_BUYER_ELIGIBILITY_CRITERIA: SuccessionConsultingBuyerEligibilityCriteria =
   {
     acquisitionIntentLabel: "중소기업 인수 희망",
@@ -234,6 +246,7 @@ const SUCCESSION_CONSULTING_APPLICATION_GUIDE: SuccessionConsultingApplicationGu
   applicationFormAttachmentLabel: SUCCESSION_CONSULTING_APPLICATION_FORM_ATTACHMENT_LABEL,
   applicationMethodLabel: "온라인 접수 (스마트 테크브릿지)",
   applicationPeriodLabel: "예산 소진시까지",
+  applicationPeriodStatus: SUCCESSION_CONSULTING_APPLICATION_PERIOD_STATUS,
   applicationPreparationDocumentLabels: [
     SUCCESSION_CONSULTING_NOTICE_ATTACHMENT_LABEL,
     SUCCESSION_CONSULTING_APPLICATION_FORM_ATTACHMENT_LABEL,

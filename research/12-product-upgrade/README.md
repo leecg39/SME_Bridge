@@ -1142,3 +1142,27 @@
 - `SuccessionConsultingEligibilityResult`에 `eligibilityDetailNoticeLabel`을 추가한다.
 - 적격과 미자격 모두 공식 안내 문구 `자세한 지원대상 공고문 참조`를 반환한다.
 - 기존 `isEligible`, `missingRequirements`, 트랙 판정은 변경하지 않는다.
+
+## 51차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 신청기간 `예산 소진시까지`를 문구와 상태값으로 함께 제공하는 방식이다.
+
+- 리서치 근거: 기업마당 공고는 신청기간을 `예산 소진시까지`로 안내한다. 현재 `applicationGuide.applicationPeriodLabel`은 이 문구를 보존하지만, 화면이나 상담 로직이 예산 소진형 사업인지 판단하려면 문자열을 다시 해석해야 한다.
+- A안: `applicationGuide`가 `applicationPeriodLabel: "예산 소진시까지"` 문구만 반환한다.
+- B안: `applicationGuide`가 `applicationPeriodStatus`로 `type: "until-budget-exhausted"`와 같은 라벨을 함께 반환한다.
+- 성공 기준: B안이 적격 기초/종합 트랙 모두 `applicationPeriodStatus: { type: "until-budget-exhausted", label: "예산 소진시까지" }`를 반환하고, 미자격은 기존처럼 `applicationGuide: null`을 유지해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 화면이 기간 문구를 파싱 | 예산 소진형 상태값 제공 | B안이 기초 상담 CTA의 긴급도를 구조화 |
+| 적격, 교섭 대상 있음 | 종합 상담도 기간 문구 재해석 필요 | 같은 예산 소진형 상태값 제공 | B안이 종합 상담의 신청 타이밍 안내를 명확화 |
+| 미자격 | 신청기간 상태 노출 예외 처리 필요 | `applicationGuide: null` | B안이 신청 안내 오노출을 방지 |
+
+출처:
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342
+
+## 51차 기능 업그레이드 결정
+
+- `SuccessionConsultingApplicationGuide`에 `applicationPeriodStatus`를 추가한다.
+- 적격 트랙은 공식 신청기간 문구와 함께 예산 소진형 상태값 `until-budget-exhausted`를 반환한다.
+- 기존 `applicationPeriodLabel`은 호환성을 위해 유지하고, 미자격은 기존처럼 `applicationGuide: null`을 유지한다.

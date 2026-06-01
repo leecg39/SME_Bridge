@@ -311,6 +311,53 @@ describe("evaluateSuccessionConsultingEligibility", () => {
     });
   });
 
+  it("returns the official budget-exhaustion application period status", () => {
+    const applicationPeriodStatus = {
+      label: "예산 소진시까지",
+      type: "until-budget-exhausted",
+    };
+
+    expect(
+      evaluateSuccessionConsultingEligibility({
+        companyAgeYears: 12,
+        hasNegotiationTarget: false,
+        isSme: true,
+        representativeAge: 63,
+      }),
+    ).toMatchObject({
+      applicationGuide: {
+        applicationPeriodStatus,
+      },
+      track: "basic",
+    });
+
+    expect(
+      evaluateSuccessionConsultingEligibility({
+        companyAgeYears: 8,
+        hasNegotiationTarget: true,
+        isSme: true,
+        representativeAge: 57,
+      }),
+    ).toMatchObject({
+      applicationGuide: {
+        applicationPeriodStatus,
+      },
+      track: "comprehensive",
+    });
+
+    expect(
+      evaluateSuccessionConsultingEligibility({
+        companyAgeYears: 3,
+        hasNegotiationTarget: false,
+        isSme: false,
+        representativeAge: 51,
+      }),
+    ).toMatchObject({
+      applicationGuide: null,
+      track: "not-eligible",
+    });
+  });
+
   it("returns the official application guide for eligible succession consulting tracks", () => {
     expect(
       evaluateSuccessionConsultingEligibility({
