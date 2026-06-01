@@ -8,6 +8,9 @@ export interface SuccessionConsultingEligibilityInput {
 }
 
 export interface SuccessionConsultingEligibilityResult {
+  companyContributionRate: number | null;
+  companyContributionWon: number | null;
+  consultingFeeWon: number | null;
   isEligible: boolean;
   missingRequirements: string[];
   nextAction: string;
@@ -118,6 +121,14 @@ export const SUCCESSION_SUPPORT_CHECK_TASK =
   "기업승계 M&A 컨설팅 지원사업 자격 확인";
 
 export const SUCCESSION_SUPPORT_RULE_BASE_DATE = "2026-05-31";
+const SUCCESSION_CONSULTING_COMPANY_CONTRIBUTION_RATE = 0.3;
+const SUCCESSION_CONSULTING_FEES_WON: Record<
+  Exclude<SuccessionConsultingTrack, "not-eligible">,
+  number
+> = {
+  basic: 1000000,
+  comprehensive: 10000000,
+};
 export const MNA_ACTIVATION_SUPPORT_SOURCE_URL =
   "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156748624";
 
@@ -135,8 +146,18 @@ export function evaluateSuccessionConsultingEligibility(
       ? "comprehensive"
       : "basic"
     : "not-eligible";
+  const consultingFeeWon =
+    track === "not-eligible" ? null : SUCCESSION_CONSULTING_FEES_WON[track];
+  const companyContributionRate =
+    consultingFeeWon === null ? null : SUCCESSION_CONSULTING_COMPANY_CONTRIBUTION_RATE;
 
   return {
+    companyContributionRate,
+    companyContributionWon:
+      consultingFeeWon === null || companyContributionRate === null
+        ? null
+        : Math.round(consultingFeeWon * companyContributionRate),
+    consultingFeeWon,
     isEligible,
     missingRequirements,
     nextAction: supportNextAction(track),

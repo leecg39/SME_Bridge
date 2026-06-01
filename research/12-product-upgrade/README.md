@@ -493,3 +493,28 @@
 - `MnaRoadmapSupportFundingPlan`에 `cappedProgramCount`, `cappedProgramKeys`, `cappedPhaseCodes`를 추가한다.
 - 한도 적용 여부는 기존 프로그램별 `MnaSupportFundingEstimate.isCapped`를 재사용한다.
 - phase code는 중복 제거해 한 phase에 여러 한도 적용 프로그램이 생겨도 UI가 짧은 목록을 받을 수 있게 한다.
+
+## 24차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 자격 판정 결과에서 비용 부담을 설명하는 방식이다.
+
+- 리서치 근거: 정책브리핑은 기업승계 M&A 컨설팅을 기초컨설팅과 종합컨설팅으로 나누고, 비용은 각각 100만원/1,000만원이며 기업 부담률은 30%라고 공지했다. 또한 사전 준비 이후 가치평가, 실사, 협상, 계약 체결까지 전문기관 지원이 필요하다고 설명한다.
+- A안: `evaluateSuccessionConsultingEligibility()`이 트랙과 다음 행동만 반환해 UI나 상담 로직이 컨설팅 비용표를 별도로 유지한다.
+- B안: 자격 판정 결과가 트랙별 예상 컨설팅 총액, 기업 부담률, 기업 부담액을 함께 반환한다.
+- 성공 기준: B안이 기초컨설팅은 100만원/기업부담 30만원, 종합컨설팅은 1,000만원/기업부담 300만원을 반환하고, 미자격은 비용 필드를 `null`로 반환해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 기초 트랙만 표시 | 총액 100만원, 기업부담 30만원 | B안이 초기 상담에서 부담액을 즉시 설명 |
+| 적격, 교섭 대상 있음 | 종합 트랙만 표시 | 총액 1,000만원, 기업부담 300만원 | B안이 본격 거래 지원 예산을 즉시 산출 |
+| 중소기업/연령/업력 미충족 | 비용 표시 예외 처리 필요 | 비용 필드 `null` | B안이 미자격 상담에서 오해를 방지 |
+
+출처:
+- 대한민국 정책브리핑, "중기부, 기업승계 M&A 컨설팅 지원...140개사 선정", 2026-03-24, https://www.korea.kr/news/policyNewsView.do?newsId=148961348
+- 대한민국 정책브리핑, "중소·벤처 M&A, 준비부터 통합까지 지원한다", 2026-03-12, https://www.korea.kr/briefing/pressReleaseView.do?newsId=156748624
+
+## 24차 기능 업그레이드 결정
+
+- `SuccessionConsultingEligibilityResult`에 `consultingFeeWon`, `companyContributionRate`, `companyContributionWon`을 추가한다.
+- 트랙별 비용은 기초 100만원, 종합 1,000만원, 기업 부담률 30%로 고정해 판정 함수 안에서 함께 계산한다.
+- 미자격은 비용 숫자를 노출하지 않도록 `null`을 반환한다.

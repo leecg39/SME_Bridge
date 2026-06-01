@@ -38,6 +38,36 @@ describe("evaluateSuccessionConsultingEligibility", () => {
     expect(result.nextAction).toContain("종합컨설팅");
   });
 
+  it("returns track-specific consulting fees and company contributions", () => {
+    expect(
+      evaluateSuccessionConsultingEligibility({
+        companyAgeYears: 12,
+        hasNegotiationTarget: false,
+        isSme: true,
+        representativeAge: 63,
+      }),
+    ).toMatchObject({
+      companyContributionRate: 0.3,
+      companyContributionWon: 300000,
+      consultingFeeWon: 1000000,
+      track: "basic",
+    });
+
+    expect(
+      evaluateSuccessionConsultingEligibility({
+        companyAgeYears: 8,
+        hasNegotiationTarget: true,
+        isSme: true,
+        representativeAge: 57,
+      }),
+    ).toMatchObject({
+      companyContributionRate: 0.3,
+      companyContributionWon: 3000000,
+      consultingFeeWon: 10000000,
+      track: "comprehensive",
+    });
+  });
+
   it("returns missing requirements for companies outside the seller criteria", () => {
     const result = evaluateSuccessionConsultingEligibility({
       companyAgeYears: 3,
@@ -48,6 +78,9 @@ describe("evaluateSuccessionConsultingEligibility", () => {
 
     expect(result.isEligible).toBe(false);
     expect(result.track).toBe("not-eligible");
+    expect(result.consultingFeeWon).toBeNull();
+    expect(result.companyContributionRate).toBeNull();
+    expect(result.companyContributionWon).toBeNull();
     expect(result.missingRequirements).toEqual([
       "중소기업 여부 확인",
       "대표자 만 55세 이상",
