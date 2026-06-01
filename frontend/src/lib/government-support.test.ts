@@ -114,6 +114,12 @@ describe("evaluateSuccessionConsultingEligibility", () => {
         noticePublishedDate: "2026-04-03",
         noticeSourceUrl:
           "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342",
+        onlineApplicationContactLabel: "기술보증기금 기술거래보호부 플랫폼팀",
+        onlineApplicationContactPhoneNumbers: [
+          "051-606-7429",
+          "051-606-7431",
+          "051-606-7699",
+        ],
         operatingAgencyLabel: "기술보증기금",
         url: "https://tb.kibo.or.kr",
       },
@@ -137,6 +143,12 @@ describe("evaluateSuccessionConsultingEligibility", () => {
         noticePublishedDate: "2026-04-03",
         noticeSourceUrl:
           "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342",
+        onlineApplicationContactLabel: "기술보증기금 기술거래보호부 플랫폼팀",
+        onlineApplicationContactPhoneNumbers: [
+          "051-606-7429",
+          "051-606-7431",
+          "051-606-7699",
+        ],
         operatingAgencyLabel: "기술보증기금",
         url: "https://tb.kibo.or.kr",
       },
