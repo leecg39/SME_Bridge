@@ -67,6 +67,8 @@ export interface SuccessionConsultingSupportScopeByRole {
 
 export interface SuccessionConsultingTrackApplicationGuide {
   ctaLabel: string;
+  manualAttachmentLabel: string;
+  manualUrl: string;
   url: string;
 }
 
@@ -262,16 +264,35 @@ const SUCCESSION_CONSULTING_TRACK_APPLICATION_CTA_LABELS: Record<
   basic: "기초컨설팅 신청경로",
   comprehensive: "종합컨설팅 신청경로",
 };
+const SUCCESSION_CONSULTING_TRACK_APPLICATION_MANUALS: Record<
+  Exclude<SuccessionConsultingTrack, "not-eligible">,
+  Pick<SuccessionConsultingTrackApplicationGuide, "manualAttachmentLabel" | "manualUrl">
+> = {
+  basic: {
+    manualAttachmentLabel:
+      "2026년도 기초컨설팅 지원사업 신청 매뉴얼_기보 M&A지원센터.pdf",
+    manualUrl:
+      "https://tb.kibo.or.kr/ktbs/cmmn/file/fileDown.do?atchFileNo=2782&atchSer=1",
+  },
+  comprehensive: {
+    manualAttachmentLabel:
+      "2026년도 종합컨설팅 지원사업 신청 매뉴얼_기보 M&A지원센터.pdf",
+    manualUrl:
+      "https://tb.kibo.or.kr/ktbs/cmmn/file/fileDown.do?atchFileNo=2783&atchSer=1",
+  },
+};
 const SUCCESSION_CONSULTING_TRACK_APPLICATION_GUIDES: Record<
   Exclude<SuccessionConsultingTrack, "not-eligible">,
   SuccessionConsultingTrackApplicationGuide
 > = {
   basic: {
     ctaLabel: SUCCESSION_CONSULTING_TRACK_APPLICATION_CTA_LABELS.basic,
+    ...SUCCESSION_CONSULTING_TRACK_APPLICATION_MANUALS.basic,
     url: SUCCESSION_CONSULTING_TRACK_APPLICATION_URLS.basic,
   },
   comprehensive: {
     ctaLabel: SUCCESSION_CONSULTING_TRACK_APPLICATION_CTA_LABELS.comprehensive,
+    ...SUCCESSION_CONSULTING_TRACK_APPLICATION_MANUALS.comprehensive,
     url: SUCCESSION_CONSULTING_TRACK_APPLICATION_URLS.comprehensive,
   },
 };

@@ -401,6 +401,10 @@ describe("evaluateSuccessionConsultingEligibility", () => {
       track: "basic",
       trackApplicationGuide: {
         ctaLabel: "기초컨설팅 신청경로",
+        manualAttachmentLabel:
+          "2026년도 기초컨설팅 지원사업 신청 매뉴얼_기보 M&A지원센터.pdf",
+        manualUrl:
+          "https://tb.kibo.or.kr/ktbs/cmmn/file/fileDown.do?atchFileNo=2782&atchSer=1",
         url: "https://tb.kibo.or.kr/ktbs/bsConsFndApplication/bsConsFndInsert.do?pblictnId=1850&pbrecuNum=1848&bsnsClCd=18&bsnsClNm=%EA%B8%B0%EC%B4%88%EC%BB%A8%EC%84%A4%ED%8C%85&stDt=2026-04-01&enDt=2026-12-31",
       },
     });
@@ -416,6 +420,10 @@ describe("evaluateSuccessionConsultingEligibility", () => {
       track: "comprehensive",
       trackApplicationGuide: {
         ctaLabel: "종합컨설팅 신청경로",
+        manualAttachmentLabel:
+          "2026년도 종합컨설팅 지원사업 신청 매뉴얼_기보 M&A지원센터.pdf",
+        manualUrl:
+          "https://tb.kibo.or.kr/ktbs/cmmn/file/fileDown.do?atchFileNo=2783&atchSer=1",
         url: "https://tb.kibo.or.kr/ktbs/bsConsOvrApplication/bsConsOvrInsert.do?pblictnId=1850&pbrecuNum=1849&bsnsClCd=19&bsnsClNm=%EC%A2%85%ED%95%A9%EC%BB%A8%EC%84%A4%ED%8C%85&stDt=2026-04-01&enDt=2026-12-31",
       },
     });

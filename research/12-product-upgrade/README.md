@@ -1263,3 +1263,27 @@
 - `SuccessionConsultingEligibilityResult`에 `trackApplicationGuide`를 추가한다.
 - 기초/종합 트랙은 공식 신청경로 URL과 CTA 라벨을 `{ url, ctaLabel }`로 묶어 반환한다.
 - 기존 `trackApplicationUrl`, `trackApplicationCtaLabel`은 호환성을 위해 유지하고, 미자격은 `trackApplicationGuide: null`을 반환한다.
+
+## 56차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 자격 판정 결과에서 트랙별 신청경로와 함께 공식 신청 매뉴얼 PDF를 제공하는 방식이다.
+
+- 리서치 근거: 기술보증기금 스마트 테크브릿지 공지는 기초/종합 신청경로뿐 아니라 `2026년도 기초컨설팅 지원사업 신청 매뉴얼_기보 M&A지원센터.pdf`, `2026년도 종합컨설팅 지원사업 신청 매뉴얼_기보 M&A지원센터.pdf`를 별도 첨부파일로 제공한다. 현재 `trackApplicationGuide`는 URL과 CTA 라벨만 묶으므로, 화면이 실제 신청 준비 매뉴얼을 연결하려면 공지 첨부를 별도로 재매핑해야 한다.
+- A안: 적격 결과가 트랙별 신청 URL과 CTA 라벨만 제공한다.
+- B안: 적격 결과의 `trackApplicationGuide`가 신청 URL, CTA 라벨, 트랙별 신청 매뉴얼 라벨과 다운로드 URL을 함께 제공한다.
+- 성공 기준: B안이 기초 트랙은 기초컨설팅 신청 매뉴얼 라벨/다운로드 URL, 종합 트랙은 종합컨설팅 신청 매뉴얼 라벨/다운로드 URL을 반환하고, 미자격은 `trackApplicationGuide: null`을 유지해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 기초 신청 링크만 제공 | 기초 신청 링크와 기초 신청 매뉴얼 PDF 제공 | B안이 신청 준비 단계를 바로 연결 |
+| 적격, 교섭 대상 있음 | 종합 신청 링크만 제공 | 종합 신청 링크와 종합 신청 매뉴얼 PDF 제공 | B안이 종합 신청 준비 오류를 줄임 |
+| 미자격 | 매뉴얼 오노출 위험 | `trackApplicationGuide: null` | B안이 자격 보완 상담과 신청 준비 자료를 분리 |
+
+출처:
+- 기술보증기금 스마트 테크브릿지, "기업승계 M&A 활성화를 위한 2026년도 컨설팅 지원사업 시행계획 공고", 2026-03-25, https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&mode=view&title=%EA%B8%B0%EC%97%85%EC%8A%B9%EA%B3%84+M%26A+%ED%99%9C%EC%84%B1%ED%99%94%EB%A5%BC+%EC%9C%84%ED%95%9C++2026%EB%85%84%EB%8F%84+%EC%BB%A8%EC%84%A4%ED%8C%85+%EC%A7%80%EC%9B%90%EC%82%AC%EC%97%85+%EC%8B%9C%ED%96%89%EA%B3%84%ED%9A%8D+%EA%B3%B5%EA%B3%A0
+
+## 56차 기능 업그레이드 결정
+
+- `SuccessionConsultingTrackApplicationGuide`에 `manualAttachmentLabel`, `manualUrl`을 추가한다.
+- 기초/종합 트랙은 공식 신청 매뉴얼 PDF 첨부 라벨과 다운로드 URL을 신청 가이드에 함께 반환한다.
+- 미자격은 기존처럼 `trackApplicationGuide: null`을 유지한다.
