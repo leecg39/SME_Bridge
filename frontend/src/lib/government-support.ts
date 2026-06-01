@@ -74,6 +74,9 @@ export type MnaPhaseSupportFundingStatus =
   | "no-program";
 
 export interface MnaRoadmapSupportFundingPlan {
+  cappedPhaseCodes: string[];
+  cappedProgramCount: number;
+  cappedProgramKeys: string[];
   completedExpenseProgramCount: number;
   estimatedSupportWon: number;
   expenseAmountWon: number;
@@ -287,6 +290,14 @@ export function estimateMnaRoadmapSupportFunding(
     phaseEstimates,
     (phaseEstimate) => phaseEstimate.missingExpenseProgramKeys.length,
   );
+  const cappedPrograms = phaseEstimates.flatMap((phaseEstimate) =>
+    phaseEstimate.estimates
+      .filter((estimate) => estimate.isCapped)
+      .map((estimate) => ({
+        phaseCode: phaseEstimate.phaseCode,
+        programKey: estimate.programKey,
+      })),
+  );
   const monetaryProgramCount = completedExpenseProgramCount + missingExpenseProgramCount;
   const status = getRoadmapSupportFundingStatus(
     phaseEstimates.length,
@@ -295,6 +306,9 @@ export function estimateMnaRoadmapSupportFunding(
   );
 
   return {
+    cappedPhaseCodes: uniqueValues(cappedPrograms.map((program) => program.phaseCode)),
+    cappedProgramCount: cappedPrograms.length,
+    cappedProgramKeys: cappedPrograms.map((program) => program.programKey),
     completedExpenseProgramCount,
     estimatedSupportWon: sumBy(
       phaseEstimates,
@@ -432,6 +446,10 @@ function getRoadmapSupportFundingNextAction(
 
 function uniqueDocumentKeys(documentKeys: string[]): string[] {
   return Array.from(new Set(documentKeys));
+}
+
+function uniqueValues(values: string[]): string[] {
+  return Array.from(new Set(values));
 }
 
 function sumBy<T>(items: T[], selectValue: (item: T) => number): number {

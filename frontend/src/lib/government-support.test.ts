@@ -274,6 +274,9 @@ describe("estimateMnaRoadmapSupportFunding", () => {
         },
       ),
     ).toMatchObject({
+      cappedPhaseCodes: ["preparation"],
+      cappedProgramCount: 1,
+      cappedProgramKeys: ["valuation-cost-support"],
       completedExpenseProgramCount: 3,
       estimatedSupportWon: 50000000,
       expenseInputPercent: 100,
@@ -303,6 +306,9 @@ describe("estimateMnaRoadmapSupportFunding", () => {
         },
       ),
     ).toMatchObject({
+      cappedPhaseCodes: ["preparation"],
+      cappedProgramCount: 1,
+      cappedProgramKeys: ["valuation-cost-support"],
       completedExpenseProgramCount: 2,
       estimatedSupportWon: 35000000,
       expenseInputPercent: 67,
@@ -321,6 +327,9 @@ describe("estimateMnaRoadmapSupportFunding", () => {
 
   it("returns a no-support state for roadmap sections without support programs", () => {
     expect(estimateMnaRoadmapSupportFunding(["marketing"], {})).toMatchObject({
+      cappedPhaseCodes: [],
+      cappedProgramCount: 0,
+      cappedProgramKeys: [],
       completedExpenseProgramCount: 0,
       estimatedSupportWon: 0,
       expenseInputPercent: 0,

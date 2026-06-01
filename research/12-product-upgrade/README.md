@@ -473,3 +473,23 @@
 - `MnaRoadmapSupportFundingPlan`에 `monetaryProgramCount`, `completedExpenseProgramCount`, `missingExpenseProgramCount`, `expenseInputPercent`를 추가한다.
 - 입력률은 phase별 `estimates`와 `missingExpenseProgramKeys`를 재사용해 계산 원천을 하나로 유지한다.
 - 금전 지원사업이 없는 구간은 입력률 0%로 두고 `no-support-program` 상태와 함께 해석하게 한다.
+
+## 23차 A/B 테스트 기준
+
+비교 대상은 로드맵 지원금 플랜에서 한도 적용 프로그램을 찾는 방식이다.
+
+- A안: 전체 지원금 플랜은 총액과 입력률만 제공하고, UI나 상담 로직이 phase별 `estimates`를 다시 순회해 `isCapped` 프로그램을 찾아야 한다.
+- B안: `estimateMnaRoadmapSupportFunding()`이 한도 적용 프로그램 수, 프로그램 키, phase code를 함께 반환한다.
+- 성공 기준: B안이 기업가치평가 5,000만원 입력 시 `valuation-cost-support`와 `preparation`을 한도 적용으로 표시하고, 지원사업 없는 구간은 빈 배열/0개를 반환해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 준비 5,000만원·실사 4,000만원·PMI 3,000만원 | phase estimate 재순회 필요 | 한도 적용 1개, `valuation-cost-support`, `preparation` | B안이 자부담 증가 원인을 바로 설명 |
+| 준비·실사 입력, PMI 누락 | 누락과 한도 정보를 따로 계산 | 한도 적용 1개와 다음 입력 병목을 함께 제공 | B안이 상담 우선순위를 보존 |
+| 마케팅 phase만 선택 | 한도 적용 없음 판단 필요 | 0개, 빈 배열 | B안이 지원사업 없는 구간을 안전하게 처리 |
+
+## 23차 기능 업그레이드 결정
+
+- `MnaRoadmapSupportFundingPlan`에 `cappedProgramCount`, `cappedProgramKeys`, `cappedPhaseCodes`를 추가한다.
+- 한도 적용 여부는 기존 프로그램별 `MnaSupportFundingEstimate.isCapped`를 재사용한다.
+- phase code는 중복 제거해 한 phase에 여러 한도 적용 프로그램이 생겨도 UI가 짧은 목록을 받을 수 있게 한다.
