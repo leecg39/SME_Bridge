@@ -1046,3 +1046,27 @@
 - `SuccessionConsultingApplicationGuide.applicationMethodLabel`을 공식 공고의 `온라인 접수 (스마트 테크브릿지)`로 정밀화한다.
 - 적격 트랙은 공식 신청 방식 문구를 반환한다.
 - 미자격은 기존처럼 신청 안내 객체를 `null`로 유지한다.
+
+## 47차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 자격 판정 결과에서 공식 매도희망기업 기준값을 구조화해 제공하는 방식이다.
+
+- 리서치 근거: 기업마당 공고는 매도희망기업 지원대상을 `대표자 연령이 만 55세 이상 및 업력 만 5년 이상인 중소기업`으로 명시한다. 현재 자격 판정은 이 기준을 내부 조건과 누락 문구로만 사용하므로, 로드맵이나 상담 화면이 기준 나이·업력·중소기업 조건을 숫자/불리언 형태로 표시하려면 문구를 다시 해석해야 한다.
+- A안: `evaluateSuccessionConsultingEligibility()`가 `missingRequirements` 문구만 반환한다.
+- B안: 자격 판정 결과가 `sellerEligibilityCriteria`를 함께 반환한다.
+- 성공 기준: B안이 적격/미자격 결과 모두 `minimumRepresentativeAgeYears: 55`, `minimumCompanyAgeYears: 5`, `requiresSme: true`를 반환해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 기준값은 문구에서 재해석 필요 | 공식 기준값 객체 제공 | B안이 기초 상담의 자격 설명을 구조화 |
+| 적격, 교섭 대상 있음 | 종합 상담도 기준값 재매핑 필요 | 같은 기준값 객체 제공 | B안이 종합 상담의 자격 근거를 명확화 |
+| 미자격 | 누락 문구만 표시 | 보완해야 할 기준값도 함께 표시 | B안이 자격 보완 안내를 더 정확하게 함 |
+
+출처:
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342
+
+## 47차 기능 업그레이드 결정
+
+- `SuccessionConsultingEligibilityResult`에 `sellerEligibilityCriteria`를 추가한다.
+- 적격과 미자격 모두 공식 기준값 `대표자 만 55세 이상`, `업력 만 5년 이상`, `중소기업`을 구조화해 반환한다.
+- 기존 `missingRequirements` 문구는 유지하되, 판정 조건도 같은 기준 객체를 참조하도록 정리한다.

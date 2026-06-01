@@ -70,6 +70,38 @@ describe("evaluateSuccessionConsultingEligibility", () => {
     });
   });
 
+  it("returns the official seller eligibility criteria for explanation screens", () => {
+    const sellerEligibilityCriteria = {
+      minimumCompanyAgeYears: 5,
+      minimumRepresentativeAgeYears: 55,
+      requiresSme: true,
+    };
+
+    expect(
+      evaluateSuccessionConsultingEligibility({
+        companyAgeYears: 12,
+        hasNegotiationTarget: false,
+        isSme: true,
+        representativeAge: 63,
+      }),
+    ).toMatchObject({
+      sellerEligibilityCriteria,
+      track: "basic",
+    });
+
+    expect(
+      evaluateSuccessionConsultingEligibility({
+        companyAgeYears: 3,
+        hasNegotiationTarget: false,
+        isSme: false,
+        representativeAge: 51,
+      }),
+    ).toMatchObject({
+      sellerEligibilityCriteria,
+      track: "not-eligible",
+    });
+  });
+
   it("returns the official support scope for eligible succession consulting tracks", () => {
     expect(
       evaluateSuccessionConsultingEligibility({

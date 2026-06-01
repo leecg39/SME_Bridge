@@ -29,6 +29,12 @@ export interface SuccessionConsultingApplicationGuide {
   url: string;
 }
 
+export interface SuccessionConsultingSellerEligibilityCriteria {
+  minimumCompanyAgeYears: number;
+  minimumRepresentativeAgeYears: number;
+  requiresSme: boolean;
+}
+
 export interface SuccessionConsultingEligibilityResult {
   applicationGuide: SuccessionConsultingApplicationGuide | null;
   companyContributionRate: number | null;
@@ -39,6 +45,7 @@ export interface SuccessionConsultingEligibilityResult {
   missingRequirements: string[];
   nextAction: string;
   selectionLimitCompanies: number | null;
+  sellerEligibilityCriteria: SuccessionConsultingSellerEligibilityCriteria;
   supportScopeLabel: string | null;
   track: SuccessionConsultingTrack;
   trackQualificationLabel: string | null;
@@ -163,6 +170,11 @@ const SUCCESSION_CONSULTING_SELECTION_LIMITS: Record<
   basic: 100,
   comprehensive: 40,
 };
+const SUCCESSION_CONSULTING_SELLER_ELIGIBILITY_CRITERIA = {
+  minimumCompanyAgeYears: 5,
+  minimumRepresentativeAgeYears: 55,
+  requiresSme: true,
+} satisfies SuccessionConsultingSellerEligibilityCriteria;
 const SUCCESSION_CONSULTING_SUPPORT_SCOPE_LABELS: Record<
   Exclude<SuccessionConsultingTrack, "not-eligible">,
   string
@@ -214,10 +226,17 @@ export const MNA_ACTIVATION_SUPPORT_SOURCE_URL =
 export function evaluateSuccessionConsultingEligibility(
   input: SuccessionConsultingEligibilityInput,
 ): SuccessionConsultingEligibilityResult {
+  const {
+    minimumCompanyAgeYears,
+    minimumRepresentativeAgeYears,
+    requiresSme,
+  } = SUCCESSION_CONSULTING_SELLER_ELIGIBILITY_CRITERIA;
   const missingRequirements = [
-    ...(input.isSme ? [] : ["중소기업 여부 확인"]),
-    ...(input.representativeAge >= 55 ? [] : ["대표자 만 55세 이상"]),
-    ...(input.companyAgeYears >= 5 ? [] : ["업력 만 5년 이상"]),
+    ...(input.isSme || !requiresSme ? [] : ["중소기업 여부 확인"]),
+    ...(input.representativeAge >= minimumRepresentativeAgeYears
+      ? []
+      : ["대표자 만 55세 이상"]),
+    ...(input.companyAgeYears >= minimumCompanyAgeYears ? [] : ["업력 만 5년 이상"]),
   ];
   const isEligible = missingRequirements.length === 0;
   const track = isEligible
@@ -249,6 +268,7 @@ export function evaluateSuccessionConsultingEligibility(
     nextAction: supportNextAction(track),
     selectionLimitCompanies:
       track === "not-eligible" ? null : SUCCESSION_CONSULTING_SELECTION_LIMITS[track],
+    sellerEligibilityCriteria: SUCCESSION_CONSULTING_SELLER_ELIGIBILITY_CRITERIA,
     supportScopeLabel:
       track === "not-eligible" ? null : SUCCESSION_CONSULTING_SUPPORT_SCOPE_LABELS[track],
     track,
