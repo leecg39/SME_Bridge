@@ -662,3 +662,27 @@
 - `SuccessionConsultingApplicationGuide`에 `noticePublishedDate`를 추가한다.
 - 적격 트랙은 ISO 형식 `2026-04-03`을 반환한다.
 - 미자격은 기존처럼 신청 안내 객체를 `null`로 유지한다.
+
+## 31차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 신청 안내에서 문의 이메일을 제공하는 방식이다.
+
+- 리서치 근거: 기업마당 공고는 사업 문의처를 기술보증기금 M&A지원센터 전화번호와 `mna@kibo.or.kr` 이메일로 함께 안내한다. 현재 `applicationGuide`는 전화번호만 제공해, 이메일 문의 CTA나 상담 스냅샷에는 별도 매핑이 필요하다.
+- A안: `applicationGuide`가 문의 전화번호만 반환하고, UI나 상담 로직이 문의 이메일을 따로 보관한다.
+- B안: `applicationGuide`가 `contactEmail`을 함께 반환한다.
+- 성공 기준: B안이 적격 기초/종합 트랙 모두 `mna@kibo.or.kr`을 반환하고, 미자격은 기존처럼 `applicationGuide: null`을 유지해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 이메일 문의 CTA 별도 매핑 필요 | `contactEmail: "mna@kibo.or.kr"` | B안이 기초 상담 문의 채널을 완성 |
+| 적격, 교섭 대상 있음 | 종합 문의 이메일도 별도 매핑 필요 | 같은 이메일 제공 | B안이 종합 상담 문의도 일관화 |
+| 미자격 | 이메일 노출 예외 처리 필요 | `applicationGuide: null` | B안이 신청 안내 오노출을 방지 |
+
+출처:
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342
+
+## 31차 기능 업그레이드 결정
+
+- `SuccessionConsultingApplicationGuide`에 `contactEmail`을 추가한다.
+- 적격 트랙은 사업 문의 이메일 `mna@kibo.or.kr`을 반환한다.
+- 미자격은 기존처럼 신청 안내 객체를 `null`로 유지한다.

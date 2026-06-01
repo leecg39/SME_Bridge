@@ -10,6 +10,7 @@ export interface SuccessionConsultingEligibilityInput {
 export interface SuccessionConsultingApplicationGuide {
   applicationMethodLabel: string;
   applicationPeriodLabel: string;
+  contactEmail: string;
   contactLabel: string;
   contactPhoneNumbers: string[];
   noticePublishedDate: string;
@@ -151,6 +152,7 @@ const SUCCESSION_CONSULTING_SELECTION_LIMITS: Record<
 const SUCCESSION_CONSULTING_APPLICATION_GUIDE: SuccessionConsultingApplicationGuide = {
   applicationMethodLabel: "스마트테크브릿지 온라인 신청",
   applicationPeriodLabel: "예산 소진시까지",
+  contactEmail: "mna@kibo.or.kr",
   contactLabel: "기술보증기금 M&A지원센터",
   contactPhoneNumbers: ["02-3215-5917", "02-3215-5999", "02-3215-5995"],
   noticePublishedDate: "2026-04-03",
