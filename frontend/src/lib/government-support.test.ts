@@ -358,6 +358,54 @@ describe("evaluateSuccessionConsultingEligibility", () => {
     });
   });
 
+  it("returns the official online application method status", () => {
+    const applicationMethodStatus = {
+      channel: "online",
+      label: "온라인 접수 (스마트 테크브릿지)",
+      portalLabel: "스마트 테크브릿지",
+    };
+
+    expect(
+      evaluateSuccessionConsultingEligibility({
+        companyAgeYears: 12,
+        hasNegotiationTarget: false,
+        isSme: true,
+        representativeAge: 63,
+      }),
+    ).toMatchObject({
+      applicationGuide: {
+        applicationMethodStatus,
+      },
+      track: "basic",
+    });
+
+    expect(
+      evaluateSuccessionConsultingEligibility({
+        companyAgeYears: 8,
+        hasNegotiationTarget: true,
+        isSme: true,
+        representativeAge: 57,
+      }),
+    ).toMatchObject({
+      applicationGuide: {
+        applicationMethodStatus,
+      },
+      track: "comprehensive",
+    });
+
+    expect(
+      evaluateSuccessionConsultingEligibility({
+        companyAgeYears: 3,
+        hasNegotiationTarget: false,
+        isSme: false,
+        representativeAge: 51,
+      }),
+    ).toMatchObject({
+      applicationGuide: null,
+      track: "not-eligible",
+    });
+  });
+
   it("returns the official application guide for eligible succession consulting tracks", () => {
     expect(
       evaluateSuccessionConsultingEligibility({

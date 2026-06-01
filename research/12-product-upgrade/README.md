@@ -1166,3 +1166,27 @@
 - `SuccessionConsultingApplicationGuide`에 `applicationPeriodStatus`를 추가한다.
 - 적격 트랙은 공식 신청기간 문구와 함께 예산 소진형 상태값 `until-budget-exhausted`를 반환한다.
 - 기존 `applicationPeriodLabel`은 호환성을 위해 유지하고, 미자격은 기존처럼 `applicationGuide: null`을 유지한다.
+
+## 52차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 신청방법 `온라인 접수 (스마트 테크브릿지)`를 문구와 구조화된 상태값으로 함께 제공하는 방식이다.
+
+- 리서치 근거: 기업마당 공고는 사업신청 방법을 `온라인 접수 (스마트 테크브릿지)`로 안내하고, 사업신청 사이트를 별도 온라인 신청 링크로 제공한다. 현재 `applicationGuide.applicationMethodLabel`과 URL은 보존되어 있지만, 화면이나 상담 로직이 온라인 접수인지 또는 어떤 포털인지 판단하려면 문구를 다시 해석해야 한다.
+- A안: `applicationGuide`가 `applicationMethodLabel`과 신청 URL만 반환한다.
+- B안: `applicationGuide`가 `applicationMethodStatus`로 `channel: "online"`, `portalLabel: "스마트 테크브릿지"`를 함께 반환한다.
+- 성공 기준: B안이 적격 기초/종합 트랙 모두 `applicationMethodStatus: { channel: "online", label: "온라인 접수 (스마트 테크브릿지)", portalLabel: "스마트 테크브릿지" }`를 반환하고, 미자격은 기존처럼 `applicationGuide: null`을 유지해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 화면이 신청방법 문구를 파싱 | 온라인 접수 채널과 포털명 제공 | B안이 기초 상담 신청 CTA를 구조화 |
+| 적격, 교섭 대상 있음 | 종합 상담도 신청 포털명 재해석 필요 | 같은 온라인 접수 상태값 제공 | B안이 종합 상담 신청 안내를 명확화 |
+| 미자격 | 신청방법 상태 노출 예외 처리 필요 | `applicationGuide: null` | B안이 신청 안내 오노출을 방지 |
+
+출처:
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342
+
+## 52차 기능 업그레이드 결정
+
+- `SuccessionConsultingApplicationGuide`에 `applicationMethodStatus`를 추가한다.
+- 적격 트랙은 공식 신청방법 문구와 함께 온라인 접수 채널, 스마트 테크브릿지 포털명을 구조화해 반환한다.
+- 기존 `applicationMethodLabel`, `url`, `applicationSiteCtaLabel`은 호환성을 위해 유지하고, 미자격은 기존처럼 `applicationGuide: null`을 유지한다.

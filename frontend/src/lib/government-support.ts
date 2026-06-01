@@ -14,6 +14,14 @@ export interface SuccessionConsultingBuyerEligibilityCriteria {
   eligibleBuyerTypes: SuccessionConsultingBuyerType[];
 }
 
+export type SuccessionConsultingApplicationChannel = "online";
+
+export interface SuccessionConsultingApplicationMethodStatus {
+  channel: SuccessionConsultingApplicationChannel;
+  label: string;
+  portalLabel: string;
+}
+
 export type SuccessionConsultingApplicationPeriodType = "until-budget-exhausted";
 
 export interface SuccessionConsultingApplicationPeriodStatus {
@@ -24,6 +32,7 @@ export interface SuccessionConsultingApplicationPeriodStatus {
 export interface SuccessionConsultingApplicationGuide {
   applicationFormAttachmentLabel: string;
   applicationMethodLabel: string;
+  applicationMethodStatus: SuccessionConsultingApplicationMethodStatus;
   applicationPeriodLabel: string;
   applicationPeriodStatus: SuccessionConsultingApplicationPeriodStatus;
   applicationPreparationDocumentLabels: string[];
@@ -233,6 +242,11 @@ const SUCCESSION_CONSULTING_NOTICE_ATTACHMENT_LABEL =
   "(붙임1) 2026년도 컨설팅 지원사업 시행계획 공고.hwp";
 const SUCCESSION_CONSULTING_APPLICATION_FORM_ATTACHMENT_LABEL =
   "(붙임2) 2026년도 컨설팅 지원사업 시행계획 공고 첨부서식.hwp";
+const SUCCESSION_CONSULTING_APPLICATION_METHOD_STATUS = {
+  channel: "online",
+  label: "온라인 접수 (스마트 테크브릿지)",
+  portalLabel: "스마트 테크브릿지",
+} satisfies SuccessionConsultingApplicationMethodStatus;
 const SUCCESSION_CONSULTING_APPLICATION_PERIOD_STATUS = {
   label: "예산 소진시까지",
   type: "until-budget-exhausted",
@@ -245,6 +259,7 @@ const SUCCESSION_CONSULTING_BUYER_ELIGIBILITY_CRITERIA: SuccessionConsultingBuye
 const SUCCESSION_CONSULTING_APPLICATION_GUIDE: SuccessionConsultingApplicationGuide = {
   applicationFormAttachmentLabel: SUCCESSION_CONSULTING_APPLICATION_FORM_ATTACHMENT_LABEL,
   applicationMethodLabel: "온라인 접수 (스마트 테크브릿지)",
+  applicationMethodStatus: SUCCESSION_CONSULTING_APPLICATION_METHOD_STATUS,
   applicationPeriodLabel: "예산 소진시까지",
   applicationPeriodStatus: SUCCESSION_CONSULTING_APPLICATION_PERIOD_STATUS,
   applicationPreparationDocumentLabels: [
