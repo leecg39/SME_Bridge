@@ -65,6 +65,11 @@ export interface SuccessionConsultingSupportScopeByRole {
   seller: string;
 }
 
+export interface SuccessionConsultingTrackApplicationGuide {
+  ctaLabel: string;
+  url: string;
+}
+
 export interface SuccessionConsultingEligibilityResult {
   applicationGuide: SuccessionConsultingApplicationGuide | null;
   companyContributionRate: number | null;
@@ -81,6 +86,7 @@ export interface SuccessionConsultingEligibilityResult {
   supportScopeLabel: string | null;
   track: SuccessionConsultingTrack;
   trackApplicationCtaLabel: string | null;
+  trackApplicationGuide: SuccessionConsultingTrackApplicationGuide | null;
   trackApplicationUrl: string | null;
   trackQualificationLabel: string | null;
 }
@@ -256,6 +262,19 @@ const SUCCESSION_CONSULTING_TRACK_APPLICATION_CTA_LABELS: Record<
   basic: "기초컨설팅 신청경로",
   comprehensive: "종합컨설팅 신청경로",
 };
+const SUCCESSION_CONSULTING_TRACK_APPLICATION_GUIDES: Record<
+  Exclude<SuccessionConsultingTrack, "not-eligible">,
+  SuccessionConsultingTrackApplicationGuide
+> = {
+  basic: {
+    ctaLabel: SUCCESSION_CONSULTING_TRACK_APPLICATION_CTA_LABELS.basic,
+    url: SUCCESSION_CONSULTING_TRACK_APPLICATION_URLS.basic,
+  },
+  comprehensive: {
+    ctaLabel: SUCCESSION_CONSULTING_TRACK_APPLICATION_CTA_LABELS.comprehensive,
+    url: SUCCESSION_CONSULTING_TRACK_APPLICATION_URLS.comprehensive,
+  },
+};
 const SUCCESSION_CONSULTING_NOTICE_ATTACHMENT_LABEL =
   "(붙임1) 2026년도 컨설팅 지원사업 시행계획 공고.hwp";
 const SUCCESSION_CONSULTING_APPLICATION_FORM_ATTACHMENT_LABEL =
@@ -359,6 +378,8 @@ export function evaluateSuccessionConsultingEligibility(
     track,
     trackApplicationCtaLabel:
       track === "not-eligible" ? null : SUCCESSION_CONSULTING_TRACK_APPLICATION_CTA_LABELS[track],
+    trackApplicationGuide:
+      track === "not-eligible" ? null : SUCCESSION_CONSULTING_TRACK_APPLICATION_GUIDES[track],
     trackApplicationUrl:
       track === "not-eligible" ? null : SUCCESSION_CONSULTING_TRACK_APPLICATION_URLS[track],
     trackQualificationLabel:
