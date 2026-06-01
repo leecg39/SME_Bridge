@@ -34,6 +34,7 @@ export interface SuccessionConsultingEligibilityResult {
   missingRequirements: string[];
   nextAction: string;
   selectionLimitCompanies: number | null;
+  supportScopeLabel: string | null;
   track: SuccessionConsultingTrack;
 }
 
@@ -156,6 +157,15 @@ const SUCCESSION_CONSULTING_SELECTION_LIMITS: Record<
   basic: 100,
   comprehensive: 40,
 };
+const SUCCESSION_CONSULTING_SUPPORT_SCOPE_LABELS: Record<
+  Exclude<SuccessionConsultingTrack, "not-eligible">,
+  string
+> = {
+  basic:
+    "(매도희망기업) M&A 추진을 위한 기초자료 작성 등에 대한 컨설팅, (매수희망기업) 인수대상 탐색, 자금조달방안 등에 대한 컨설팅",
+  comprehensive:
+    "(매도희망기업) 기업실사, 기업가치평가 등에 대한 컨설팅, (매수희망기업) 인수가격협상, 기업실사 등에 대한 컨설팅",
+};
 const SUCCESSION_CONSULTING_APPLICATION_GUIDE: SuccessionConsultingApplicationGuide = {
   applicationMethodLabel: "스마트테크브릿지 온라인 신청",
   applicationPeriodLabel: "예산 소진시까지",
@@ -214,6 +224,8 @@ export function evaluateSuccessionConsultingEligibility(
     nextAction: supportNextAction(track),
     selectionLimitCompanies:
       track === "not-eligible" ? null : SUCCESSION_CONSULTING_SELECTION_LIMITS[track],
+    supportScopeLabel:
+      track === "not-eligible" ? null : SUCCESSION_CONSULTING_SUPPORT_SCOPE_LABELS[track],
     track,
   };
 }

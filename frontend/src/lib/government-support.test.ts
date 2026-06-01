@@ -70,6 +70,34 @@ describe("evaluateSuccessionConsultingEligibility", () => {
     });
   });
 
+  it("returns the official support scope for eligible succession consulting tracks", () => {
+    expect(
+      evaluateSuccessionConsultingEligibility({
+        companyAgeYears: 12,
+        hasNegotiationTarget: false,
+        isSme: true,
+        representativeAge: 63,
+      }),
+    ).toMatchObject({
+      supportScopeLabel:
+        "(매도희망기업) M&A 추진을 위한 기초자료 작성 등에 대한 컨설팅, (매수희망기업) 인수대상 탐색, 자금조달방안 등에 대한 컨설팅",
+      track: "basic",
+    });
+
+    expect(
+      evaluateSuccessionConsultingEligibility({
+        companyAgeYears: 8,
+        hasNegotiationTarget: true,
+        isSme: true,
+        representativeAge: 57,
+      }),
+    ).toMatchObject({
+      supportScopeLabel:
+        "(매도희망기업) 기업실사, 기업가치평가 등에 대한 컨설팅, (매수희망기업) 인수가격협상, 기업실사 등에 대한 컨설팅",
+      track: "comprehensive",
+    });
+  });
+
   it("returns the track-specific selection limit for eligible succession consulting tracks", () => {
     expect(
       evaluateSuccessionConsultingEligibility({
@@ -178,6 +206,7 @@ describe("evaluateSuccessionConsultingEligibility", () => {
     expect(result.governmentContributionWon).toBeNull();
     expect(result.applicationGuide).toBeNull();
     expect(result.selectionLimitCompanies).toBeNull();
+    expect(result.supportScopeLabel).toBeNull();
     expect(result.missingRequirements).toEqual([
       "중소기업 여부 확인",
       "대표자 만 55세 이상",
