@@ -177,6 +177,50 @@ describe("evaluateSuccessionConsultingEligibility", () => {
     });
   });
 
+  it("returns the official support scope split by seller and buyer roles", () => {
+    expect(
+      evaluateSuccessionConsultingEligibility({
+        companyAgeYears: 12,
+        hasNegotiationTarget: false,
+        isSme: true,
+        representativeAge: 63,
+      }),
+    ).toMatchObject({
+      supportScopeByRole: {
+        buyer: "인수대상 탐색, 자금조달방안 등에 대한 컨설팅",
+        seller: "M&A 추진을 위한 기초자료 작성 등에 대한 컨설팅",
+      },
+      track: "basic",
+    });
+
+    expect(
+      evaluateSuccessionConsultingEligibility({
+        companyAgeYears: 8,
+        hasNegotiationTarget: true,
+        isSme: true,
+        representativeAge: 57,
+      }),
+    ).toMatchObject({
+      supportScopeByRole: {
+        buyer: "인수가격협상, 기업실사 등에 대한 컨설팅",
+        seller: "기업실사, 기업가치평가 등에 대한 컨설팅",
+      },
+      track: "comprehensive",
+    });
+
+    expect(
+      evaluateSuccessionConsultingEligibility({
+        companyAgeYears: 3,
+        hasNegotiationTarget: false,
+        isSme: false,
+        representativeAge: 51,
+      }),
+    ).toMatchObject({
+      supportScopeByRole: null,
+      track: "not-eligible",
+    });
+  });
+
   it("returns the official qualification label for eligible succession consulting tracks", () => {
     expect(
       evaluateSuccessionConsultingEligibility({

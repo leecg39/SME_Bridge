@@ -1094,3 +1094,27 @@
 - `SuccessionConsultingApplicationGuide`에 `buyerEligibilityCriteria`를 추가한다.
 - 적격 트랙은 공식 매수희망기업 기준인 `중소기업 또는 개인`, `중소기업 인수 희망`을 구조화해 반환한다.
 - 미자격은 기존처럼 신청 안내 객체를 `null`로 유지한다.
+
+## 49차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 지원내용을 매도희망기업과 매수희망기업 역할별로 구조화해 제공하는 방식이다.
+
+- 리서치 근거: 기업마당 공고의 지원내용은 기초컨설팅과 종합컨설팅 각각에서 `(매도희망기업)`과 `(매수희망기업)` 항목을 분리해 설명한다. 현재 `supportScopeLabel`은 두 역할의 설명을 한 문장으로 합쳐 반환하므로, 화면이 매도자/매수자 탭이나 상담 스냅샷을 만들려면 괄호 문구를 다시 파싱해야 한다.
+- A안: `supportScopeLabel` 단일 문구만 반환한다.
+- B안: `supportScopeByRole`로 `seller`와 `buyer` 지원내용을 함께 반환한다.
+- 성공 기준: B안이 적격 기초/종합 트랙에서 공식 역할별 지원내용을 각각 반환하고, 미자격은 `supportScopeByRole: null`을 유지해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 기초 지원내용을 한 문장에서 재분리 필요 | 매도자 기초자료 작성, 매수자 인수대상 탐색/자금조달 안내를 별도 제공 | B안이 기초 상담 역할별 안내를 정확화 |
+| 적격, 교섭 대상 있음 | 종합 지원내용도 한 문장에서 재분리 필요 | 매도자 실사/가치평가, 매수자 가격협상/실사 안내를 별도 제공 | B안이 종합 상담 역할별 안내를 정확화 |
+| 미자격 | 지원내용 노출 예외 처리 필요 | `supportScopeByRole: null` | B안이 지원내용 오노출을 방지 |
+
+출처:
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342
+
+## 49차 기능 업그레이드 결정
+
+- `SuccessionConsultingEligibilityResult`에 `supportScopeByRole`을 추가한다.
+- 적격 트랙은 공식 지원내용을 `seller`와 `buyer`로 분리해 반환한다.
+- 기존 `supportScopeLabel`은 호환성을 위해 유지하고, 미자격은 `supportScopeByRole: null`을 반환한다.

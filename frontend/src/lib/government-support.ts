@@ -43,6 +43,11 @@ export interface SuccessionConsultingSellerEligibilityCriteria {
   requiresSme: boolean;
 }
 
+export interface SuccessionConsultingSupportScopeByRole {
+  buyer: string;
+  seller: string;
+}
+
 export interface SuccessionConsultingEligibilityResult {
   applicationGuide: SuccessionConsultingApplicationGuide | null;
   companyContributionRate: number | null;
@@ -54,6 +59,7 @@ export interface SuccessionConsultingEligibilityResult {
   nextAction: string;
   selectionLimitCompanies: number | null;
   sellerEligibilityCriteria: SuccessionConsultingSellerEligibilityCriteria;
+  supportScopeByRole: SuccessionConsultingSupportScopeByRole | null;
   supportScopeLabel: string | null;
   track: SuccessionConsultingTrack;
   trackQualificationLabel: string | null;
@@ -192,6 +198,19 @@ const SUCCESSION_CONSULTING_SUPPORT_SCOPE_LABELS: Record<
   comprehensive:
     "(매도희망기업) 기업실사, 기업가치평가 등에 대한 컨설팅, (매수희망기업) 인수가격협상, 기업실사 등에 대한 컨설팅",
 };
+const SUCCESSION_CONSULTING_SUPPORT_SCOPE_BY_ROLE: Record<
+  Exclude<SuccessionConsultingTrack, "not-eligible">,
+  SuccessionConsultingSupportScopeByRole
+> = {
+  basic: {
+    buyer: "인수대상 탐색, 자금조달방안 등에 대한 컨설팅",
+    seller: "M&A 추진을 위한 기초자료 작성 등에 대한 컨설팅",
+  },
+  comprehensive: {
+    buyer: "인수가격협상, 기업실사 등에 대한 컨설팅",
+    seller: "기업실사, 기업가치평가 등에 대한 컨설팅",
+  },
+};
 const SUCCESSION_CONSULTING_TRACK_QUALIFICATION_LABELS: Record<
   Exclude<SuccessionConsultingTrack, "not-eligible">,
   string
@@ -283,6 +302,8 @@ export function evaluateSuccessionConsultingEligibility(
     selectionLimitCompanies:
       track === "not-eligible" ? null : SUCCESSION_CONSULTING_SELECTION_LIMITS[track],
     sellerEligibilityCriteria: SUCCESSION_CONSULTING_SELLER_ELIGIBILITY_CRITERIA,
+    supportScopeByRole:
+      track === "not-eligible" ? null : SUCCESSION_CONSULTING_SUPPORT_SCOPE_BY_ROLE[track],
     supportScopeLabel:
       track === "not-eligible" ? null : SUCCESSION_CONSULTING_SUPPORT_SCOPE_LABELS[track],
     track,
