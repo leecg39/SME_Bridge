@@ -56,6 +56,7 @@ export interface SuccessionConsultingContactChannel {
 export interface SuccessionConsultingOfficialNoticeSource {
   label: string;
   publishedDate: string;
+  title: string;
   url: string;
 }
 
@@ -356,6 +357,7 @@ const SUCCESSION_CONSULTING_OFFICIAL_NOTICE_URL =
 const SUCCESSION_CONSULTING_OFFICIAL_NOTICE_SOURCE = {
   label: "스마트 테크브릿지 공지사항",
   publishedDate: "2026-03-25",
+  title: "기업승계 M&A 활성화를 위한 2026년도 컨설팅 지원사업 시행계획 공고",
   url: SUCCESSION_CONSULTING_OFFICIAL_NOTICE_URL,
 } satisfies SuccessionConsultingOfficialNoticeSource;
 const SUCCESSION_CONSULTING_NOTICE_ATTACHMENT_URL =

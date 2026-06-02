@@ -1457,3 +1457,27 @@
 - `SuccessionConsultingApplicationGuide`에 `officialNoticeSource`를 추가한다.
 - 적격 트랙은 스마트 테크브릿지 원공지 라벨, 작성일 `2026-03-25`, 원문 URL을 구조화해 반환한다.
 - 기존 기업마당 `noticeSourceUrl`과 `noticePublishedDate`는 호환성을 위해 유지하고, 미자격은 기존처럼 `applicationGuide: null`을 유지한다.
+
+## 64차 A/B 테스트 기준
+
+비교 대상은 스마트 테크브릿지 원공지 출처를 라벨·작성일·URL만 제공할지, 원공지 제목까지 함께 제공할지이다.
+
+- 리서치 근거: 스마트 테크브릿지 원공지는 제목을 `기업승계 M&A 활성화를 위한 2026년도 컨설팅 지원사업 시행계획 공고`로 표시한다. 현재 `officialNoticeSource`는 라벨, 작성일, URL만 제공하므로 화면이나 상담 로그가 공고 제목을 표시하려면 URL의 `title` 파라미터를 디코딩하거나 별도 상수를 다시 유지해야 한다.
+- A안: `officialNoticeSource`가 `label`, `publishedDate`, `url`만 반환한다.
+- B안: `officialNoticeSource.title`이 원공지 제목을 함께 반환한다.
+- 성공 기준: B안이 기초/종합 적격 결과 모두 `officialNoticeSource.title: "기업승계 M&A 활성화를 위한 2026년도 컨설팅 지원사업 시행계획 공고"`를 반환하고, 미자격은 기존처럼 `applicationGuide: null`을 유지해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | URL 또는 라벨만 표시 | 원공지 제목까지 표시 | B안이 기초 신청 출처를 사람이 읽기 쉬운 제목으로 고정 |
+| 적격, 교섭 대상 있음 | 종합 매뉴얼 출처 제목 조합 필요 | 같은 원공지 제목 제공 | B안이 종합 신청 안내의 공고 식별성을 보강 |
+| 미자격 | 공고 제목 오노출 위험 | `applicationGuide: null` | B안이 자격 보완 상담과 신청 출처 안내를 분리 |
+
+출처:
+- 스마트 테크브릿지, "기업승계 M&A 활성화를 위한 2026년도 컨설팅 지원사업 시행계획 공고", 2026-03-25, https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&mode=view&title=%EA%B8%B0%EC%97%85%EC%8A%B9%EA%B3%84+M%26A+%ED%99%9C%EC%84%B1%ED%99%94%EB%A5%BC+%EC%9C%84%ED%95%9C++2026%EB%85%84%EB%8F%84+%EC%BB%A8%EC%84%A4%ED%8C%85+%EC%A7%80%EC%9B%90%EC%82%AC%EC%97%85+%EC%8B%9C%ED%96%89%EA%B3%84%ED%9A%8D+%EA%B3%B5%EA%B3%A0
+
+## 64차 기능 업그레이드 결정
+
+- `SuccessionConsultingOfficialNoticeSource`에 `title`을 추가한다.
+- 적격 트랙은 스마트 테크브릿지 원공지 제목을 URL과 함께 구조화해 반환한다.
+- 기존 라벨/작성일/URL 필드는 유지하고, 미자격은 기존처럼 `applicationGuide: null`을 유지한다.
