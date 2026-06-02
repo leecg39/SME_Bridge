@@ -62,6 +62,7 @@ export interface DashboardConsultationRow {
   id: string;
   patasosStatusLabel: string;
   requestStatusLabel: string;
+  savingsLabel: string | null;
   selectedScenarioLabel: string | null;
   title: string;
 }
@@ -121,11 +122,13 @@ export function buildDashboardConsultationRows(
 ): DashboardConsultationRow[] {
   return consultations.map((item) => {
     const selectedScenario = selectedTaxScenarioFromSnapshot(item.snapshot_json);
+    const savingsLabel = taxSavingsLabelFromSnapshot(item.snapshot_json);
 
     return {
       id: item.id,
       patasosStatusLabel: consultationStatusLabel(item.patasos_sync_status),
       requestStatusLabel: consultationRequestStatusLabel(item.status),
+      savingsLabel: savingsLabel ? `예상 절세 효과: ${savingsLabel}` : null,
       selectedScenarioLabel: selectedScenario ? `선택 전략: ${selectedScenario}` : null,
       title: item.title,
     };
@@ -236,4 +239,13 @@ function selectedTaxScenarioFromSnapshot(snapshot: Record<string, JsonValue>): s
       : null;
 
   return typeof tax?.selectedScenario === "string" ? tax.selectedScenario : null;
+}
+
+function taxSavingsLabelFromSnapshot(snapshot: Record<string, JsonValue>): string | null {
+  const tax =
+    snapshot.tax !== null && !Array.isArray(snapshot.tax) && typeof snapshot.tax === "object"
+      ? snapshot.tax
+      : null;
+
+  return typeof tax?.savingsLabel === "string" ? tax.savingsLabel : null;
 }

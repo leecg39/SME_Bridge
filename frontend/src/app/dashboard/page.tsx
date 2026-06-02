@@ -138,6 +138,7 @@ export default function DashboardPage() {
                   <td>
                     <strong>{item.title}</strong>
                     {item.selectedScenarioLabel ? <p>{item.selectedScenarioLabel}</p> : null}
+                    {item.savingsLabel ? <p>{item.savingsLabel}</p> : null}
                   </td>
                   <td>{item.requestStatusLabel}</td>
                   <td>{item.patasosStatusLabel}</td>

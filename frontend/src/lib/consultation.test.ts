@@ -93,6 +93,7 @@ describe("buildDashboardConsultationRows", () => {
           tax: {
             selectedScenario: "혼합 전략",
             selectedScenarioId: "hybrid",
+            savingsLabel: "9.6억",
           },
         },
         status: "pending",
@@ -105,6 +106,7 @@ describe("buildDashboardConsultationRows", () => {
       id: "consultation-1",
       patasosStatusLabel: "접수됨",
       requestStatusLabel: "접수됨",
+      savingsLabel: "예상 절세 효과: 9.6억",
       selectedScenarioLabel: "선택 전략: 혼합 전략",
       title: "기업승계 세무 상담 요청",
     });
