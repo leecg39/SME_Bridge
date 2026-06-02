@@ -50,6 +50,7 @@ describe("evaluateSuccessionConsultingEligibility", () => {
       companyContributionRate: 0.3,
       companyContributionWon: 300000,
       consultingFeeWon: 1000000,
+      governmentContributionRate: 0.7,
       governmentContributionWon: 700000,
       track: "basic",
     });
@@ -65,6 +66,7 @@ describe("evaluateSuccessionConsultingEligibility", () => {
       companyContributionRate: 0.3,
       companyContributionWon: 3000000,
       consultingFeeWon: 10000000,
+      governmentContributionRate: 0.7,
       governmentContributionWon: 7000000,
       track: "comprehensive",
     });
@@ -655,6 +657,7 @@ describe("evaluateSuccessionConsultingEligibility", () => {
     expect(result.consultingFeeWon).toBeNull();
     expect(result.companyContributionRate).toBeNull();
     expect(result.companyContributionWon).toBeNull();
+    expect(result.governmentContributionRate).toBeNull();
     expect(result.governmentContributionWon).toBeNull();
     expect(result.applicationGuide).toBeNull();
     expect(result.selectionLimitCompanies).toBeNull();

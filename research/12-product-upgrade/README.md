@@ -1312,3 +1312,27 @@
 - 적격 트랙은 공고문 HWP와 첨부서식 HWP를 `{ label, url }` 배열로 반환한다.
 - 트랙별 신청 매뉴얼 URL도 공식 공지의 첨부 다운로드 경로와 일치시킨다.
 - 미자격은 기존처럼 `applicationGuide: null`을 유지한다.
+
+## 58차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 비용 안내에서 정부 지원률을 화면이 재계산할지, 자격 판정 결과가 공식 부담률 기준으로 함께 제공할지이다.
+
+- 리서치 근거: 대한민국 정책브리핑은 2026년 기업승계 M&A 컨설팅 비용을 기초컨설팅 100만 원, 종합컨설팅 1,000만 원으로 설명하고, 기업이 비용의 30%를 부담한다고 밝혔다. 현재 결과는 기업 부담률 30%와 정부 지원액을 제공하지만, 정부 지원률 70%는 화면이나 상담 로직이 `1 - companyContributionRate`로 다시 계산해야 한다.
+- A안: `evaluateSuccessionConsultingEligibility()`이 기업 부담률과 정부 지원액만 반환한다.
+- B안: 자격 판정 결과가 `governmentContributionRate`를 함께 반환한다.
+- 성공 기준: B안이 기초/종합 트랙 모두 `governmentContributionRate: 0.7`을 반환하고, 미자격은 `governmentContributionRate: null`을 반환해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 정부 지원률을 화면이 재계산 | 기초 70% 지원률 제공 | B안이 기초 비용 안내를 안정화 |
+| 적격, 교섭 대상 있음 | 종합 지원률도 재계산 필요 | 종합 70% 지원률 제공 | B안이 종합 비용 안내를 안정화 |
+| 미자격 | 비용지원률 오노출 위험 | `governmentContributionRate: null` | B안이 자격 보완 상담과 지원률 안내를 분리 |
+
+출처:
+- 대한민국 정책브리핑, "중기부, 기업승계 M&A 컨설팅 지원...140개사 선정", 2026-03-24, https://www.korea.kr/news/policyNewsView.do?newsId=148961348&pWise=main&pWiseMain=R5
+
+## 58차 기능 업그레이드 결정
+
+- `SuccessionConsultingEligibilityResult`에 `governmentContributionRate`를 추가한다.
+- 적격 트랙은 기업 부담률 30%에 대응하는 정부 지원률 70%를 함께 반환한다.
+- 미자격은 기존 비용 필드 원칙과 같이 `governmentContributionRate: null`을 반환한다.
