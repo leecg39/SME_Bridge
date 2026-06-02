@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   buildConsultationPayload,
+  mergeValuationAndTaxIntoConsultationSnapshot,
   mergeValuationIntoConsultationSnapshot,
   consultationStatusLabel,
 } from "./consultation";
@@ -96,6 +97,46 @@ describe("mergeValuationIntoConsultationSnapshot", () => {
       scenario: "중립 EV/EBITDA 4.8x",
       calculatedAt: "2026-06-02T17:42:33.341Z",
       sourceFileUrl: "removed-by-sanitizer",
+    });
+  });
+});
+
+describe("mergeValuationAndTaxIntoConsultationSnapshot", () => {
+  it("updates the consultation snapshot tax summary from the latest valuation middle range", () => {
+    const snapshot = mergeValuationAndTaxIntoConsultationSnapshot(
+      {
+        valuation: {
+          ebitda: 950000000,
+          rangeLow: 3500000000,
+          rangeHigh: 5200000000,
+        },
+        tax: {
+          bestScenario: "가업승계 증여특례 검토",
+          estimatedSaving: 420000000,
+        },
+      },
+      {
+        calculatedAt: "2026-06-02T17:42:33.341Z",
+        normalizedEbitda: 1100000000,
+        ownerSalaryAdjustment: true,
+        rangeHigh: 6050000000,
+        rangeLow: 4070000000,
+        rangeMid: 5280000000,
+      },
+    );
+
+    expect(snapshot.valuation).toMatchObject({
+      rangeLow: 4070000000,
+      rangeMid: 5280000000,
+      rangeHigh: 6050000000,
+    });
+    expect(snapshot.tax).toEqual({
+      baselineScenarioId: "sale",
+      bestScenario: "증여특례",
+      bestScenarioId: "gift",
+      estimatedSaving: 955360000,
+      savingsLabel: "9.6억",
+      summaryNote: "양도소득세 대비 증여특례 검토 시",
     });
   });
 });

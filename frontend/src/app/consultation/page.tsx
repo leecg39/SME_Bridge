@@ -8,7 +8,7 @@ import {
   buildConsultationPayload,
   consultationTypeLabels,
   type JsonValue,
-  mergeValuationIntoConsultationSnapshot,
+  mergeValuationAndTaxIntoConsultationSnapshot,
   type ConsultationType,
 } from "@/lib/consultation";
 import { demoCompany, progressSnapshot, recommendedTypeFromPath } from "@/lib/demo-data";
@@ -49,11 +49,13 @@ export default function ConsultationPage() {
 
   useEffect(() => {
     const storedValuation = readStoredValuation();
-    setSnapshot(mergeValuationIntoConsultationSnapshot(progressSnapshot, storedValuation));
+    setSnapshot(mergeValuationAndTaxIntoConsultationSnapshot(progressSnapshot, storedValuation));
     getValuationProgress()
       .then((progress) => {
         if (progress.result) {
-          setSnapshot(mergeValuationIntoConsultationSnapshot(progressSnapshot, progress.result));
+          setSnapshot(
+            mergeValuationAndTaxIntoConsultationSnapshot(progressSnapshot, progress.result),
+          );
         }
       })
       .catch(() => undefined);
@@ -105,6 +107,12 @@ export default function ConsultationPage() {
     !Array.isArray(snapshot.valuation) &&
     typeof snapshot.valuation === "object"
       ? snapshot.valuation
+      : null;
+  const taxSnapshot =
+    snapshot.tax !== null &&
+    !Array.isArray(snapshot.tax) &&
+    typeof snapshot.tax === "object"
+      ? snapshot.tax
       : null;
 
   return (
@@ -213,6 +221,14 @@ export default function ConsultationPage() {
             <p>
               <strong>로드맵</strong>
               <span>Phase 1 매각 준비, 24%</span>
+            </p>
+            <p>
+              <strong>예상 절세 효과</strong>
+              <span>
+                {typeof taxSnapshot?.savingsLabel === "string"
+                  ? taxSnapshot.savingsLabel
+                  : "4.2억"}
+              </span>
             </p>
           </div>
           <label className="checkbox-row">

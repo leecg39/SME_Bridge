@@ -2,6 +2,7 @@ import {
   deriveValuationMultiples,
   type ValuationResult,
 } from "./valuation";
+import { buildTaxSavingsSummary, compareTaxScenarios } from "./tax";
 
 export type ConsultationType = "tax" | "legal" | "valuation" | "mna" | "general";
 export type PatasosSyncStatus = "not_requested" | "pending" | "sent" | "failed";
@@ -129,6 +130,29 @@ export function mergeValuationIntoConsultationSnapshot(
       rangeHigh: valuation.rangeHigh,
       scenario: `중립 EV/EBITDA ${multiples.mid}x`,
       calculatedAt: valuation.calculatedAt,
+    },
+  };
+}
+
+export function mergeValuationAndTaxIntoConsultationSnapshot(
+  snapshot: Record<string, JsonValue>,
+  valuation: ValuationResult,
+): Record<string, JsonValue> {
+  const mergedSnapshot = mergeValuationIntoConsultationSnapshot(snapshot, valuation);
+  const taxSummary = buildTaxSavingsSummary(valuation.rangeMid);
+  const comparison = compareTaxScenarios(valuation.rangeMid);
+  const bestRow =
+    comparison.rows.find((row) => row.id === comparison.bestScenarioId) ?? comparison.rows[0]!;
+
+  return {
+    ...mergedSnapshot,
+    tax: {
+      baselineScenarioId: taxSummary.baselineScenarioId,
+      bestScenario: bestRow.name,
+      bestScenarioId: taxSummary.bestScenarioId,
+      estimatedSaving: comparison.maxSavingsAgainstBaseline,
+      savingsLabel: taxSummary.label,
+      summaryNote: taxSummary.note,
     },
   };
 }
