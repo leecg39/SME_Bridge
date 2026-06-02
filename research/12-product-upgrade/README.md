@@ -1384,3 +1384,27 @@
 - `SuccessionConsultingEligibilityResult`에 `selectionPlan`을 추가한다.
 - 적격 트랙은 총 선정 규모 140개사, 현재 트랙 한도, 기초/종합 트랙별 한도를 구조화해 반환한다.
 - 기존 `selectionLimitCompanies`는 호환성을 위해 유지하고, 미자격은 `selectionPlan: null`을 반환한다.
+
+## 61차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 문의처를 개별 라벨/전화번호 필드로만 제공할지, 문의 목적별 연락 채널 배열로 함께 제공할지이다.
+
+- 리서치 근거: 기업마당 공고는 문의처를 `(사업 문의) 기술보증기금 M&A지원센터 02-3215-5917, 5999, 5995, mna@kibo.or.kr`와 `(온라인 신청 문의) 기술보증기금 기술거래보호부 플랫폼팀 051-606-7429, 7431, 7699`로 구분한다. 현재 `applicationGuide`는 사업 문의와 온라인 신청 문의 필드를 따로 반환하지만, 화면이나 상담 스냅샷이 목적별 문의처 목록을 만들려면 필드명을 다시 해석해야 한다.
+- A안: `applicationGuide`가 `contactLabel`, `contactPhoneNumbers`, `contactEmail`, `onlineApplicationContactLabel`, `onlineApplicationContactPhoneNumbers`를 개별 필드로만 제공한다.
+- B안: `applicationGuide.contactChannels`가 `business-inquiry`와 `online-application` 목적별 연락 채널을 배열로 제공한다.
+- 성공 기준: B안이 기초/종합 적격 결과 모두 사업 문의 채널은 M&A지원센터 전화 3개와 이메일, 온라인 신청 문의 채널은 플랫폼팀 전화 3개와 `email: null`을 반환하고, 미자격은 `applicationGuide: null`을 유지해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 문의처 필드명을 화면이 해석 | 목적별 연락 채널 2개 제공 | B안이 기초 신청 문의 라우팅을 명확화 |
+| 적격, 교섭 대상 있음 | 종합 상담도 문의처 조합 필요 | 같은 목적별 연락 채널 제공 | B안이 종합 신청 문의 라우팅을 명확화 |
+| 미자격 | 신청 문의처 오노출 위험 | `applicationGuide: null` | B안이 자격 보완 상담과 신청 문의를 분리 |
+
+출처:
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/web/lay1/bbs/S1T122C128/AS/74/view.do?pblancId=PBLN_000000000120342
+
+## 61차 기능 업그레이드 결정
+
+- `SuccessionConsultingApplicationGuide`에 `contactChannels`를 추가한다.
+- 적격 트랙은 사업 문의와 온라인 신청 문의를 목적별 `{ type, purposeLabel, label, phoneNumbers, email }` 객체로 반환한다.
+- 기존 개별 문의처 필드는 호환성을 위해 유지하고, 미자격은 기존처럼 `applicationGuide: null`을 유지한다.

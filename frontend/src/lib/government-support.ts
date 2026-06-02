@@ -34,6 +34,18 @@ export interface SuccessionConsultingApplicationPreparationDocument {
   url: string;
 }
 
+export type SuccessionConsultingContactChannelType =
+  | "business-inquiry"
+  | "online-application";
+
+export interface SuccessionConsultingContactChannel {
+  email: string | null;
+  label: string;
+  phoneNumbers: string[];
+  purposeLabel: string;
+  type: SuccessionConsultingContactChannelType;
+}
+
 export interface SuccessionConsultingApplicationGuide {
   applicationFormAttachmentLabel: string;
   applicationMethodLabel: string;
@@ -45,6 +57,7 @@ export interface SuccessionConsultingApplicationGuide {
   applicationSiteCtaLabel: string;
   buyerEligibilityCriteria: SuccessionConsultingBuyerEligibilityCriteria;
   buyerEligibilityLabel: string;
+  contactChannels: SuccessionConsultingContactChannel[];
   contactEmail: string;
   contactLabel: string;
   contactPhoneNumbers: string[];
@@ -353,6 +366,22 @@ const SUCCESSION_CONSULTING_BUYER_ELIGIBILITY_CRITERIA: SuccessionConsultingBuye
     acquisitionIntentLabel: "중소기업 인수 희망",
     eligibleBuyerTypes: ["sme", "individual"],
   };
+const SUCCESSION_CONSULTING_CONTACT_CHANNELS = [
+  {
+    email: "mna@kibo.or.kr",
+    label: "기술보증기금 M&A지원센터",
+    phoneNumbers: ["02-3215-5917", "02-3215-5999", "02-3215-5995"],
+    purposeLabel: "사업 문의",
+    type: "business-inquiry",
+  },
+  {
+    email: null,
+    label: "기술보증기금 기술거래보호부 플랫폼팀",
+    phoneNumbers: ["051-606-7429", "051-606-7431", "051-606-7699"],
+    purposeLabel: "온라인 신청 문의",
+    type: "online-application",
+  },
+] satisfies SuccessionConsultingContactChannel[];
 const SUCCESSION_CONSULTING_APPLICATION_GUIDE: SuccessionConsultingApplicationGuide = {
   applicationFormAttachmentLabel: SUCCESSION_CONSULTING_APPLICATION_FORM_ATTACHMENT_LABEL,
   applicationMethodLabel: "온라인 접수 (스마트 테크브릿지)",
@@ -367,6 +396,7 @@ const SUCCESSION_CONSULTING_APPLICATION_GUIDE: SuccessionConsultingApplicationGu
   applicationSiteCtaLabel: "온라인신청 바로가기",
   buyerEligibilityCriteria: SUCCESSION_CONSULTING_BUYER_ELIGIBILITY_CRITERIA,
   buyerEligibilityLabel: "중소기업 인수를 희망하는 중소기업 또는 개인",
+  contactChannels: SUCCESSION_CONSULTING_CONTACT_CHANNELS,
   contactEmail: "mna@kibo.or.kr",
   contactLabel: "기술보증기금 M&A지원센터",
   contactPhoneNumbers: ["02-3215-5917", "02-3215-5999", "02-3215-5995"],
