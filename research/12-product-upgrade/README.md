@@ -1360,3 +1360,27 @@
 - `SuccessionConsultingEligibilityResult`에 `consultingFundingBreakdown`을 추가한다.
 - 적격 트랙은 공식 비용/부담률 기준으로 총 컨설팅 비용, 기업 부담, 정부 지원을 한 객체로 반환한다.
 - 기존 개별 비용 필드는 호환성을 위해 유지하고, 미자격은 `consultingFundingBreakdown: null`을 반환한다.
+
+## 60차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 선정 규모 안내에서 해당 트랙 한도만 제공할지, 전체 사업 규모와 트랙별 한도를 함께 제공할지이다.
+
+- 리서치 근거: 대한민국 정책브리핑은 2026년 기업승계 M&A 컨설팅 지원사업이 총 140개사를 선정하며, 기초컨설팅 100개사와 종합컨설팅 40개사로 나뉜다고 설명한다. 현재 결과는 `selectionLimitCompanies`로 해당 트랙 한도만 반환하므로, 화면이나 상담 스냅샷이 전체 경쟁 규모와 다른 트랙 한도를 함께 안내하려면 별도 상수를 다시 유지해야 한다.
+- A안: 적격 결과가 해당 트랙의 `selectionLimitCompanies`만 반환한다.
+- B안: 적격 결과가 `selectionPlan`으로 전체 선정 규모, 현재 트랙 한도, 기초/종합 트랙별 한도를 함께 반환한다.
+- 성공 기준: B안이 기초 트랙은 `trackLimitCompanies: 100`, 종합 트랙은 `trackLimitCompanies: 40`, 두 트랙 모두 `totalLimitCompanies: 140`과 트랙별 한도 객체를 반환하고, 미자격은 `selectionPlan: null`을 반환해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 기초 100개사만 표시 | 총 140개사와 기초/종합 분포 제공 | B안이 신청 경쟁 맥락을 보강 |
+| 적격, 교섭 대상 있음 | 종합 40개사만 표시 | 총 140개사와 종합 한도 제공 | B안이 종합 상담의 희소성을 명확화 |
+| 미자격 | 선정 규모 오노출 위험 | `selectionPlan: null` | B안이 자격 보완 상담과 신청 규모 안내를 분리 |
+
+출처:
+- 대한민국 정책브리핑, "중기부, 기업승계 M&A 컨설팅 지원...140개사 선정", 2026-03-24, https://www.korea.kr/news/policyNewsView.do?newsId=148961348&pWise=main&pWiseMain=R5
+
+## 60차 기능 업그레이드 결정
+
+- `SuccessionConsultingEligibilityResult`에 `selectionPlan`을 추가한다.
+- 적격 트랙은 총 선정 규모 140개사, 현재 트랙 한도, 기초/종합 트랙별 한도를 구조화해 반환한다.
+- 기존 `selectionLimitCompanies`는 호환성을 위해 유지하고, 미자격은 `selectionPlan: null`을 반환한다.

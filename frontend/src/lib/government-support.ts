@@ -66,6 +66,12 @@ export interface SuccessionConsultingSellerEligibilityCriteria {
   requiresSme: boolean;
 }
 
+export interface SuccessionConsultingSelectionPlan {
+  totalLimitCompanies: number;
+  trackLimitCompanies: number;
+  trackLimits: Record<Exclude<SuccessionConsultingTrack, "not-eligible">, number>;
+}
+
 export interface SuccessionConsultingSupportScopeByRole {
   buyer: string;
   seller: string;
@@ -99,6 +105,7 @@ export interface SuccessionConsultingEligibilityResult {
   missingRequirements: string[];
   nextAction: string;
   selectionLimitCompanies: number | null;
+  selectionPlan: SuccessionConsultingSelectionPlan | null;
   sellerEligibilityCriteria: SuccessionConsultingSellerEligibilityCriteria;
   supportScopeByRole: SuccessionConsultingSupportScopeByRole | null;
   supportScopeLabel: string | null;
@@ -231,6 +238,7 @@ const SUCCESSION_CONSULTING_SELECTION_LIMITS: Record<
   basic: 100,
   comprehensive: 40,
 };
+const SUCCESSION_CONSULTING_TOTAL_SELECTION_LIMIT = 140;
 const SUCCESSION_CONSULTING_SELLER_ELIGIBILITY_CRITERIA = {
   minimumCompanyAgeYears: 5,
   minimumRepresentativeAgeYears: 55,
@@ -442,6 +450,14 @@ export function evaluateSuccessionConsultingEligibility(
     nextAction: supportNextAction(track),
     selectionLimitCompanies:
       track === "not-eligible" ? null : SUCCESSION_CONSULTING_SELECTION_LIMITS[track],
+    selectionPlan:
+      track === "not-eligible"
+        ? null
+        : {
+            totalLimitCompanies: SUCCESSION_CONSULTING_TOTAL_SELECTION_LIMIT,
+            trackLimitCompanies: SUCCESSION_CONSULTING_SELECTION_LIMITS[track],
+            trackLimits: SUCCESSION_CONSULTING_SELECTION_LIMITS,
+          },
     sellerEligibilityCriteria: SUCCESSION_CONSULTING_SELLER_ELIGIBILITY_CRITERIA,
     supportScopeByRole:
       track === "not-eligible" ? null : SUCCESSION_CONSULTING_SUPPORT_SCOPE_BY_ROLE[track],

@@ -310,6 +310,14 @@ describe("evaluateSuccessionConsultingEligibility", () => {
         representativeAge: 63,
       }),
     ).toMatchObject({
+      selectionPlan: {
+        totalLimitCompanies: 140,
+        trackLimitCompanies: 100,
+        trackLimits: {
+          basic: 100,
+          comprehensive: 40,
+        },
+      },
       selectionLimitCompanies: 100,
       track: "basic",
     });
@@ -322,6 +330,14 @@ describe("evaluateSuccessionConsultingEligibility", () => {
         representativeAge: 57,
       }),
     ).toMatchObject({
+      selectionPlan: {
+        totalLimitCompanies: 140,
+        trackLimitCompanies: 40,
+        trackLimits: {
+          basic: 100,
+          comprehensive: 40,
+        },
+      },
       selectionLimitCompanies: 40,
       track: "comprehensive",
     });
@@ -676,6 +692,7 @@ describe("evaluateSuccessionConsultingEligibility", () => {
     expect(result.governmentContributionWon).toBeNull();
     expect(result.applicationGuide).toBeNull();
     expect(result.selectionLimitCompanies).toBeNull();
+    expect(result.selectionPlan).toBeNull();
     expect(result.supportScopeLabel).toBeNull();
     expect(result.trackQualificationLabel).toBeNull();
     expect(result.missingRequirements).toEqual([
