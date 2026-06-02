@@ -1,4 +1,5 @@
 import type { ConsultationType } from "./consultation";
+import type { TaxScenarioId } from "./tax";
 
 export interface ConsultationDraft {
   consultationType: ConsultationType;
@@ -68,10 +69,28 @@ const consultationDrafts: Record<ConsultationType, Omit<ConsultationDraft, "cons
   },
 };
 
-export function getConsultationDraft(consultationType: ConsultationType): ConsultationDraft {
+const taxScenarioDrafts: Record<TaxScenarioId, string> = {
+  sale: "양도소득세를 중심으로 예상 매각가, 취득가액, 필요경비, 대주주 여부에 따른 세액 차이를 전문가와 검토하고 싶습니다.",
+  inheritance:
+    "상속세를 중심으로 가업상속공제 가능성, 상속세 부담, 사전 승계 대안을 전문가와 검토하고 싶습니다.",
+  gift: "가업승계 증여특례를 중심으로 적용요건, 증여세 부담, 5년 사후관리 리스크를 전문가와 검토하고 싶습니다.",
+  hybrid:
+    "혼합 전략을 중심으로 지분 양도와 가업승계 증여특례 비율, 세액 차이, 실행 리스크를 전문가와 검토하고 싶습니다.",
+};
+
+export function getConsultationDraft(
+  consultationType: ConsultationType,
+  taxScenarioId?: TaxScenarioId,
+): ConsultationDraft {
+  const draft = consultationDrafts[consultationType];
+
   return {
     consultationType,
-    ...consultationDrafts[consultationType],
+    ...draft,
+    description:
+      consultationType === "tax" && taxScenarioId
+        ? taxScenarioDrafts[taxScenarioId]
+        : draft.description,
   };
 }
 

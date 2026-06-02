@@ -17,6 +17,7 @@ import {
   progressSnapshot,
   recommendedTypeFromPath,
 } from "@/lib/demo-data";
+import type { TaxScenarioId } from "@/lib/tax";
 import { readStoredValuation, wonHundredMillion } from "@/lib/valuation";
 
 const defaultDraft = getConsultationDraft("mna");
@@ -41,6 +42,7 @@ export default function ConsultationPage() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const type = params.get("type");
+    const scenario = params.get("scenario");
     if (
       type === "tax" ||
       type === "legal" ||
@@ -48,14 +50,14 @@ export default function ConsultationPage() {
       type === "mna" ||
       type === "general"
     ) {
-      applyConsultationDraft(type);
+      applyConsultationDraft(type, isTaxScenarioId(scenario) ? scenario : undefined);
       return;
     }
     applyConsultationDraft(recommendedTypeFromPath(document.referrer));
   }, []);
 
-  function applyConsultationDraft(nextType: ConsultationType) {
-    const draft = getConsultationDraft(nextType);
+  function applyConsultationDraft(nextType: ConsultationType, taxScenarioId?: TaxScenarioId) {
+    const draft = getConsultationDraft(nextType, taxScenarioId);
     setConsultationType(draft.consultationType);
     setTitle(draft.title);
     setDescription(draft.description);
@@ -282,5 +284,14 @@ export default function ConsultationPage() {
         </div>
       </div>
     </section>
+  );
+}
+
+function isTaxScenarioId(value: string | null): value is TaxScenarioId {
+  return (
+    value === "sale" ||
+    value === "inheritance" ||
+    value === "gift" ||
+    value === "hybrid"
   );
 }

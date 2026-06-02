@@ -224,7 +224,10 @@ export default function TaxSimulationPage() {
         <p>본 계산은 참고용이며 실제 세액은 전문가 검토가 필요합니다.</p>
       </div>
       <div style={{ marginTop: 24 }}>
-        <Link className="button button-primary" href="/consultation?type=tax">
+        <Link
+          className="button button-primary"
+          href={`/consultation?type=tax&scenario=${selected}`}
+        >
           세무 전문가 상담 요청
         </Link>
       </div>

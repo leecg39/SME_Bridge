@@ -12,6 +12,15 @@ describe("getConsultationDraft", () => {
     });
   });
 
+  it("tailors the tax consultation draft to the selected tax scenario", () => {
+    expect(getConsultationDraft("tax", "hybrid")).toEqual({
+      consultationType: "tax",
+      description:
+        "혼합 전략을 중심으로 지분 양도와 가업승계 증여특례 비율, 세액 차이, 실행 리스크를 전문가와 검토하고 싶습니다.",
+      title: "기업승계 세무 상담 요청",
+    });
+  });
+
   it("returns a valuation-focused consultation draft for the valuation flow", () => {
     expect(getConsultationDraft("valuation")).toEqual({
       consultationType: "valuation",
