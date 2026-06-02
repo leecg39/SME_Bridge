@@ -1287,3 +1287,28 @@
 - `SuccessionConsultingTrackApplicationGuide`에 `manualAttachmentLabel`, `manualUrl`을 추가한다.
 - 기초/종합 트랙은 공식 신청 매뉴얼 PDF 첨부 라벨과 다운로드 URL을 신청 가이드에 함께 반환한다.
 - 미자격은 기존처럼 `trackApplicationGuide: null`을 유지한다.
+
+## 57차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 신청 안내에서 공고문/첨부서식 준비 문서를 라벨만 제공할지, 공식 다운로드 URL까지 구조화해 제공할지이다.
+
+- 리서치 근거: 기술보증기금 스마트 테크브릿지 공지는 첨부파일로 `(붙임1) 2026년도 컨설팅 지원사업 시행계획 공고.hwp`, `(붙임2) 2026년도 컨설팅 지원사업 시행계획 공고 첨부서식.hwp`를 제공하고, 같은 공지에서 기초/종합 신청 매뉴얼 PDF도 공지 첨부 다운로드 링크로 노출한다. 현재 `applicationPreparationDocumentLabels`는 준비 문서 라벨만 반환하므로, 화면이 신청 서식 다운로드를 연결하려면 공지 첨부 링크를 별도 매핑해야 한다.
+- A안: 적격 결과가 신청 준비 문서 라벨 배열만 제공한다.
+- B안: 적격 결과의 `applicationGuide`가 `applicationPreparationDocuments`로 라벨과 공식 다운로드 URL을 함께 제공하고, 트랙별 매뉴얼 URL도 공지 첨부 다운로드 경로로 맞춘다.
+- 성공 기준: B안이 기초/종합 적격 결과 모두 공고문 HWP와 첨부서식 HWP의 라벨/다운로드 URL 2개를 반환하고, 미자격은 `applicationGuide: null`을 유지해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 준비 문서 라벨만 표시 | 공고문/첨부서식 다운로드 URL 제공 | B안이 기초 신청 준비 이탈을 줄임 |
+| 적격, 교섭 대상 있음 | 종합 신청도 서식 링크 재매핑 필요 | 같은 공식 준비 문서 URL 제공 | B안이 종합 신청 서식 준비를 정확화 |
+| 미자격 | 준비 문서 오노출 위험 | `applicationGuide: null` | B안이 자격 보완 상담과 신청 문서를 분리 |
+
+출처:
+- 기술보증기금 스마트 테크브릿지, "기업승계 M&A 활성화를 위한 2026년도 컨설팅 지원사업 시행계획 공고", 2026-03-25, https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&mode=view&title=%EA%B8%B0%EC%97%85%EC%8A%B9%EA%B3%84+M%26A+%ED%99%9C%EC%84%B1%ED%99%94%EB%A5%BC+%EC%9C%84%ED%95%9C++2026%EB%85%84%EB%8F%84+%EC%BB%A8%EC%84%A4%ED%8C%85+%EC%A7%80%EC%9B%90%EC%82%AC%EC%97%85+%EC%8B%9C%ED%96%89%EA%B3%84%ED%9A%8D+%EA%B3%B5%EA%B3%A0
+
+## 57차 기능 업그레이드 결정
+
+- `SuccessionConsultingApplicationGuide`에 `applicationPreparationDocuments`를 추가한다.
+- 적격 트랙은 공고문 HWP와 첨부서식 HWP를 `{ label, url }` 배열로 반환한다.
+- 트랙별 신청 매뉴얼 URL도 공식 공지의 첨부 다운로드 경로와 일치시킨다.
+- 미자격은 기존처럼 `applicationGuide: null`을 유지한다.

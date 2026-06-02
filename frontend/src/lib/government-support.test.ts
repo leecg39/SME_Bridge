@@ -404,7 +404,7 @@ describe("evaluateSuccessionConsultingEligibility", () => {
         manualAttachmentLabel:
           "2026년도 기초컨설팅 지원사업 신청 매뉴얼_기보 M&A지원센터.pdf",
         manualUrl:
-          "https://tb.kibo.or.kr/ktbs/cmmn/file/fileDown.do?atchFileNo=2782&atchSer=1",
+          "https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&attachNo=2782&mode=download",
         url: "https://tb.kibo.or.kr/ktbs/bsConsFndApplication/bsConsFndInsert.do?pblictnId=1850&pbrecuNum=1848&bsnsClCd=18&bsnsClNm=%EA%B8%B0%EC%B4%88%EC%BB%A8%EC%84%A4%ED%8C%85&stDt=2026-04-01&enDt=2026-12-31",
       },
     });
@@ -423,7 +423,7 @@ describe("evaluateSuccessionConsultingEligibility", () => {
         manualAttachmentLabel:
           "2026년도 종합컨설팅 지원사업 신청 매뉴얼_기보 M&A지원센터.pdf",
         manualUrl:
-          "https://tb.kibo.or.kr/ktbs/cmmn/file/fileDown.do?atchFileNo=2783&atchSer=1",
+          "https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&attachNo=2783&mode=download",
         url: "https://tb.kibo.or.kr/ktbs/bsConsOvrApplication/bsConsOvrInsert.do?pblictnId=1850&pbrecuNum=1849&bsnsClCd=19&bsnsClNm=%EC%A2%85%ED%95%A9%EC%BB%A8%EC%84%A4%ED%8C%85&stDt=2026-04-01&enDt=2026-12-31",
       },
     });
@@ -554,6 +554,16 @@ describe("evaluateSuccessionConsultingEligibility", () => {
           "(붙임1) 2026년도 컨설팅 지원사업 시행계획 공고.hwp",
           "(붙임2) 2026년도 컨설팅 지원사업 시행계획 공고 첨부서식.hwp",
         ],
+        applicationPreparationDocuments: [
+          {
+            label: "(붙임1) 2026년도 컨설팅 지원사업 시행계획 공고.hwp",
+            url: "https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&attachNo=2767&mode=download",
+          },
+          {
+            label: "(붙임2) 2026년도 컨설팅 지원사업 시행계획 공고 첨부서식.hwp",
+            url: "https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&attachNo=2768&mode=download",
+          },
+        ],
         applicationSiteCtaLabel: "온라인신청 바로가기",
         buyerEligibilityLabel: "중소기업 인수를 희망하는 중소기업 또는 개인",
         contactEmail: "mna@kibo.or.kr",
@@ -595,6 +605,16 @@ describe("evaluateSuccessionConsultingEligibility", () => {
         applicationPreparationDocumentLabels: [
           "(붙임1) 2026년도 컨설팅 지원사업 시행계획 공고.hwp",
           "(붙임2) 2026년도 컨설팅 지원사업 시행계획 공고 첨부서식.hwp",
+        ],
+        applicationPreparationDocuments: [
+          {
+            label: "(붙임1) 2026년도 컨설팅 지원사업 시행계획 공고.hwp",
+            url: "https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&attachNo=2767&mode=download",
+          },
+          {
+            label: "(붙임2) 2026년도 컨설팅 지원사업 시행계획 공고 첨부서식.hwp",
+            url: "https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&attachNo=2768&mode=download",
+          },
         ],
         applicationSiteCtaLabel: "온라인신청 바로가기",
         buyerEligibilityLabel: "중소기업 인수를 희망하는 중소기업 또는 개인",

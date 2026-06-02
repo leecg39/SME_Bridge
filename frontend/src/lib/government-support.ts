@@ -29,6 +29,11 @@ export interface SuccessionConsultingApplicationPeriodStatus {
   type: SuccessionConsultingApplicationPeriodType;
 }
 
+export interface SuccessionConsultingApplicationPreparationDocument {
+  label: string;
+  url: string;
+}
+
 export interface SuccessionConsultingApplicationGuide {
   applicationFormAttachmentLabel: string;
   applicationMethodLabel: string;
@@ -36,6 +41,7 @@ export interface SuccessionConsultingApplicationGuide {
   applicationPeriodLabel: string;
   applicationPeriodStatus: SuccessionConsultingApplicationPeriodStatus;
   applicationPreparationDocumentLabels: string[];
+  applicationPreparationDocuments: SuccessionConsultingApplicationPreparationDocument[];
   applicationSiteCtaLabel: string;
   buyerEligibilityCriteria: SuccessionConsultingBuyerEligibilityCriteria;
   buyerEligibilityLabel: string;
@@ -272,13 +278,13 @@ const SUCCESSION_CONSULTING_TRACK_APPLICATION_MANUALS: Record<
     manualAttachmentLabel:
       "2026년도 기초컨설팅 지원사업 신청 매뉴얼_기보 M&A지원센터.pdf",
     manualUrl:
-      "https://tb.kibo.or.kr/ktbs/cmmn/file/fileDown.do?atchFileNo=2782&atchSer=1",
+      "https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&attachNo=2782&mode=download",
   },
   comprehensive: {
     manualAttachmentLabel:
       "2026년도 종합컨설팅 지원사업 신청 매뉴얼_기보 M&A지원센터.pdf",
     manualUrl:
-      "https://tb.kibo.or.kr/ktbs/cmmn/file/fileDown.do?atchFileNo=2783&atchSer=1",
+      "https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&attachNo=2783&mode=download",
   },
 };
 const SUCCESSION_CONSULTING_TRACK_APPLICATION_GUIDES: Record<
@@ -298,8 +304,22 @@ const SUCCESSION_CONSULTING_TRACK_APPLICATION_GUIDES: Record<
 };
 const SUCCESSION_CONSULTING_NOTICE_ATTACHMENT_LABEL =
   "(붙임1) 2026년도 컨설팅 지원사업 시행계획 공고.hwp";
+const SUCCESSION_CONSULTING_NOTICE_ATTACHMENT_URL =
+  "https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&attachNo=2767&mode=download";
 const SUCCESSION_CONSULTING_APPLICATION_FORM_ATTACHMENT_LABEL =
   "(붙임2) 2026년도 컨설팅 지원사업 시행계획 공고 첨부서식.hwp";
+const SUCCESSION_CONSULTING_APPLICATION_FORM_ATTACHMENT_URL =
+  "https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&attachNo=2768&mode=download";
+const SUCCESSION_CONSULTING_APPLICATION_PREPARATION_DOCUMENTS = [
+  {
+    label: SUCCESSION_CONSULTING_NOTICE_ATTACHMENT_LABEL,
+    url: SUCCESSION_CONSULTING_NOTICE_ATTACHMENT_URL,
+  },
+  {
+    label: SUCCESSION_CONSULTING_APPLICATION_FORM_ATTACHMENT_LABEL,
+    url: SUCCESSION_CONSULTING_APPLICATION_FORM_ATTACHMENT_URL,
+  },
+] satisfies SuccessionConsultingApplicationPreparationDocument[];
 const SUCCESSION_CONSULTING_APPLICATION_METHOD_STATUS = {
   channel: "online",
   label: "온라인 접수 (스마트 테크브릿지)",
@@ -324,6 +344,7 @@ const SUCCESSION_CONSULTING_APPLICATION_GUIDE: SuccessionConsultingApplicationGu
     SUCCESSION_CONSULTING_NOTICE_ATTACHMENT_LABEL,
     SUCCESSION_CONSULTING_APPLICATION_FORM_ATTACHMENT_LABEL,
   ],
+  applicationPreparationDocuments: SUCCESSION_CONSULTING_APPLICATION_PREPARATION_DOCUMENTS,
   applicationSiteCtaLabel: "온라인신청 바로가기",
   buyerEligibilityCriteria: SUCCESSION_CONSULTING_BUYER_ELIGIBILITY_CRITERIA,
   buyerEligibilityLabel: "중소기업 인수를 희망하는 중소기업 또는 개인",
