@@ -1530,3 +1530,28 @@
 - `SuccessionConsultingApplicationMethodStatus`에 `portalUrl`을 추가한다.
 - 적격 트랙은 온라인 접수처인 스마트 테크브릿지 포털 URL을 신청방법 상태 객체 안에서도 반환한다.
 - 기존 `applicationGuide.url`은 호환성을 위해 유지하고, 미자격은 기존처럼 `applicationGuide: null`을 유지한다.
+
+## 67차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 공고 출처 객체들이 제목·날짜·URL만 제공할지, 각 출처가 상담 화면에서 맡는 역할까지 함께 제공할지이다.
+
+- 리서치 근거: 기업마당 공고는 지원사업 제목, 신청기간, 신청방법, 문의처, 소관부처, 수행기관을 한 화면에서 요약한다. 스마트 테크브릿지 원공지는 같은 사업의 원공지이며 공고문/첨부서식/기초·종합 신청 매뉴얼과 트랙별 신청경로의 기준이 된다. 현재 `noticeSource`와 `officialNoticeSource`는 제목·날짜·URL을 제공하지만, 화면이 두 출처를 함께 표시할 때 어떤 출처가 사업 요약용이고 어떤 출처가 원공지·첨부 기준인지 다시 해석해야 한다.
+- A안: 두 출처 객체가 `label`, `title`, `publishedDate`, `url`만 반환한다.
+- B안: 두 출처 객체가 `purposeLabel`을 함께 반환한다.
+- 성공 기준: B안이 기초/종합 적격 결과 모두 `noticeSource.purposeLabel: "지원사업 공고 요약"`과 `officialNoticeSource.purposeLabel: "원공지 및 신청 첨부 기준"`을 반환하고, 미자격은 기존처럼 `applicationGuide: null`을 유지해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 출처 이름만 보고 역할 추정 | 기업마당은 공고 요약, 스마트 테크브릿지는 원공지 기준으로 표시 | B안이 기초 신청 출처 설명을 명확화 |
+| 적격, 교섭 대상 있음 | 종합 상담도 출처 역할 재해석 필요 | 같은 역할 라벨 제공 | B안이 종합 신청 안내의 출처 구분을 안정화 |
+| 미자격 | 출처 역할 오노출 위험 | `applicationGuide: null` | B안이 자격 보완 상담과 신청 출처 안내를 분리 |
+
+출처:
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/web/lay1/bbs/S1T122C128/AS/74/view.do?pblancId=PBLN_000000000120342
+- 스마트 테크브릿지, "기업승계 M&A 활성화를 위한 2026년도 컨설팅 지원사업 시행계획 공고", 2026-03-25, https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&mode=view&title=%EA%B8%B0%EC%97%85%EC%8A%B9%EA%B3%84+M%26A+%ED%99%9C%EC%84%B1%ED%99%94%EB%A5%BC+%EC%9C%84%ED%95%9C++2026%EB%85%84%EB%8F%84+%EC%BB%A8%EC%84%A4%ED%8C%85+%EC%A7%80%EC%9B%90%EC%82%AC%EC%97%85+%EC%8B%9C%ED%96%89%EA%B3%84%ED%9A%8D+%EA%B3%B5%EA%B3%A0
+
+## 67차 기능 업그레이드 결정
+
+- `SuccessionConsultingNoticeSource`와 `SuccessionConsultingOfficialNoticeSource`에 `purposeLabel`을 추가한다.
+- 기업마당 출처는 `지원사업 공고 요약`, 스마트 테크브릿지 원공지 출처는 `원공지 및 신청 첨부 기준`으로 역할을 구분한다.
+- 기존 출처 제목/게시일/URL 필드는 유지하고, 미자격은 기존처럼 `applicationGuide: null`을 유지한다.

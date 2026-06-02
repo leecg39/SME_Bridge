@@ -631,12 +631,14 @@ describe("evaluateSuccessionConsultingEligibility", () => {
         noticeSource: {
           label: "기업마당 공고",
           publishedDate: "2026-04-03",
+          purposeLabel: "지원사업 공고 요약",
           title: "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고",
           url: "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342",
         },
         officialNoticeSource: {
           label: "스마트 테크브릿지 공지사항",
           publishedDate: "2026-03-25",
+          purposeLabel: "원공지 및 신청 첨부 기준",
           title: "기업승계 M&A 활성화를 위한 2026년도 컨설팅 지원사업 시행계획 공고",
           url: "https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&mode=view&title=%EA%B8%B0%EC%97%85%EC%8A%B9%EA%B3%84+M%26A+%ED%99%9C%EC%84%B1%ED%99%94%EB%A5%BC+%EC%9C%84%ED%95%9C++2026%EB%85%84%EB%8F%84+%EC%BB%A8%EC%84%A4%ED%8C%85+%EC%A7%80%EC%9B%90%EC%82%AC%EC%97%85+%EC%8B%9C%ED%96%89%EA%B3%84%ED%9A%8D+%EA%B3%B5%EA%B3%A0",
         },
@@ -717,12 +719,14 @@ describe("evaluateSuccessionConsultingEligibility", () => {
         noticeSource: {
           label: "기업마당 공고",
           publishedDate: "2026-04-03",
+          purposeLabel: "지원사업 공고 요약",
           title: "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고",
           url: "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342",
         },
         officialNoticeSource: {
           label: "스마트 테크브릿지 공지사항",
           publishedDate: "2026-03-25",
+          purposeLabel: "원공지 및 신청 첨부 기준",
           title: "기업승계 M&A 활성화를 위한 2026년도 컨설팅 지원사업 시행계획 공고",
           url: "https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&mode=view&title=%EA%B8%B0%EC%97%85%EC%8A%B9%EA%B3%84+M%26A+%ED%99%9C%EC%84%B1%ED%99%94%EB%A5%BC+%EC%9C%84%ED%95%9C++2026%EB%85%84%EB%8F%84+%EC%BB%A8%EC%84%A4%ED%8C%85+%EC%A7%80%EC%9B%90%EC%82%AC%EC%97%85+%EC%8B%9C%ED%96%89%EA%B3%84%ED%9A%8D+%EA%B3%B5%EA%B3%A0",
         },

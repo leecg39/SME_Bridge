@@ -57,6 +57,7 @@ export interface SuccessionConsultingContactChannel {
 export interface SuccessionConsultingOfficialNoticeSource {
   label: string;
   publishedDate: string;
+  purposeLabel: string;
   title: string;
   url: string;
 }
@@ -64,6 +65,7 @@ export interface SuccessionConsultingOfficialNoticeSource {
 export interface SuccessionConsultingNoticeSource {
   label: string;
   publishedDate: string;
+  purposeLabel: string;
   title: string;
   url: string;
 }
@@ -366,6 +368,7 @@ const SUCCESSION_CONSULTING_OFFICIAL_NOTICE_URL =
 const SUCCESSION_CONSULTING_OFFICIAL_NOTICE_SOURCE = {
   label: "스마트 테크브릿지 공지사항",
   publishedDate: "2026-03-25",
+  purposeLabel: "원공지 및 신청 첨부 기준",
   title: "기업승계 M&A 활성화를 위한 2026년도 컨설팅 지원사업 시행계획 공고",
   url: SUCCESSION_CONSULTING_OFFICIAL_NOTICE_URL,
 } satisfies SuccessionConsultingOfficialNoticeSource;
@@ -374,6 +377,7 @@ const SUCCESSION_CONSULTING_NOTICE_SOURCE_URL =
 const SUCCESSION_CONSULTING_NOTICE_SOURCE = {
   label: "기업마당 공고",
   publishedDate: "2026-04-03",
+  purposeLabel: "지원사업 공고 요약",
   title: "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고",
   url: SUCCESSION_CONSULTING_NOTICE_SOURCE_URL,
 } satisfies SuccessionConsultingNoticeSource;
