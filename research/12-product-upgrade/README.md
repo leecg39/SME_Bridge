@@ -1702,3 +1702,28 @@
 - `SuccessionConsultingEligibilityResult`에 `eligibilityDetailNoticeUrl`을 추가한다.
 - 적격/미자격 모든 결과에서 스마트 테크브릿지 원공지 URL을 반환한다.
 - 기존 `eligibilityDetailNoticeLabel`, `applicationGuide`, `officialNoticeSource`는 유지한다.
+
+## 74차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 선정규모 객체가 숫자만 제공할지, 숫자의 단위까지 함께 제공할지이다.
+
+- 리서치 근거: 기업마당 공고와 스마트 테크브릿지 원공지는 기업승계 M&A 컨설팅 지원사업을 기초컨설팅과 종합컨설팅으로 나누고, 현재 코드의 선정규모 구조는 전체 140, 기초 100, 종합 40을 트랙별 숫자로 제공한다. 다만 `selectionPlan` 자체에는 단위가 없어 화면, 상담 로그, 리포트가 `100개사`, `40개사`처럼 표시하려면 숫자 필드명을 다시 해석해야 한다.
+- A안: `selectionPlan`이 `totalLimitCompanies`, `trackLimitCompanies`, `trackLimits` 숫자만 반환한다.
+- B안: `selectionPlan.unitLabel`이 `개사`를 함께 반환한다.
+- 성공 기준: B안이 기초/종합 적격 결과 모두 `selectionPlan.unitLabel: "개사"`를 반환하고, 미자격 결과는 기존처럼 `selectionPlan: null`을 유지해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | `100`의 표시 단위를 UI가 추론 | `100`과 `개사`를 함께 제공 | B안이 기초 선정규모 표시를 안정화 |
+| 적격, 교섭 대상 있음 | `40`의 표시 단위를 UI가 추론 | `40`과 `개사`를 함께 제공 | B안이 종합 선정규모 표시를 안정화 |
+| 중소기업/연령/업력 미충족 | 선정규모 없음 | `selectionPlan: null` | B안이 미자격 판정 동작을 유지 |
+
+출처:
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342
+- 스마트 테크브릿지, "기업승계 M&A 활성화를 위한 2026년도 컨설팅 지원사업 시행계획 공고", 2026-03-25, https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&mode=view&title=%EA%B8%B0%EC%97%85%EC%8A%B9%EA%B3%84+M%26A+%ED%99%9C%EC%84%B1%ED%99%94%EB%A5%BC+%EC%9C%84%ED%95%9C++2026%EB%85%84%EB%8F%84+%EC%BB%A8%EC%84%A4%ED%8C%85+%EC%A7%80%EC%9B%90%EC%82%AC%EC%97%85+%EC%8B%9C%ED%96%89%EA%B3%84%ED%9A%8D+%EA%B3%B5%EA%B3%A0
+
+## 74차 기능 업그레이드 결정
+
+- `SuccessionConsultingSelectionPlan`에 `unitLabel`을 추가한다.
+- 적격 기초/종합 판정의 선정규모는 `개사` 단위를 구조화해서 반환한다.
+- 기존 `selectionLimitCompanies`, `totalLimitCompanies`, `trackLimitCompanies`, `trackLimits` 숫자 필드는 유지하고, 미자격은 기존처럼 `selectionPlan: null`을 유지한다.

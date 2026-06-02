@@ -135,6 +135,7 @@ export interface SuccessionConsultingSelectionPlan {
   totalLimitCompanies: number;
   trackLimitCompanies: number;
   trackLimits: Record<Exclude<SuccessionConsultingTrack, "not-eligible">, number>;
+  unitLabel: string;
 }
 
 export interface SuccessionConsultingSupportScopeByRole {
@@ -307,6 +308,7 @@ const SUCCESSION_CONSULTING_SELECTION_LIMITS: Record<
   comprehensive: 40,
 };
 const SUCCESSION_CONSULTING_TOTAL_SELECTION_LIMIT = 140;
+const SUCCESSION_CONSULTING_SELECTION_UNIT_LABEL = "개사";
 const SUCCESSION_CONSULTING_SELLER_ELIGIBILITY_CRITERIA = {
   minimumCompanyAgeYears: 5,
   minimumRepresentativeAgeYears: 55,
@@ -603,6 +605,7 @@ export function evaluateSuccessionConsultingEligibility(
             totalLimitCompanies: SUCCESSION_CONSULTING_TOTAL_SELECTION_LIMIT,
             trackLimitCompanies: SUCCESSION_CONSULTING_SELECTION_LIMITS[track],
             trackLimits: SUCCESSION_CONSULTING_SELECTION_LIMITS,
+            unitLabel: SUCCESSION_CONSULTING_SELECTION_UNIT_LABEL,
           },
     sellerEligibilityCriteria: SUCCESSION_CONSULTING_SELLER_ELIGIBILITY_CRITERIA,
     supportScopeByRole:
