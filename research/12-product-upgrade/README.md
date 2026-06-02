@@ -1505,3 +1505,28 @@
 - `SuccessionConsultingApplicationGuide`에 `noticeSource`를 추가한다.
 - 적격 트랙은 기업마당 공고 라벨, 제목, 게시일 `2026-04-03`, URL을 구조화해 반환한다.
 - 기존 `noticePublishedDate`와 `noticeSourceUrl`은 호환성을 위해 유지하고, 미자격은 기존처럼 `applicationGuide: null`을 유지한다.
+
+## 66차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 신청방법 객체가 접수 방식과 접수처 이름만 제공할지, 접수처 URL까지 함께 제공할지이다.
+
+- 리서치 근거: 기업마당 공고는 신청방법을 `온라인 접수`로, 접수처를 기술보증기금 스마트 테크브릿지로 안내한다. 현재 `applicationMethodStatus`는 온라인 채널과 포털 이름만 제공하고 실제 포털 URL은 `applicationGuide.url`에 따로 있어, 화면이나 상담 로그가 신청방법 객체만 사용할 때 URL을 별도로 조합해야 한다.
+- A안: `applicationMethodStatus`가 `channel`, `label`, `portalLabel`만 반환한다.
+- B안: `applicationMethodStatus.portalUrl`이 스마트 테크브릿지 포털 URL을 함께 반환한다.
+- 성공 기준: B안이 기초/종합 적격 결과 모두 `portalUrl: "https://tb.kibo.or.kr/ktbs/index.do"`를 반환하고, 미자격은 기존처럼 `applicationGuide: null`을 유지해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 접수방식 객체와 URL 필드 조합 필요 | 신청방법 객체에서 포털 URL 확인 | B안이 기초 신청 CTA 연결을 단순화 |
+| 적격, 교섭 대상 있음 | 종합 신청도 URL 조합 필요 | 같은 신청방법 포털 URL 제공 | B안이 종합 신청 CTA 연결을 단순화 |
+| 미자격 | 접수처 URL 오노출 위험 | `applicationGuide: null` | B안이 자격 보완 상담과 신청 안내를 분리 |
+
+출처:
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/web/lay1/bbs/S1T122C128/AS/74/view.do?pblancId=PBLN_000000000120342
+- 스마트 테크브릿지, https://tb.kibo.or.kr/ktbs/index.do
+
+## 66차 기능 업그레이드 결정
+
+- `SuccessionConsultingApplicationMethodStatus`에 `portalUrl`을 추가한다.
+- 적격 트랙은 온라인 접수처인 스마트 테크브릿지 포털 URL을 신청방법 상태 객체 안에서도 반환한다.
+- 기존 `applicationGuide.url`은 호환성을 위해 유지하고, 미자격은 기존처럼 `applicationGuide: null`을 유지한다.

@@ -525,6 +525,7 @@ describe("evaluateSuccessionConsultingEligibility", () => {
       channel: "online",
       label: "온라인 접수 (스마트 테크브릿지)",
       portalLabel: "스마트 테크브릿지",
+      portalUrl: "https://tb.kibo.or.kr/ktbs/index.do",
     };
 
     expect(

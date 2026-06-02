@@ -20,6 +20,7 @@ export interface SuccessionConsultingApplicationMethodStatus {
   channel: SuccessionConsultingApplicationChannel;
   label: string;
   portalLabel: string;
+  portalUrl: string;
 }
 
 export type SuccessionConsultingApplicationPeriodType = "until-budget-exhausted";
@@ -396,6 +397,7 @@ const SUCCESSION_CONSULTING_APPLICATION_METHOD_STATUS = {
   channel: "online",
   label: "온라인 접수 (스마트 테크브릿지)",
   portalLabel: "스마트 테크브릿지",
+  portalUrl: "https://tb.kibo.or.kr/ktbs/index.do",
 } satisfies SuccessionConsultingApplicationMethodStatus;
 const SUCCESSION_CONSULTING_APPLICATION_PERIOD_STATUS = {
   label: "예산 소진시까지",
