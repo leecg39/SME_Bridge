@@ -1629,3 +1629,27 @@
 - `SuccessionConsultingEligibilityResult`에 `missingRequirementDetails`를 추가한다.
 - 미충족 요건은 `sme`, `representative-age`, `company-age` 코드와 입력 키를 함께 반환한다.
 - 기존 `missingRequirements` 문자열 배열은 호환성을 위해 유지하고, 같은 상세 목록의 `label`에서 생성한다.
+
+## 71차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 사전판정의 미충족 요건 상세가 필드명과 기준 문구만 제공할지, 실제 입력값과 공식 기준값까지 함께 제공할지이다.
+
+- 리서치 근거: 기업마당 공고는 매도희망기업 기준을 `대표자 연령이 만 55세 이상 및 업력 만 5년 이상인 중소기업`으로 제시한다. 현재 `missingRequirementDetails`는 입력 필드와 기준 문구를 제공하지만, 화면이 `대표자 51세 → 55세 이상 필요`, `업력 3년 → 5년 이상 필요`, `중소기업 여부 false → true 필요`처럼 설명하려면 원 입력값과 기준값을 다시 조합해야 한다.
+- A안: `missingRequirementDetails`가 `code`, `inputKey`, `label`, `requiredLabel`만 반환한다.
+- B안: 각 상세가 `actualValue`와 `requiredValue`를 함께 반환한다.
+- 성공 기준: B안이 미자격 결과에서 중소기업 여부는 `false → true`, 대표자 연령은 `51 → 55`, 업력은 `3 → 5` 값을 반환하고, 적격 기초/종합 결과는 기존처럼 빈 상세 배열을 유지해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 누락 상세 없음 | 빈 상세 배열 | B안이 적격 판정을 변경하지 않음 |
+| 적격, 교섭 대상 있음 | 누락 상세 없음 | 빈 상세 배열 | B안이 종합 판정을 변경하지 않음 |
+| 중소기업/연령/업력 미충족 | 입력값과 기준값 재조합 필요 | actual/required 값 3쌍 제공 | B안이 사전판정 보완 설명을 정밀화 |
+
+출처:
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342
+
+## 71차 기능 업그레이드 결정
+
+- `SuccessionConsultingMissingRequirementDetail`에 `actualValue`와 `requiredValue`를 추가한다.
+- 대표자 연령/업력은 숫자 기준값을, 중소기업 여부는 불리언 기준값을 반환한다.
+- 기존 `label`, `requiredLabel`, `missingRequirements` 문자열 배열은 호환성을 위해 유지한다.

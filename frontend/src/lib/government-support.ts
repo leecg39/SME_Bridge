@@ -118,10 +118,12 @@ export type SuccessionConsultingMissingRequirementInputKey = Exclude<
 >;
 
 export interface SuccessionConsultingMissingRequirementDetail {
+  actualValue: boolean | number;
   code: SuccessionConsultingMissingRequirementCode;
   inputKey: SuccessionConsultingMissingRequirementInputKey;
   label: string;
   requiredLabel: string;
+  requiredValue: boolean | number;
 }
 
 export interface SuccessionConsultingSelectionPlan {
@@ -504,26 +506,32 @@ export function evaluateSuccessionConsultingEligibility(
   const missingRequirementDetails: SuccessionConsultingMissingRequirementDetail[] = [];
   if (!input.isSme && requiresSme) {
     missingRequirementDetails.push({
+      actualValue: input.isSme,
       code: "sme",
       inputKey: "isSme",
       label: "중소기업 여부 확인",
       requiredLabel: "중소기업",
+      requiredValue: true,
     });
   }
   if (input.representativeAge < minimumRepresentativeAgeYears) {
     missingRequirementDetails.push({
+      actualValue: input.representativeAge,
       code: "representative-age",
       inputKey: "representativeAge",
       label: "대표자 만 55세 이상",
       requiredLabel: "대표자 만 55세 이상",
+      requiredValue: minimumRepresentativeAgeYears,
     });
   }
   if (input.companyAgeYears < minimumCompanyAgeYears) {
     missingRequirementDetails.push({
+      actualValue: input.companyAgeYears,
       code: "company-age",
       inputKey: "companyAgeYears",
       label: "업력 만 5년 이상",
       requiredLabel: "업력 만 5년 이상",
+      requiredValue: minimumCompanyAgeYears,
     });
   }
   const missingRequirements = missingRequirementDetails.map(({ label }) => label);

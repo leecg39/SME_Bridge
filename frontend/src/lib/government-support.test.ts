@@ -783,22 +783,28 @@ describe("evaluateSuccessionConsultingEligibility", () => {
     ]);
     expect(result.missingRequirementDetails).toEqual([
       {
+        actualValue: false,
         code: "sme",
         inputKey: "isSme",
         label: "중소기업 여부 확인",
         requiredLabel: "중소기업",
+        requiredValue: true,
       },
       {
+        actualValue: 51,
         code: "representative-age",
         inputKey: "representativeAge",
         label: "대표자 만 55세 이상",
         requiredLabel: "대표자 만 55세 이상",
+        requiredValue: 55,
       },
       {
+        actualValue: 3,
         code: "company-age",
         inputKey: "companyAgeYears",
         label: "업력 만 5년 이상",
         requiredLabel: "업력 만 5년 이상",
+        requiredValue: 5,
       },
     ]);
   });
