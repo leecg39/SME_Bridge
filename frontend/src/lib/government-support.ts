@@ -53,6 +53,12 @@ export interface SuccessionConsultingContactChannel {
   type: SuccessionConsultingContactChannelType;
 }
 
+export interface SuccessionConsultingOfficialNoticeSource {
+  label: string;
+  publishedDate: string;
+  url: string;
+}
+
 export interface SuccessionConsultingApplicationGuide {
   applicationFormAttachmentLabel: string;
   applicationMethodLabel: string;
@@ -72,6 +78,7 @@ export interface SuccessionConsultingApplicationGuide {
   noticeAttachmentLabel: string;
   noticePublishedDate: string;
   noticeSourceUrl: string;
+  officialNoticeSource: SuccessionConsultingOfficialNoticeSource;
   onlineApplicationContactLabel: string;
   onlineApplicationContactPhoneNumbers: string[];
   operatingAgencyLabel: string;
@@ -344,6 +351,13 @@ const SUCCESSION_CONSULTING_TRACK_APPLICATION_GUIDES: Record<
 };
 const SUCCESSION_CONSULTING_NOTICE_ATTACHMENT_LABEL =
   "(붙임1) 2026년도 컨설팅 지원사업 시행계획 공고.hwp";
+const SUCCESSION_CONSULTING_OFFICIAL_NOTICE_URL =
+  "https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&mode=view&title=%EA%B8%B0%EC%97%85%EC%8A%B9%EA%B3%84+M%26A+%ED%99%9C%EC%84%B1%ED%99%94%EB%A5%BC+%EC%9C%84%ED%95%9C++2026%EB%85%84%EB%8F%84+%EC%BB%A8%EC%84%A4%ED%8C%85+%EC%A7%80%EC%9B%90%EC%82%AC%EC%97%85+%EC%8B%9C%ED%96%89%EA%B3%84%ED%9A%8D+%EA%B3%B5%EA%B3%A0";
+const SUCCESSION_CONSULTING_OFFICIAL_NOTICE_SOURCE = {
+  label: "스마트 테크브릿지 공지사항",
+  publishedDate: "2026-03-25",
+  url: SUCCESSION_CONSULTING_OFFICIAL_NOTICE_URL,
+} satisfies SuccessionConsultingOfficialNoticeSource;
 const SUCCESSION_CONSULTING_NOTICE_ATTACHMENT_URL =
   "https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&attachNo=2767&mode=download";
 const SUCCESSION_CONSULTING_APPLICATION_FORM_ATTACHMENT_LABEL =
@@ -419,6 +433,7 @@ const SUCCESSION_CONSULTING_APPLICATION_GUIDE: SuccessionConsultingApplicationGu
   noticePublishedDate: "2026-04-03",
   noticeSourceUrl:
     "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342",
+  officialNoticeSource: SUCCESSION_CONSULTING_OFFICIAL_NOTICE_SOURCE,
   onlineApplicationContactLabel: "기술보증기금 기술거래보호부 플랫폼팀",
   onlineApplicationContactPhoneNumbers: ["051-606-7429", "051-606-7431", "051-606-7699"],
   operatingAgencyLabel: "기술보증기금",

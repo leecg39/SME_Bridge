@@ -1433,3 +1433,27 @@
 - `SuccessionConsultingApplicationGuide`에 `applicationSchedule`을 추가한다.
 - 적격 트랙은 신청 시작일 `2026-04-01`, 종료일 없음, 예산 소진형 마감 유형을 구조화해 반환한다.
 - 기존 신청기간 라벨/상태 필드는 호환성을 위해 유지하고, 미자격은 기존처럼 `applicationGuide: null`을 유지한다.
+
+## 63차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 신청 안내에서 기업마당 공고 URL만 출처로 보존할지, 스마트 테크브릿지 원공지의 URL과 작성일도 함께 보존할지이다.
+
+- 리서치 근거: 스마트 테크브릿지 원공지는 2026-03-25 작성된 `기업승계 M&A 활성화를 위한 2026년도 컨설팅 지원사업 시행계획 공고`이며, 공고문 HWP, 첨부서식 HWP, 기초컨설팅 신청 매뉴얼, 종합컨설팅 신청 매뉴얼과 트랙별 신청경로를 같은 페이지에 제공한다. 현재 `applicationGuide`는 기업마당 공고 URL과 첨부 다운로드 URL은 제공하지만, 첨부·신청경로의 기준이 되는 스마트 테크브릿지 원공지 메타데이터는 화면이나 상담 로그가 다시 조합해야 한다.
+- A안: `applicationGuide`가 기업마당 `noticeSourceUrl`과 `noticePublishedDate`만 반환한다.
+- B안: `applicationGuide.officialNoticeSource`가 스마트 테크브릿지 원공지 라벨, 작성일, 원문 URL을 함께 반환한다.
+- 성공 기준: B안이 기초/종합 적격 결과 모두 `officialNoticeSource.publishedDate: "2026-03-25"`와 스마트 테크브릿지 공지 URL을 반환하고, 미자격은 기존처럼 `applicationGuide: null`을 유지해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 기업마당 공고만 출처로 표시 | 스마트 테크브릿지 원공지까지 표시 | B안이 기초 신청 첨부·매뉴얼 출처를 명확화 |
+| 적격, 교섭 대상 있음 | 종합 매뉴얼 출처를 별도 조합 | 같은 원공지 메타데이터 제공 | B안이 종합 신청 경로의 원문 추적성을 보강 |
+| 미자격 | 원공지 출처 오노출 위험 | `applicationGuide: null` | B안이 자격 보완 상담과 신청 출처 안내를 분리 |
+
+출처:
+- 스마트 테크브릿지, "기업승계 M&A 활성화를 위한 2026년도 컨설팅 지원사업 시행계획 공고", 2026-03-25, https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&mode=view&title=%EA%B8%B0%EC%97%85%EC%8A%B9%EA%B3%84+M%26A+%ED%99%9C%EC%84%B1%ED%99%94%EB%A5%BC+%EC%9C%84%ED%95%9C++2026%EB%85%84%EB%8F%84+%EC%BB%A8%EC%84%A4%ED%8C%85+%EC%A7%80%EC%9B%90%EC%82%AC%EC%97%85+%EC%8B%9C%ED%96%89%EA%B3%84%ED%9A%8D+%EA%B3%B5%EA%B3%A0
+
+## 63차 기능 업그레이드 결정
+
+- `SuccessionConsultingApplicationGuide`에 `officialNoticeSource`를 추가한다.
+- 적격 트랙은 스마트 테크브릿지 원공지 라벨, 작성일 `2026-03-25`, 원문 URL을 구조화해 반환한다.
+- 기존 기업마당 `noticeSourceUrl`과 `noticePublishedDate`는 호환성을 위해 유지하고, 미자격은 기존처럼 `applicationGuide: null`을 유지한다.
