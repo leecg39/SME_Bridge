@@ -40,6 +40,7 @@ export interface SuccessionConsultingApplicationSchedule {
 }
 
 export interface SuccessionConsultingApplicationPreparationDocument {
+  documentRole: "application-form" | "notice";
   label: string;
   purposeLabel: string;
   url: string;
@@ -431,11 +432,13 @@ const SUCCESSION_CONSULTING_APPLICATION_FORM_ATTACHMENT_URL =
   "https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&attachNo=2768&mode=download";
 const SUCCESSION_CONSULTING_APPLICATION_PREPARATION_DOCUMENTS = [
   {
+    documentRole: "notice",
     label: SUCCESSION_CONSULTING_NOTICE_ATTACHMENT_LABEL,
     purposeLabel: "사업 시행계획 공고 확인",
     url: SUCCESSION_CONSULTING_NOTICE_ATTACHMENT_URL,
   },
   {
+    documentRole: "application-form",
     label: SUCCESSION_CONSULTING_APPLICATION_FORM_ATTACHMENT_LABEL,
     purposeLabel: "신청 서식 작성",
     url: SUCCESSION_CONSULTING_APPLICATION_FORM_ATTACHMENT_URL,
