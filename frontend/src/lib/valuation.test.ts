@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import {
   VALUATION_STORAGE_KEY,
+  buildValuationResultCards,
   fallbackValuation,
   formatValuationRangeLabel,
   readStoredValuation,
@@ -65,5 +66,39 @@ describe("formatValuationRangeLabel", () => {
         rangeMid: 5280000000,
       }),
     ).toBe("41억~61억");
+  });
+});
+
+describe("buildValuationResultCards", () => {
+  it("formats the latest valuation result cards with precise eok labels", () => {
+    expect(
+      buildValuationResultCards({
+        calculatedAt: "2026-06-02T17:42:33.341Z",
+        normalizedEbitda: 1100000000,
+        ownerSalaryAdjustment: true,
+        rangeHigh: 6050000000,
+        rangeLow: 4070000000,
+        rangeMid: 5280000000,
+      }),
+    ).toEqual([
+      {
+        id: "low",
+        multipleLabel: "3.7x 적용",
+        title: "보수적",
+        valueLabel: "40.7억",
+      },
+      {
+        id: "mid",
+        multipleLabel: "4.8x 적용",
+        title: "중립",
+        valueLabel: "52.8억",
+      },
+      {
+        id: "high",
+        multipleLabel: "5.5x 적용",
+        title: "낙관",
+        valueLabel: "60.5억",
+      },
+    ]);
   });
 });

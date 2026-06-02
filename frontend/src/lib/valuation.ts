@@ -20,6 +20,13 @@ export interface ValuationMultiples {
   high: number;
 }
 
+export interface ValuationResultCard {
+  id: "low" | "mid" | "high";
+  title: string;
+  valueLabel: string;
+  multipleLabel: string;
+}
+
 export const FINANCIALS_STORAGE_KEY = "smeBridgeFinancials";
 export const VALUATION_STORAGE_KEY = "smeBridgeValuation";
 export const DEFAULT_VALUATION_MULTIPLES: ValuationMultiples = {
@@ -53,6 +60,37 @@ export function wonHundredMillion(value: number): string {
 
 export function formatValuationRangeLabel(valuation: ValuationResult): string {
   return `${wonHundredMillion(valuation.rangeLow)}~${wonHundredMillion(valuation.rangeHigh)}`;
+}
+
+export function buildValuationResultCards(valuation: ValuationResult): ValuationResultCard[] {
+  const multiples = deriveValuationMultiples(valuation);
+  return [
+    {
+      id: "low",
+      multipleLabel: `${multiples.low}x 적용`,
+      title: "보수적",
+      valueLabel: preciseWonHundredMillion(valuation.rangeLow),
+    },
+    {
+      id: "mid",
+      multipleLabel: `${multiples.mid}x 적용`,
+      title: "중립",
+      valueLabel: preciseWonHundredMillion(valuation.rangeMid),
+    },
+    {
+      id: "high",
+      multipleLabel: `${multiples.high}x 적용`,
+      title: "낙관",
+      valueLabel: preciseWonHundredMillion(valuation.rangeHigh),
+    },
+  ];
+}
+
+function preciseWonHundredMillion(value: number): string {
+  const amount = value / 100000000;
+  return `${amount.toLocaleString("ko-KR", {
+    maximumFractionDigits: 1,
+  })}억`;
 }
 
 export function formatNumberWithCommas(value: number): string {

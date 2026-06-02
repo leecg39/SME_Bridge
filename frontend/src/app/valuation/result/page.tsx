@@ -1,28 +1,44 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 import { FloatingConsultationButton } from "@/components/floating-consultation-button";
+import { getValuationProgress } from "@/lib/api";
+import {
+  buildValuationResultCards,
+  fallbackValuation,
+  readStoredValuation,
+  type ValuationResult,
+} from "@/lib/valuation";
 
 export default function ValuationResultPage() {
+  const [valuation, setValuation] = useState<ValuationResult>(fallbackValuation);
+  const resultCards = buildValuationResultCards(valuation);
+
+  useEffect(() => {
+    setValuation(readStoredValuation());
+    getValuationProgress()
+      .then((progress) => {
+        if (progress.result) {
+          setValuation(progress.result);
+        }
+      })
+      .catch(() => undefined);
+  }, []);
+
   return (
     <section className="page">
       <h1 className="page-title">예상 기업가치 결과</h1>
       <p className="lead">EBITDA 멀티플 기반 데모 산정 결과입니다.</p>
       <div className="grid grid-3">
-        <div className="card">
-          <h2>보수적</h2>
-          <div className="metric">35억</div>
-          <p>3.7x 적용</p>
-        </div>
-        <div className="card">
-          <h2>중립</h2>
-          <div className="metric">45억</div>
-          <p>4.8x 적용</p>
-        </div>
-        <div className="card">
-          <h2>낙관</h2>
-          <div className="metric">52억</div>
-          <p>5.5x 적용</p>
-        </div>
+        {resultCards.map((card) => (
+          <div className="card" key={card.id}>
+            <h2>{card.title}</h2>
+            <div className="metric">{card.valueLabel}</div>
+            <p>{card.multipleLabel}</p>
+          </div>
+        ))}
       </div>
       <div className="card" style={{ marginTop: 24 }}>
         <h2>다음 단계</h2>
