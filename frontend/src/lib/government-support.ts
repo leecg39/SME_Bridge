@@ -117,9 +117,14 @@ export type SuccessionConsultingMissingRequirementInputKey = Exclude<
   "hasNegotiationTarget"
 >;
 
+export type SuccessionConsultingMissingRequirementComparisonOperator =
+  | "at-least"
+  | "must-be-true";
+
 export interface SuccessionConsultingMissingRequirementDetail {
   actualValue: boolean | number;
   code: SuccessionConsultingMissingRequirementCode;
+  comparisonOperator: SuccessionConsultingMissingRequirementComparisonOperator;
   inputKey: SuccessionConsultingMissingRequirementInputKey;
   label: string;
   requiredLabel: string;
@@ -508,6 +513,7 @@ export function evaluateSuccessionConsultingEligibility(
     missingRequirementDetails.push({
       actualValue: input.isSme,
       code: "sme",
+      comparisonOperator: "must-be-true",
       inputKey: "isSme",
       label: "중소기업 여부 확인",
       requiredLabel: "중소기업",
@@ -518,6 +524,7 @@ export function evaluateSuccessionConsultingEligibility(
     missingRequirementDetails.push({
       actualValue: input.representativeAge,
       code: "representative-age",
+      comparisonOperator: "at-least",
       inputKey: "representativeAge",
       label: "대표자 만 55세 이상",
       requiredLabel: "대표자 만 55세 이상",
@@ -528,6 +535,7 @@ export function evaluateSuccessionConsultingEligibility(
     missingRequirementDetails.push({
       actualValue: input.companyAgeYears,
       code: "company-age",
+      comparisonOperator: "at-least",
       inputKey: "companyAgeYears",
       label: "업력 만 5년 이상",
       requiredLabel: "업력 만 5년 이상",

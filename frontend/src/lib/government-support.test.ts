@@ -785,6 +785,7 @@ describe("evaluateSuccessionConsultingEligibility", () => {
       {
         actualValue: false,
         code: "sme",
+        comparisonOperator: "must-be-true",
         inputKey: "isSme",
         label: "중소기업 여부 확인",
         requiredLabel: "중소기업",
@@ -793,6 +794,7 @@ describe("evaluateSuccessionConsultingEligibility", () => {
       {
         actualValue: 51,
         code: "representative-age",
+        comparisonOperator: "at-least",
         inputKey: "representativeAge",
         label: "대표자 만 55세 이상",
         requiredLabel: "대표자 만 55세 이상",
@@ -801,6 +803,7 @@ describe("evaluateSuccessionConsultingEligibility", () => {
       {
         actualValue: 3,
         code: "company-age",
+        comparisonOperator: "at-least",
         inputKey: "companyAgeYears",
         label: "업력 만 5년 이상",
         requiredLabel: "업력 만 5년 이상",
