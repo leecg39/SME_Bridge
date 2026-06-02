@@ -139,4 +139,31 @@ describe("mergeValuationAndTaxIntoConsultationSnapshot", () => {
       summaryNote: "양도소득세 대비 증여특례 검토 시",
     });
   });
+
+  it("adds the selected tax scenario to the consultation snapshot when provided", () => {
+    const snapshot = mergeValuationAndTaxIntoConsultationSnapshot(
+      {
+        tax: {
+          bestScenario: "가업승계 증여특례 검토",
+          estimatedSaving: 420000000,
+        },
+      },
+      {
+        calculatedAt: "2026-06-02T17:42:33.341Z",
+        normalizedEbitda: 1100000000,
+        ownerSalaryAdjustment: true,
+        rangeHigh: 6050000000,
+        rangeLow: 4070000000,
+        rangeMid: 5280000000,
+      },
+      "hybrid",
+    );
+
+    expect(snapshot.tax).toMatchObject({
+      selectedScenario: "혼합 전략",
+      selectedScenarioId: "hybrid",
+      selectedScenarioNote: "일부 지분 매각과 승계 병행",
+      selectedScenarioTax: 855680000,
+    });
+  });
 });

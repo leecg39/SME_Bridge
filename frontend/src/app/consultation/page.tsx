@@ -37,6 +37,7 @@ export default function ConsultationPage() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [taxScenarioId, setTaxScenarioId] = useState<TaxScenarioId | undefined>();
   const [snapshot, setSnapshot] = useState<Record<string, JsonValue>>(progressSnapshot);
 
   useEffect(() => {
@@ -59,23 +60,34 @@ export default function ConsultationPage() {
   function applyConsultationDraft(nextType: ConsultationType, taxScenarioId?: TaxScenarioId) {
     const draft = getConsultationDraft(nextType, taxScenarioId);
     setConsultationType(draft.consultationType);
+    setTaxScenarioId(nextType === "tax" ? taxScenarioId : undefined);
     setTitle(draft.title);
     setDescription(draft.description);
   }
 
   useEffect(() => {
     const storedValuation = readStoredValuation();
-    setSnapshot(mergeValuationAndTaxIntoConsultationSnapshot(progressSnapshot, storedValuation));
+    setSnapshot(
+      mergeValuationAndTaxIntoConsultationSnapshot(
+        progressSnapshot,
+        storedValuation,
+        taxScenarioId,
+      ),
+    );
     getValuationProgress()
       .then((progress) => {
         if (progress.result) {
           setSnapshot(
-            mergeValuationAndTaxIntoConsultationSnapshot(progressSnapshot, progress.result),
+            mergeValuationAndTaxIntoConsultationSnapshot(
+              progressSnapshot,
+              progress.result,
+              taxScenarioId,
+            ),
           );
         }
       })
       .catch(() => undefined);
-  }, []);
+  }, [taxScenarioId]);
 
   async function submit() {
     setError("");
@@ -246,6 +258,12 @@ export default function ConsultationPage() {
                   : "4.2억"}
               </span>
             </p>
+            {typeof taxSnapshot?.selectedScenario === "string" ? (
+              <p>
+                <strong>선택 세무 전략</strong>
+                <span>{taxSnapshot.selectedScenario}</span>
+              </p>
+            ) : null}
           </div>
           <label className="checkbox-row">
             <input

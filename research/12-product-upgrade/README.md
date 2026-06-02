@@ -2280,3 +2280,28 @@
 - `getConsultationDraft()`가 세무 상담의 선택 시나리오를 선택적으로 받아 문의 초안을 세분화한다.
 - 세금 시뮬레이션 CTA는 현재 선택된 `TaxScenarioId`를 `scenario` 쿼리로 전달한다.
 - 브라우저 smoke로 `혼합 전략` 선택 후 상담 CTA 이동 시 URL과 문의 내용이 같은 시나리오를 반영하는지 검증한다.
+
+## 97차 A/B 테스트 기준
+
+비교 대상은 세금 시뮬레이션에서 선택한 시나리오가 상담 문의 문구에만 남을지, 전문가에게 전달되는 진행상황 스냅샷에도 구조화된 필드로 남을지이다.
+
+- 리서치 근거: 조세특례제한법 제30조의6은 가업승계 증여특례의 적용요건, 공제, 특례세율, 경영기간별 한도를 규정하고, 국세청 가업승계 지원제도는 증여특례와 사후의무를 별도 검토 대상으로 안내한다. 상담 요청은 Patasos 이슈로 넘어가는 경계이므로, 사용자가 고른 `혼합 전략` 같은 세무 의사결정 의도는 자유문장뿐 아니라 스냅샷 JSON에도 구조화되어야 전문가가 필터링·분류·후속 계산을 할 수 있다.
+- A안: `/consultation?type=tax&scenario=hybrid`에서 문의 내용은 혼합 전략으로 바뀌지만, `snapshot_json.tax`에는 최고 절감 시나리오만 남고 사용자가 선택한 시나리오는 남지 않는다.
+- B안: 선택 시나리오가 있는 세무 상담에서는 `snapshot_json.tax.selectedScenarioId`, `selectedScenario`, `selectedScenarioTax`, `selectedScenarioNote`를 함께 저장하고, 자동 첨부 미리보기에도 선택 전략을 표시한다.
+- 성공 기준: B안은 `scenario=hybrid` 상담 제출 시 자동 첨부 미리보기에 `선택 세무 전략: 혼합 전략`을 표시하고, 저장된 최신 상담의 `snapshot_json.tax.selectedScenarioId`가 `hybrid`, `selectedScenario`가 `혼합 전략`이어야 한다. `scenario`가 없는 일반 세무 상담은 기존 최고 절감 시나리오 요약만 유지한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| `scenario=hybrid` 세무 상담 | 문의 문구에만 혼합 전략 | 스냅샷 JSON과 미리보기에 혼합 전략 | B안이 전문가 전달 자료 구조화 |
+| `scenario=gift` 세무 상담 | 최고 절감 시나리오와 선택 의도 구분 불가 | 선택 증여특례와 최고 절감 요약 병행 | B안이 세무 상담 분류 강화 |
+| 일반 세무 상담 | 최고 절감 요약 | 최고 절감 요약 유지 | B안이 기존 흐름 보존 |
+
+출처:
+- 국가법령정보센터, 조세특례제한법 제30조의6, 시행 2026-06-02, https://www.law.go.kr/lsLawLinkInfo.do?chrClsCd=010202&lsJoLnkSeq=1001023601
+- 국세청, "가업승계 지원제도", https://nts.go.kr/nts/cm/cntnts/cntntsView.do?cntntsId=238920&mi=40345
+
+## 97차 기능 업그레이드 결정
+
+- `mergeValuationAndTaxIntoConsultationSnapshot()`가 선택 세무 시나리오를 선택적으로 받아 스냅샷의 `tax` 객체에 구조화한다.
+- 상담 페이지는 URL의 `scenario`를 상태로 보존해 valuation-progress 병합과 자동 첨부 미리보기에 함께 반영한다.
+- 브라우저 smoke로 `혼합 전략` 선택 후 상담 제출 시 미리보기와 저장된 `snapshot_json.tax`가 같은 선택 시나리오를 담는지 검증한다.

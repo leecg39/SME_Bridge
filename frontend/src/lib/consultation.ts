@@ -2,7 +2,7 @@ import {
   deriveValuationMultiples,
   type ValuationResult,
 } from "./valuation";
-import { buildTaxSavingsSummary, compareTaxScenarios } from "./tax";
+import { buildTaxSavingsSummary, compareTaxScenarios, type TaxScenarioId } from "./tax";
 
 export type ConsultationType = "tax" | "legal" | "valuation" | "mna" | "general";
 export type PatasosSyncStatus = "not_requested" | "pending" | "sent" | "failed";
@@ -137,12 +137,16 @@ export function mergeValuationIntoConsultationSnapshot(
 export function mergeValuationAndTaxIntoConsultationSnapshot(
   snapshot: Record<string, JsonValue>,
   valuation: ValuationResult,
+  selectedTaxScenarioId?: TaxScenarioId,
 ): Record<string, JsonValue> {
   const mergedSnapshot = mergeValuationIntoConsultationSnapshot(snapshot, valuation);
   const taxSummary = buildTaxSavingsSummary(valuation.rangeMid);
   const comparison = compareTaxScenarios(valuation.rangeMid);
   const bestRow =
     comparison.rows.find((row) => row.id === comparison.bestScenarioId) ?? comparison.rows[0]!;
+  const selectedRow = selectedTaxScenarioId
+    ? comparison.rows.find((row) => row.id === selectedTaxScenarioId)
+    : undefined;
 
   return {
     ...mergedSnapshot,
@@ -152,6 +156,14 @@ export function mergeValuationAndTaxIntoConsultationSnapshot(
       bestScenarioId: taxSummary.bestScenarioId,
       estimatedSaving: comparison.maxSavingsAgainstBaseline,
       savingsLabel: taxSummary.label,
+      ...(selectedRow
+        ? {
+            selectedScenario: selectedRow.name,
+            selectedScenarioId: selectedRow.id,
+            selectedScenarioNote: selectedRow.note,
+            selectedScenarioTax: selectedRow.tax,
+          }
+        : {}),
       summaryNote: taxSummary.note,
     },
   };
