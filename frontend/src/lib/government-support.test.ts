@@ -97,6 +97,7 @@ describe("evaluateSuccessionConsultingEligibility", () => {
         isSme: "중소기업",
         representativeAge: "대표자 만 55세 이상",
       },
+      requirementOrder: ["representativeAge", "companyAgeYears", "isSme"],
       requiresSme: true,
       roleLabel: "매도희망기업",
       summaryLabel: "대표자 만 55세 이상 및 업력 만 5년 이상인 중소기업",

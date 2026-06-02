@@ -110,6 +110,7 @@ export interface SuccessionConsultingSellerEligibilityCriteria {
   minimumCompanyAgeYears: number;
   minimumRepresentativeAgeYears: number;
   requirementLabels: Record<SuccessionConsultingMissingRequirementInputKey, string>;
+  requirementOrder: SuccessionConsultingMissingRequirementInputKey[];
   requiresSme: boolean;
   roleLabel: string;
   summaryLabel: string;
@@ -346,6 +347,7 @@ const SUCCESSION_CONSULTING_SELLER_ELIGIBILITY_CRITERIA = {
     isSme: "중소기업",
     representativeAge: "대표자 만 55세 이상",
   },
+  requirementOrder: ["representativeAge", "companyAgeYears", "isSme"],
   requiresSme: true,
   roleLabel: "매도희망기업",
   summaryLabel: "대표자 만 55세 이상 및 업력 만 5년 이상인 중소기업",

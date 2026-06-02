@@ -2028,3 +2028,30 @@
 - `SuccessionConsultingBuyerEligibilityCriteria`에 `roleLabel`을 추가한다.
 - 역할 라벨은 공식 공고 문구인 `매도희망기업`, `매수희망기업`으로 구조화한다.
 - 기존 자격 판정, 요건 문장, 적격/미자격 application guide 동작은 유지한다.
+
+## 87차 A/B 테스트 기준
+
+비교 대상은 매도희망기업 자격 요건을 객체 키나 누락 사유 생성 순서에 맡길지, 공식 공고 문장 순서대로 별도 배열로 제공할지이다.
+
+- 리서치 근거: 기업마당 공고는 매도희망기업 지원대상을 `대표자 연령이 만 55세 이상 및 업력 만 5년 이상인 중소기업` 순서로 설명한다. 현재 `requirementLabels`는 객체이므로 화면이나 상담 로그가 공식 문장 순서대로 요건을 렌더링하려면 별도 순서 정보가 필요하다.
+- A안: `sellerEligibilityCriteria.requirementLabels`만 반환한다.
+- B안: `sellerEligibilityCriteria.requirementOrder`가 `["representativeAge", "companyAgeYears", "isSme"]`를 함께 반환한다.
+- 성공 기준: B안이 적격 기초/종합과 미자격 결과 모두 공식 요건 표시 순서를 반환해야 하며, 기존 누락 사유 판정과 라벨은 유지해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 요건 표시가 객체 키 순서에 의존 | 대표자 연령 -> 업력 -> 중소기업 순서 제공 | B안이 기초 사전진단 설명 순서를 안정화 |
+| 적격, 교섭 대상 있음 | 종합 화면도 순서 재정의 필요 | 같은 공식 요건 순서 제공 | B안이 종합 상담 로그 표시를 안정화 |
+| 중소기업/연령/업력 미충족 | 누락 사유만 제공 | 보완 기준 표시 순서 제공 | B안이 보완 안내를 공식 문장 순서로 구성 가능 |
+
+출처:
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342
+- 스마트 테크브릿지, "기업승계 M&A 활성화를 위한 2026년도 컨설팅 지원사업 시행계획 공고", 2026-03-25, https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&mode=view&title=%EA%B8%B0%EC%97%85%EC%8A%B9%EA%B3%84+M%26A+%ED%99%9C%EC%84%B1%ED%99%94%EB%A5%BC+%EC%9C%84%ED%95%9C++2026%EB%85%84%EB%8F%84+%EC%BB%A8%EC%84%A4%ED%8C%85+%EC%A7%80%EC%9B%90%EC%82%AC%EC%97%85+%EC%8B%9C%ED%96%89%EA%B3%84%ED%9A%8D+%EA%B3%B5%EA%B3%A0
+
+## 87차 기능 업그레이드 결정
+
+- `SuccessionConsultingSellerEligibilityCriteria`에 `requirementOrder`를 추가한다.
+- 순서는 공식 공고 문장 흐름인 `representativeAge`, `companyAgeYears`, `isSme`로 구조화한다.
+- 기존 `requirementLabels`, `missingRequirementDetails`, 적격/미자격 판정 동작은 유지한다.
+- 검증 중 `tax-simulation`의 기업가치 진행 상태 API 계약이 소스에서 누락되어 타입 체크와 런타임 smoke가 깨지는 것을 확인했다.
+- `/api/v1/valuation-progress` 최소 조회/저장 계약과 프론트 `valuation` 유틸을 추가해 기업가치 -> 세금 시뮬레이션 -> 상담 접수 흐름의 빌드/브라우저 검증을 통과시킨다.

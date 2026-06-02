@@ -1,5 +1,6 @@
 import type { ConsultationPayload, ConsultationRecord } from "./consultation";
 import type { MnaRoadmapPhase } from "./mna-documents";
+import type { ValuationResult } from "./valuation";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8001";
 
@@ -40,4 +41,8 @@ export function listConsultations(): Promise<ConsultationRecord[]> {
 
 export function getMnaDocuments(): Promise<MnaRoadmapPhase[]> {
   return request<MnaRoadmapPhase[]>("/api/v1/mna-documents");
+}
+
+export function getValuationProgress(): Promise<{ result: ValuationResult | null }> {
+  return request<{ result: ValuationResult | null }>("/api/v1/valuation-progress");
 }

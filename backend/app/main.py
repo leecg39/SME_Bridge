@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routes.consultations import router as consultations_router
 from app.api.routes.mna_documents import router as mna_documents_router
+from app.api.routes.valuation_progress import router as valuation_progress_router
 
 
 app = FastAPI(title="승계브릿지 API", version="0.1.0")
@@ -24,6 +25,7 @@ app.add_middleware(
 
 app.include_router(consultations_router, prefix="/api/v1")
 app.include_router(mna_documents_router, prefix="/api/v1")
+app.include_router(valuation_progress_router, prefix="/api/v1")
 
 
 @app.get("/api/v1/health")
