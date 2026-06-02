@@ -41,6 +41,7 @@ export interface SuccessionConsultingApplicationSchedule {
 
 export interface SuccessionConsultingApplicationPreparationDocument {
   documentRole: "application-form" | "notice";
+  documentRoleLabel: string;
   label: string;
   purposeLabel: string;
   url: string;
@@ -433,12 +434,14 @@ const SUCCESSION_CONSULTING_APPLICATION_FORM_ATTACHMENT_URL =
 const SUCCESSION_CONSULTING_APPLICATION_PREPARATION_DOCUMENTS = [
   {
     documentRole: "notice",
+    documentRoleLabel: "시행계획 공고",
     label: SUCCESSION_CONSULTING_NOTICE_ATTACHMENT_LABEL,
     purposeLabel: "사업 시행계획 공고 확인",
     url: SUCCESSION_CONSULTING_NOTICE_ATTACHMENT_URL,
   },
   {
     documentRole: "application-form",
+    documentRoleLabel: "신청 서식",
     label: SUCCESSION_CONSULTING_APPLICATION_FORM_ATTACHMENT_LABEL,
     purposeLabel: "신청 서식 작성",
     url: SUCCESSION_CONSULTING_APPLICATION_FORM_ATTACHMENT_URL,
