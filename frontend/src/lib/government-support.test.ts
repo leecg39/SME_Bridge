@@ -92,6 +92,11 @@ describe("evaluateSuccessionConsultingEligibility", () => {
     const sellerEligibilityCriteria = {
       minimumCompanyAgeYears: 5,
       minimumRepresentativeAgeYears: 55,
+      requirementLabels: {
+        companyAgeYears: "업력 만 5년 이상",
+        isSme: "중소기업",
+        representativeAge: "대표자 만 55세 이상",
+      },
       requiresSme: true,
     };
 

@@ -1752,3 +1752,28 @@
 - `SuccessionConsultingBuyerEligibilityCriteria`에 `eligibleBuyerTypeLabels`를 추가한다.
 - `sme`는 `중소기업`, `individual`은 `개인`으로 공식 매수희망기업 유형 라벨을 구조화한다.
 - 기존 `eligibleBuyerTypes`, `acquisitionIntentLabel`, `buyerEligibilityLabel`은 호환성을 위해 유지하고, 미자격은 기존처럼 `applicationGuide: null`을 유지한다.
+
+## 76차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 사전판정의 매도희망기업 기준이 숫자/불리언 값만 제공할지, 기준별 공식 표시 라벨까지 함께 제공할지이다.
+
+- 리서치 근거: 기업마당 공고는 매도희망기업 지원대상을 `대표자 만 55세 이상 및 업력 만 5년 이상인 중소기업`으로 안내한다. 현재 `sellerEligibilityCriteria`는 `minimumCompanyAgeYears`, `minimumRepresentativeAgeYears`, `requiresSme` 값만 제공하므로, 적격 판정 화면이나 상담 로그가 기준 항목을 표시하려면 `companyAgeYears -> 업력 만 5년 이상` 같은 라벨을 별도로 매핑해야 한다.
+- A안: `sellerEligibilityCriteria`가 기준값만 반환한다.
+- B안: `sellerEligibilityCriteria.requirementLabels`가 입력 키별 공식 기준 라벨을 함께 반환한다.
+- 성공 기준: B안이 적격 기초/종합과 미자격 결과 모두 `isSme: "중소기업"`, `representativeAge: "대표자 만 55세 이상"`, `companyAgeYears: "업력 만 5년 이상"` 라벨을 반환해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 기준값만 제공 | 기준값과 공식 기준 라벨 제공 | B안이 기초 사전판정 설명을 안정화 |
+| 적격, 교섭 대상 있음 | 종합 판정도 라벨 매핑 필요 | 기준값과 공식 기준 라벨 제공 | B안이 종합 상담 로그 설명을 안정화 |
+| 중소기업/연령/업력 미충족 | 미충족 상세에는 라벨이 있으나 전체 기준 목록은 재조합 필요 | 전체 기준 라벨 맵 제공 | B안이 보완 안내와 기준 요약을 일관화 |
+
+출처:
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342
+- 스마트 테크브릿지, "기업승계 M&A 활성화를 위한 2026년도 컨설팅 지원사업 시행계획 공고", 2026-03-25, https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&mode=view&title=%EA%B8%B0%EC%97%85%EC%8A%B9%EA%B3%84+M%26A+%ED%99%9C%EC%84%B1%ED%99%94%EB%A5%BC+%EC%9C%84%ED%95%9C++2026%EB%85%84%EB%8F%84+%EC%BB%A8%EC%84%A4%ED%8C%85+%EC%A7%80%EC%9B%90%EC%82%AC%EC%97%85+%EC%8B%9C%ED%96%89%EA%B3%84%ED%9A%8D+%EA%B3%B5%EA%B3%A0
+
+## 76차 기능 업그레이드 결정
+
+- `SuccessionConsultingSellerEligibilityCriteria`에 `requirementLabels`를 추가한다.
+- `isSme`, `representativeAge`, `companyAgeYears` 입력 키별 공식 기준 라벨을 구조화한다.
+- 기존 숫자/불리언 기준값과 `missingRequirementDetails`는 유지한다.
