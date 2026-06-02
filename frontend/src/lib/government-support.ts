@@ -13,6 +13,7 @@ export interface SuccessionConsultingBuyerEligibilityCriteria {
   acquisitionIntentLabel: string;
   eligibleBuyerTypeLabels: Record<SuccessionConsultingBuyerType, string>;
   eligibleBuyerTypes: SuccessionConsultingBuyerType[];
+  summaryLabel: string;
 }
 
 export type SuccessionConsultingApplicationChannel = "online";
@@ -464,6 +465,7 @@ const SUCCESSION_CONSULTING_BUYER_ELIGIBILITY_CRITERIA: SuccessionConsultingBuye
       sme: "중소기업",
     },
     eligibleBuyerTypes: ["sme", "individual"],
+    summaryLabel: "중소기업 인수를 희망하는 중소기업 또는 개인",
   };
 const SUCCESSION_CONSULTING_CONTACT_CHANNELS = [
   {

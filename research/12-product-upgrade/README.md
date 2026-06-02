@@ -1802,3 +1802,28 @@
 - `SuccessionConsultingSellerEligibilityCriteria`에 `summaryLabel`을 추가한다.
 - 적격/미자격 모든 사전판정 결과에서 공식 매도희망기업 요약 문구를 같은 위치에서 반환한다.
 - 기존 `applicationGuide.sellerEligibilityLabel`, 기준값, 개별 `requirementLabels`는 유지한다.
+
+## 78차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 신청가이드의 매수희망기업 요건이 의도 문구와 유형 코드/라벨만 제공할지, 공식 요약 문구까지 함께 제공할지이다.
+
+- 리서치 근거: 기업마당 공고는 매수희망기업 지원대상을 `중소기업 인수를 희망하는 중소기업 또는 개인`으로 한 문장에 정리한다. 현재 이 문구는 `applicationGuide.buyerEligibilityLabel`에만 있고, `buyerEligibilityCriteria`는 `acquisitionIntentLabel`, `eligibleBuyerTypes`, `eligibleBuyerTypeLabels`만 제공하므로 화면이나 상담 로그가 기준 객체만 받는 경우 문구를 다시 조합해야 한다.
+- A안: `buyerEligibilityCriteria`가 의도 문구와 매수자 유형 코드/라벨만 반환한다.
+- B안: `buyerEligibilityCriteria.summaryLabel`이 공식 매수희망기업 요약 문구를 함께 반환한다.
+- 성공 기준: B안이 적격 기초/종합 결과의 신청가이드에서 `summaryLabel: "중소기업 인수를 희망하는 중소기업 또는 개인"`을 반환하고, 미자격 결과는 기존처럼 `applicationGuide: null`을 유지해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 기준 객체만으로 요약 문구 표시 어려움 | 공식 매수자 요약 문구 제공 | B안이 기초 신청가이드 표시를 안정화 |
+| 적격, 교섭 대상 있음 | 종합 상담도 문구 재조합 필요 | 공식 매수자 요약 문구 제공 | B안이 종합 상담 로그를 안정화 |
+| 중소기업/연령/업력 미충족 | 신청가이드 없음 | `applicationGuide: null` | B안이 미자격 판정 동작을 유지 |
+
+출처:
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342
+- 스마트 테크브릿지, "기업승계 M&A 활성화를 위한 2026년도 컨설팅 지원사업 시행계획 공고", 2026-03-25, https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&mode=view&title=%EA%B8%B0%EC%97%85%EC%8A%B9%EA%B3%84+M%26A+%ED%99%9C%EC%84%B1%ED%99%94%EB%A5%BC+%EC%9C%84%ED%95%9C++2026%EB%85%84%EB%8F%84+%EC%BB%A8%EC%84%A4%ED%8C%85+%EC%A7%80%EC%9B%90%EC%82%AC%EC%97%85+%EC%8B%9C%ED%96%89%EA%B3%84%ED%9A%8D+%EA%B3%B5%EA%B3%A0
+
+## 78차 기능 업그레이드 결정
+
+- `SuccessionConsultingBuyerEligibilityCriteria`에 `summaryLabel`을 추가한다.
+- 적격 기초/종합 신청가이드의 매수희망기업 기준 객체가 공식 요약 문구를 함께 반환한다.
+- 기존 `buyerEligibilityLabel`, `acquisitionIntentLabel`, `eligibleBuyerTypes`, `eligibleBuyerTypeLabels`는 유지한다.

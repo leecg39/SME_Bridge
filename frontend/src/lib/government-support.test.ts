@@ -178,6 +178,7 @@ describe("evaluateSuccessionConsultingEligibility", () => {
         sme: "중소기업",
       },
       eligibleBuyerTypes: ["sme", "individual"],
+      summaryLabel: "중소기업 인수를 희망하는 중소기업 또는 개인",
     };
 
     expect(
