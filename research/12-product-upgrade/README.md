@@ -1336,3 +1336,27 @@
 - `SuccessionConsultingEligibilityResult`에 `governmentContributionRate`를 추가한다.
 - 적격 트랙은 기업 부담률 30%에 대응하는 정부 지원률 70%를 함께 반환한다.
 - 미자격은 기존 비용 필드 원칙과 같이 `governmentContributionRate: null`을 반환한다.
+
+## 59차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 비용 안내에서 총액·기업부담·정부지원 숫자를 개별 필드로만 제공할지, 상담 화면이 바로 표시할 수 있는 비용 breakdown 객체로 함께 제공할지이다.
+
+- 리서치 근거: 대한민국 정책브리핑은 2026년 기업승계 M&A 컨설팅 비용을 기초컨설팅 100만 원, 종합컨설팅 1,000만 원으로 설명하고, 기업이 30%를 부담한다고 밝혔다. 현재 결과는 총액, 기업 부담률/금액, 정부 지원률/금액을 각각 반환하므로 화면이나 상담 스냅샷이 필드를 조합할 때 트랙·금액·비율을 잘못 묶을 여지가 있다.
+- A안: `evaluateSuccessionConsultingEligibility()`이 비용 관련 값을 개별 필드로만 반환한다.
+- B안: 자격 판정 결과가 `consultingFundingBreakdown`으로 총 컨설팅 비용, 기업 부담률/금액, 정부 지원률/금액을 함께 반환한다.
+- 성공 기준: B안이 기초 트랙은 100만 원/30만 원/70만 원, 종합 트랙은 1,000만 원/300만 원/700만 원 breakdown을 반환하고, 미자격은 `consultingFundingBreakdown: null`을 반환해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 비용 필드 조합 필요 | 기초 비용 breakdown 제공 | B안이 기초 상담 비용 표시 오류를 줄임 |
+| 적격, 교섭 대상 있음 | 종합 비용도 화면 조합 필요 | 종합 비용 breakdown 제공 | B안이 종합 상담 비용 표시 오류를 줄임 |
+| 미자격 | 비용 객체 오노출 위험 | `consultingFundingBreakdown: null` | B안이 자격 보완 상담과 비용 안내를 분리 |
+
+출처:
+- 대한민국 정책브리핑, "중기부, 기업승계 M&A 컨설팅 지원...140개사 선정", 2026-03-24, https://www.korea.kr/news/policyNewsView.do?newsId=148961348&pWise=main&pWiseMain=R5
+
+## 59차 기능 업그레이드 결정
+
+- `SuccessionConsultingEligibilityResult`에 `consultingFundingBreakdown`을 추가한다.
+- 적격 트랙은 공식 비용/부담률 기준으로 총 컨설팅 비용, 기업 부담, 정부 지원을 한 객체로 반환한다.
+- 기존 개별 비용 필드는 호환성을 위해 유지하고, 미자격은 `consultingFundingBreakdown: null`을 반환한다.

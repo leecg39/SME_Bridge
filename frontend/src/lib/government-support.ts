@@ -78,10 +78,19 @@ export interface SuccessionConsultingTrackApplicationGuide {
   url: string;
 }
 
+export interface SuccessionConsultingFundingBreakdown {
+  companyContributionRate: number;
+  companyContributionWon: number;
+  consultingFeeWon: number;
+  governmentContributionRate: number;
+  governmentContributionWon: number;
+}
+
 export interface SuccessionConsultingEligibilityResult {
   applicationGuide: SuccessionConsultingApplicationGuide | null;
   companyContributionRate: number | null;
   companyContributionWon: number | null;
+  consultingFundingBreakdown: SuccessionConsultingFundingBreakdown | null;
   consultingFeeWon: number | null;
   eligibilityDetailNoticeLabel: string;
   governmentContributionRate: number | null;
@@ -397,20 +406,37 @@ export function evaluateSuccessionConsultingEligibility(
     consultingFeeWon === null || companyContributionRate === null
       ? null
       : Math.round(consultingFeeWon * companyContributionRate);
+  const governmentContributionRate =
+    consultingFeeWon === null ? null : SUCCESSION_CONSULTING_GOVERNMENT_CONTRIBUTION_RATE;
+  const governmentContributionWon =
+    consultingFeeWon === null || companyContributionWon === null
+      ? null
+      : consultingFeeWon - companyContributionWon;
+  const consultingFundingBreakdown =
+    consultingFeeWon === null ||
+    companyContributionRate === null ||
+    companyContributionWon === null ||
+    governmentContributionRate === null ||
+    governmentContributionWon === null
+      ? null
+      : {
+          companyContributionRate,
+          companyContributionWon,
+          consultingFeeWon,
+          governmentContributionRate,
+          governmentContributionWon,
+        };
 
   return {
     applicationGuide:
       track === "not-eligible" ? null : SUCCESSION_CONSULTING_APPLICATION_GUIDE,
     companyContributionRate,
     companyContributionWon,
+    consultingFundingBreakdown,
     consultingFeeWon,
     eligibilityDetailNoticeLabel: SUCCESSION_CONSULTING_ELIGIBILITY_DETAIL_NOTICE_LABEL,
-    governmentContributionRate:
-      consultingFeeWon === null ? null : SUCCESSION_CONSULTING_GOVERNMENT_CONTRIBUTION_RATE,
-    governmentContributionWon:
-      consultingFeeWon === null || companyContributionWon === null
-        ? null
-        : consultingFeeWon - companyContributionWon,
+    governmentContributionRate,
+    governmentContributionWon,
     isEligible,
     missingRequirements,
     nextAction: supportNextAction(track),

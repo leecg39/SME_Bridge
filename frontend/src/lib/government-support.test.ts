@@ -49,6 +49,13 @@ describe("evaluateSuccessionConsultingEligibility", () => {
     ).toMatchObject({
       companyContributionRate: 0.3,
       companyContributionWon: 300000,
+      consultingFundingBreakdown: {
+        companyContributionRate: 0.3,
+        companyContributionWon: 300000,
+        consultingFeeWon: 1000000,
+        governmentContributionRate: 0.7,
+        governmentContributionWon: 700000,
+      },
       consultingFeeWon: 1000000,
       governmentContributionRate: 0.7,
       governmentContributionWon: 700000,
@@ -65,6 +72,13 @@ describe("evaluateSuccessionConsultingEligibility", () => {
     ).toMatchObject({
       companyContributionRate: 0.3,
       companyContributionWon: 3000000,
+      consultingFundingBreakdown: {
+        companyContributionRate: 0.3,
+        companyContributionWon: 3000000,
+        consultingFeeWon: 10000000,
+        governmentContributionRate: 0.7,
+        governmentContributionWon: 7000000,
+      },
       consultingFeeWon: 10000000,
       governmentContributionRate: 0.7,
       governmentContributionWon: 7000000,
@@ -654,6 +668,7 @@ describe("evaluateSuccessionConsultingEligibility", () => {
 
     expect(result.isEligible).toBe(false);
     expect(result.track).toBe("not-eligible");
+    expect(result.consultingFundingBreakdown).toBeNull();
     expect(result.consultingFeeWon).toBeNull();
     expect(result.companyContributionRate).toBeNull();
     expect(result.companyContributionWon).toBeNull();
