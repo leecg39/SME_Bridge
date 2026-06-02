@@ -3,13 +3,16 @@
 import { useEffect, useState } from "react";
 import { LockKeyhole, Send, ShieldCheck } from "lucide-react";
 
-import { createConsultation } from "@/lib/api";
+import { createConsultation, getValuationProgress } from "@/lib/api";
 import {
   buildConsultationPayload,
   consultationTypeLabels,
+  type JsonValue,
+  mergeValuationIntoConsultationSnapshot,
   type ConsultationType,
 } from "@/lib/consultation";
 import { demoCompany, progressSnapshot, recommendedTypeFromPath } from "@/lib/demo-data";
+import { readStoredValuation, wonHundredMillion } from "@/lib/valuation";
 
 export default function ConsultationPage() {
   const [consultationType, setConsultationType] = useState<ConsultationType>("mna");
@@ -26,6 +29,7 @@ export default function ConsultationPage() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [snapshot, setSnapshot] = useState<Record<string, JsonValue>>(progressSnapshot);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -41,6 +45,18 @@ export default function ConsultationPage() {
       return;
     }
     setConsultationType(recommendedTypeFromPath(document.referrer));
+  }, []);
+
+  useEffect(() => {
+    const storedValuation = readStoredValuation();
+    setSnapshot(mergeValuationIntoConsultationSnapshot(progressSnapshot, storedValuation));
+    getValuationProgress()
+      .then((progress) => {
+        if (progress.result) {
+          setSnapshot(mergeValuationIntoConsultationSnapshot(progressSnapshot, progress.result));
+        }
+      })
+      .catch(() => undefined);
   }, []);
 
   async function submit() {
@@ -61,7 +77,7 @@ export default function ConsultationPage() {
         externalTransferConsent,
         includeProgressSnapshot,
         shareSensitiveFiles: false,
-        snapshot: progressSnapshot,
+        snapshot,
       });
       const created = await createConsultation(payload);
       window.localStorage.setItem("lastConsultationStatus", created.patasos_sync_status);
@@ -84,6 +100,12 @@ export default function ConsultationPage() {
     privacyConsent &&
     externalTransferConsent &&
     !isSubmitting;
+  const valuationSnapshot =
+    snapshot.valuation !== null &&
+    !Array.isArray(snapshot.valuation) &&
+    typeof snapshot.valuation === "object"
+      ? snapshot.valuation
+      : null;
 
   return (
     <section className="page">
@@ -181,7 +203,12 @@ export default function ConsultationPage() {
             </p>
             <p>
               <strong>예상 기업가치</strong>
-              <span>35억~52억</span>
+              <span>
+                {typeof valuationSnapshot?.rangeLow === "number" &&
+                typeof valuationSnapshot?.rangeHigh === "number"
+                  ? `${wonHundredMillion(valuationSnapshot.rangeLow)}~${wonHundredMillion(valuationSnapshot.rangeHigh)}`
+                  : "35억~52억"}
+              </span>
             </p>
             <p>
               <strong>로드맵</strong>

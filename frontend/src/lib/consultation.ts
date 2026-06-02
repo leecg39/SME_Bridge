@@ -1,7 +1,12 @@
+import {
+  deriveValuationMultiples,
+  type ValuationResult,
+} from "./valuation";
+
 export type ConsultationType = "tax" | "legal" | "valuation" | "mna" | "general";
 export type PatasosSyncStatus = "not_requested" | "pending" | "sent" | "failed";
 
-type JsonValue =
+export type JsonValue =
   | string
   | number
   | boolean
@@ -100,6 +105,32 @@ export function consultationStatusLabel(status: PatasosSyncStatus): string {
     failed: "전달 실패",
   };
   return labels[status];
+}
+
+export function mergeValuationIntoConsultationSnapshot(
+  snapshot: Record<string, JsonValue>,
+  valuation: ValuationResult,
+): Record<string, JsonValue> {
+  const previousValuation =
+    snapshot.valuation !== null &&
+    !Array.isArray(snapshot.valuation) &&
+    typeof snapshot.valuation === "object"
+      ? snapshot.valuation
+      : {};
+  const multiples = deriveValuationMultiples(valuation);
+
+  return {
+    ...snapshot,
+    valuation: {
+      ...previousValuation,
+      ebitda: valuation.normalizedEbitda,
+      rangeLow: valuation.rangeLow,
+      rangeMid: valuation.rangeMid,
+      rangeHigh: valuation.rangeHigh,
+      scenario: `중립 EV/EBITDA ${multiples.mid}x`,
+      calculatedAt: valuation.calculatedAt,
+    },
+  };
 }
 
 function sanitizeSnapshot(value: JsonValue): JsonValue {

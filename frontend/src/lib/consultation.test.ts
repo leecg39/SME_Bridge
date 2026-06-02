@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   buildConsultationPayload,
+  mergeValuationIntoConsultationSnapshot,
   consultationStatusLabel,
 } from "./consultation";
 
@@ -62,5 +63,39 @@ describe("consultationStatusLabel", () => {
     expect(consultationStatusLabel("sent")).toBe("Patasos 전달완료");
     expect(consultationStatusLabel("failed")).toBe("전달 실패");
     expect(consultationStatusLabel("not_requested")).toBe("접수됨");
+  });
+});
+
+describe("mergeValuationIntoConsultationSnapshot", () => {
+  it("updates the consultation snapshot with the latest valuation result", () => {
+    const snapshot = mergeValuationIntoConsultationSnapshot(
+      {
+        company: { name: "동양정밀" },
+        valuation: {
+          ebitda: 950000000,
+          rangeLow: 3500000000,
+          rangeHigh: 5200000000,
+          sourceFileUrl: "removed-by-sanitizer",
+        },
+      },
+      {
+        calculatedAt: "2026-06-02T17:42:33.341Z",
+        normalizedEbitda: 1100000000,
+        ownerSalaryAdjustment: true,
+        rangeHigh: 6050000000,
+        rangeLow: 4070000000,
+        rangeMid: 5280000000,
+      },
+    );
+
+    expect(snapshot.valuation).toEqual({
+      ebitda: 1100000000,
+      rangeLow: 4070000000,
+      rangeMid: 5280000000,
+      rangeHigh: 6050000000,
+      scenario: "중립 EV/EBITDA 4.8x",
+      calculatedAt: "2026-06-02T17:42:33.341Z",
+      sourceFileUrl: "removed-by-sanitizer",
+    });
   });
 });
