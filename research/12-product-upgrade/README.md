@@ -1555,3 +1555,28 @@
 - `SuccessionConsultingNoticeSource`와 `SuccessionConsultingOfficialNoticeSource`에 `purposeLabel`을 추가한다.
 - 기업마당 출처는 `지원사업 공고 요약`, 스마트 테크브릿지 원공지 출처는 `원공지 및 신청 첨부 기준`으로 역할을 구분한다.
 - 기존 출처 제목/게시일/URL 필드는 유지하고, 미자격은 기존처럼 `applicationGuide: null`을 유지한다.
+
+## 68차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 신청 준비 문서를 라벨·URL만 제공할지, 각 문서의 신청 준비 목적까지 함께 제공할지이다.
+
+- 리서치 근거: 스마트 테크브릿지 원공지는 첨부파일로 `(붙임1) 2026년도 컨설팅 지원사업 시행계획 공고.hwp`와 `(붙임2) 2026년도 컨설팅 지원사업 시행계획 공고 첨부서식.hwp`를 제공한다. 기업마당 공고도 같은 두 첨부를 노출한다. 현재 `applicationPreparationDocuments`는 라벨과 다운로드 URL만 제공하므로, 화면이나 상담 로그가 공고 확인용 문서와 신청서식 작성용 문서를 구분하려면 파일명 문자열을 다시 해석해야 한다.
+- A안: 준비 문서가 `{ label, url }`만 반환된다.
+- B안: 준비 문서가 `purposeLabel`을 함께 반환한다.
+- 성공 기준: B안이 기초/종합 적격 결과 모두 공고문은 `사업 시행계획 공고 확인`, 첨부서식은 `신청 서식 작성` 목적 라벨을 반환하고, 미자격은 기존처럼 `applicationGuide: null`을 유지해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 파일명 해석 필요 | 공고 확인용/신청서식 작성용 구분 | B안이 기초 신청 준비 문서 안내를 명확화 |
+| 적격, 교섭 대상 있음 | 종합 신청도 파일명 해석 필요 | 같은 목적 라벨 제공 | B안이 종합 신청 준비 문서 안내를 명확화 |
+| 미자격 | 준비 문서 오노출 위험 | `applicationGuide: null` | B안이 자격 보완 상담과 신청 문서 안내를 분리 |
+
+출처:
+- 스마트 테크브릿지, "기업승계 M&A 활성화를 위한 2026년도 컨설팅 지원사업 시행계획 공고", 2026-03-25, https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&mode=view&title=%EA%B8%B0%EC%97%85%EC%8A%B9%EA%B3%84+M%26A+%ED%99%9C%EC%84%B1%ED%99%94%EB%A5%BC+%EC%9C%84%ED%95%9C++2026%EB%85%84%EB%8F%84+%EC%BB%A8%EC%84%A4%ED%8C%85+%EC%A7%80%EC%9B%90%EC%82%AC%EC%97%85+%EC%8B%9C%ED%96%89%EA%B3%84%ED%9A%8D+%EA%B3%B5%EA%B3%A0
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/web/lay1/bbs/S1T122C128/AS/74/view.do?pblancId=PBLN_000000000120342
+
+## 68차 기능 업그레이드 결정
+
+- `SuccessionConsultingApplicationPreparationDocument`에 `purposeLabel`을 추가한다.
+- 공고문 HWP는 `사업 시행계획 공고 확인`, 첨부서식 HWP는 `신청 서식 작성`으로 준비 목적을 구조화한다.
+- 기존 준비 문서 라벨/URL과 라벨 배열은 유지하고, 미자격은 기존처럼 `applicationGuide: null`을 유지한다.

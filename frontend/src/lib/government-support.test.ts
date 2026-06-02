@@ -596,10 +596,12 @@ describe("evaluateSuccessionConsultingEligibility", () => {
         applicationPreparationDocuments: [
           {
             label: "(붙임1) 2026년도 컨설팅 지원사업 시행계획 공고.hwp",
+            purposeLabel: "사업 시행계획 공고 확인",
             url: "https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&attachNo=2767&mode=download",
           },
           {
             label: "(붙임2) 2026년도 컨설팅 지원사업 시행계획 공고 첨부서식.hwp",
+            purposeLabel: "신청 서식 작성",
             url: "https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&attachNo=2768&mode=download",
           },
         ],
@@ -684,10 +686,12 @@ describe("evaluateSuccessionConsultingEligibility", () => {
         applicationPreparationDocuments: [
           {
             label: "(붙임1) 2026년도 컨설팅 지원사업 시행계획 공고.hwp",
+            purposeLabel: "사업 시행계획 공고 확인",
             url: "https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&attachNo=2767&mode=download",
           },
           {
             label: "(붙임2) 2026년도 컨설팅 지원사업 시행계획 공고 첨부서식.hwp",
+            purposeLabel: "신청 서식 작성",
             url: "https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&attachNo=2768&mode=download",
           },
         ],
