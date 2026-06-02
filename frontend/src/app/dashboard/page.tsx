@@ -5,16 +5,24 @@ import { ArrowRight, CheckCircle2, ClipboardList, ShieldCheck } from "lucide-rea
 import { useEffect, useState } from "react";
 
 import { FloatingConsultationButton } from "@/components/floating-consultation-button";
-import { listConsultations } from "@/lib/api";
+import { getValuationProgress, listConsultations } from "@/lib/api";
 import {
   consultationStatusLabel,
   type ConsultationRecord,
   type PatasosSyncStatus,
 } from "@/lib/consultation";
+import {
+  fallbackValuation,
+  formatValuationRangeLabel,
+  readStoredValuation,
+} from "@/lib/valuation";
 
 export default function DashboardPage() {
   const [consultations, setConsultations] = useState<ConsultationRecord[]>([]);
   const [lastStatus, setLastStatus] = useState<PatasosSyncStatus>("not_requested");
+  const [valuationRangeLabel, setValuationRangeLabel] = useState(
+    formatValuationRangeLabel(fallbackValuation),
+  );
 
   useEffect(() => {
     const saved = window.localStorage.getItem("lastConsultationStatus");
@@ -30,6 +38,14 @@ export default function DashboardPage() {
       .then((items) => {
         setConsultations(items);
         if (items[0]) setLastStatus(items[0].patasos_sync_status);
+      })
+      .catch(() => undefined);
+    setValuationRangeLabel(formatValuationRangeLabel(readStoredValuation()));
+    getValuationProgress()
+      .then((progress) => {
+        if (progress.result) {
+          setValuationRangeLabel(formatValuationRangeLabel(progress.result));
+        }
       })
       .catch(() => undefined);
   }, []);
@@ -69,7 +85,7 @@ export default function DashboardPage() {
       <div className="grid grid-4">
         <Link className="card metric-card" href="/valuation/upload">
           <h2>예상 기업가치</h2>
-          <div className="metric">35억~52억</div>
+          <div className="metric">{valuationRangeLabel}</div>
           <p>최근 산정 기준</p>
         </Link>
         <Link className="card metric-card" href="/tax-simulation">

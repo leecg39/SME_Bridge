@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   VALUATION_STORAGE_KEY,
   fallbackValuation,
+  formatValuationRangeLabel,
   readStoredValuation,
   wonHundredMillion,
 } from "./valuation";
@@ -49,5 +50,20 @@ describe("readStoredValuation", () => {
     stubLocalStorage("{");
 
     expect(readStoredValuation()).toEqual(fallbackValuation);
+  });
+});
+
+describe("formatValuationRangeLabel", () => {
+  it("formats the valuation low and high range for dashboard summary cards", () => {
+    expect(
+      formatValuationRangeLabel({
+        calculatedAt: "2026-06-02T17:42:33.341Z",
+        normalizedEbitda: 1100000000,
+        ownerSalaryAdjustment: true,
+        rangeHigh: 6050000000,
+        rangeLow: 4070000000,
+        rangeMid: 5280000000,
+      }),
+    ).toBe("41억~61억");
   });
 });

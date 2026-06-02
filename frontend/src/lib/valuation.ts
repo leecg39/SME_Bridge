@@ -51,6 +51,10 @@ export function wonHundredMillion(value: number): string {
   })}억`;
 }
 
+export function formatValuationRangeLabel(valuation: ValuationResult): string {
+  return `${wonHundredMillion(valuation.rangeLow)}~${wonHundredMillion(valuation.rangeHigh)}`;
+}
+
 export function formatNumberWithCommas(value: number): string {
   return Number.isFinite(value) ? value.toLocaleString("ko-KR") : "0";
 }
