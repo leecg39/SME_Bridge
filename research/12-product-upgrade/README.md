@@ -1877,3 +1877,28 @@
 - `SuccessionConsultingApplicationPreparationDocument`에 `documentRoleLabel`을 추가한다.
 - `notice` 문서는 `시행계획 공고`, `application-form` 문서는 `신청 서식`으로 표시 라벨을 구조화한다.
 - 기존 `documentRole`, `label`, `purposeLabel`, `url`은 유지한다.
+
+## 81차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 사전판정 결과가 현재 선택된 트랙 라벨만 제공할지, 전체 트랙 판정 기준까지 함께 제공할지이다.
+
+- 리서치 근거: 기업마당 공고는 컨설팅 과제를 `기초컨설팅(M&A 교섭 대상이 없는 기업)`과 `종합컨설팅(M&A 교섭 대상이 있는 기업)`으로 구분한다. 현재 결과는 선택된 트랙의 `trackQualificationLabel`만 반환하므로 화면이나 상담 로그가 두 트랙의 차이를 함께 설명하려면 내부 상수를 다시 알아야 한다.
+- A안: `trackQualificationLabel`로 현재 선택된 트랙 라벨만 반환한다.
+- B안: `trackQualificationCriteria.trackLabels`와 `summaryLabel`로 기초/종합 전체 판정 기준을 함께 반환한다.
+- 성공 기준: B안이 적격 기초/종합과 미자격 결과 모두 기초/종합 트랙 라벨 맵과 공식 요약 문구를 반환해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 기초컨설팅 라벨만 제공 | 기초/종합 전체 기준 맵 제공 | B안이 기초 판정 근거와 종합 전환 조건을 함께 설명 |
+| 적격, 교섭 대상 있음 | 종합컨설팅 라벨만 제공 | 기초/종합 전체 기준 맵 제공 | B안이 종합 판정 근거를 안정화 |
+| 중소기업/연령/업력 미충족 | 선택 트랙 라벨 없음 | 전체 트랙 기준 맵 제공 | B안이 보완 후 재판정 안내를 일관화 |
+
+출처:
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342
+- 스마트 테크브릿지, "기업승계 M&A 활성화를 위한 2026년도 컨설팅 지원사업 시행계획 공고", 2026-03-25, https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&mode=view&title=%EA%B8%B0%EC%97%85%EC%8A%B9%EA%B3%84+M%26A+%ED%99%9C%EC%84%B1%ED%99%94%EB%A5%BC+%EC%9C%84%ED%95%9C++2026%EB%85%84%EB%8F%84+%EC%BB%A8%EC%84%A4%ED%8C%85+%EC%A7%80%EC%9B%90%EC%82%AC%EC%97%85+%EC%8B%9C%ED%96%89%EA%B3%84%ED%9A%8D+%EA%B3%B5%EA%B3%A0
+
+## 81차 기능 업그레이드 결정
+
+- `SuccessionConsultingEligibilityResult`에 `trackQualificationCriteria`를 추가한다.
+- `basic`, `comprehensive` 트랙별 공식 판정 라벨과 전체 요약 문구를 구조화한다.
+- 기존 `trackQualificationLabel`, `trackApplicationGuide`, 적격/미자격 판정 동작은 유지한다.

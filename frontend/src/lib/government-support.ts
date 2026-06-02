@@ -144,6 +144,11 @@ export interface SuccessionConsultingSelectionPlan {
   unitLabel: string;
 }
 
+export interface SuccessionConsultingTrackQualificationCriteria {
+  summaryLabel: string;
+  trackLabels: Record<Exclude<SuccessionConsultingTrack, "not-eligible">, string>;
+}
+
 export interface SuccessionConsultingSupportScopeByRole {
   buyer: string;
   seller: string;
@@ -188,6 +193,7 @@ export interface SuccessionConsultingEligibilityResult {
   trackApplicationCtaLabel: string | null;
   trackApplicationGuide: SuccessionConsultingTrackApplicationGuide | null;
   trackApplicationUrl: string | null;
+  trackQualificationCriteria: SuccessionConsultingTrackQualificationCriteria;
   trackQualificationLabel: string | null;
 }
 
@@ -355,6 +361,11 @@ const SUCCESSION_CONSULTING_TRACK_QUALIFICATION_LABELS: Record<
   basic: "기초컨설팅(M&A 교섭 대상이 없는 기업)",
   comprehensive: "종합컨설팅(M&A 교섭 대상이 있는 기업)",
 };
+const SUCCESSION_CONSULTING_TRACK_QUALIFICATION_CRITERIA = {
+  summaryLabel:
+    "기초컨설팅(M&A 교섭 대상이 없는 기업), 종합컨설팅(M&A 교섭 대상이 있는 기업)",
+  trackLabels: SUCCESSION_CONSULTING_TRACK_QUALIFICATION_LABELS,
+} satisfies SuccessionConsultingTrackQualificationCriteria;
 const SUCCESSION_CONSULTING_TRACK_APPLICATION_URLS: Record<
   Exclude<SuccessionConsultingTrack, "not-eligible">,
   string
@@ -640,6 +651,7 @@ export function evaluateSuccessionConsultingEligibility(
       track === "not-eligible" ? null : SUCCESSION_CONSULTING_TRACK_APPLICATION_GUIDES[track],
     trackApplicationUrl:
       track === "not-eligible" ? null : SUCCESSION_CONSULTING_TRACK_APPLICATION_URLS[track],
+    trackQualificationCriteria: SUCCESSION_CONSULTING_TRACK_QUALIFICATION_CRITERIA,
     trackQualificationLabel:
       track === "not-eligible"
         ? null

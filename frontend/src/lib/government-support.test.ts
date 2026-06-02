@@ -320,6 +320,53 @@ describe("evaluateSuccessionConsultingEligibility", () => {
     });
   });
 
+  it("returns the official track qualification criteria for all pre-check outcomes", () => {
+    const trackQualificationCriteria = {
+      summaryLabel:
+        "기초컨설팅(M&A 교섭 대상이 없는 기업), 종합컨설팅(M&A 교섭 대상이 있는 기업)",
+      trackLabels: {
+        basic: "기초컨설팅(M&A 교섭 대상이 없는 기업)",
+        comprehensive: "종합컨설팅(M&A 교섭 대상이 있는 기업)",
+      },
+    };
+
+    expect(
+      evaluateSuccessionConsultingEligibility({
+        companyAgeYears: 12,
+        hasNegotiationTarget: false,
+        isSme: true,
+        representativeAge: 63,
+      }),
+    ).toMatchObject({
+      track: "basic",
+      trackQualificationCriteria,
+    });
+
+    expect(
+      evaluateSuccessionConsultingEligibility({
+        companyAgeYears: 8,
+        hasNegotiationTarget: true,
+        isSme: true,
+        representativeAge: 57,
+      }),
+    ).toMatchObject({
+      track: "comprehensive",
+      trackQualificationCriteria,
+    });
+
+    expect(
+      evaluateSuccessionConsultingEligibility({
+        companyAgeYears: 3,
+        hasNegotiationTarget: false,
+        isSme: false,
+        representativeAge: 51,
+      }),
+    ).toMatchObject({
+      track: "not-eligible",
+      trackQualificationCriteria,
+    });
+  });
+
   it("returns the track-specific selection limit for eligible succession consulting tracks", () => {
     expect(
       evaluateSuccessionConsultingEligibility({
