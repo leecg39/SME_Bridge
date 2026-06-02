@@ -167,6 +167,10 @@ describe("evaluateSuccessionConsultingEligibility", () => {
   it("returns the official buyer eligibility criteria in the application guide", () => {
     const buyerEligibilityCriteria = {
       acquisitionIntentLabel: "중소기업 인수 희망",
+      eligibleBuyerTypeLabels: {
+        individual: "개인",
+        sme: "중소기업",
+      },
       eligibleBuyerTypes: ["sme", "individual"],
     };
 

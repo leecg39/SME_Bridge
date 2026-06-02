@@ -1727,3 +1727,28 @@
 - `SuccessionConsultingSelectionPlan`에 `unitLabel`을 추가한다.
 - 적격 기초/종합 판정의 선정규모는 `개사` 단위를 구조화해서 반환한다.
 - 기존 `selectionLimitCompanies`, `totalLimitCompanies`, `trackLimitCompanies`, `trackLimits` 숫자 필드는 유지하고, 미자격은 기존처럼 `selectionPlan: null`을 유지한다.
+
+## 75차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 신청가이드의 매수희망기업 요건이 코드형 유형만 제공할지, 공식 표시 라벨까지 함께 제공할지이다.
+
+- 리서치 근거: 기업마당 공고는 매수희망기업 지원대상을 `중소기업 인수를 희망하는 중소기업 또는 개인`으로 안내한다. 현재 `buyerEligibilityCriteria`는 `eligibleBuyerTypes: ["sme", "individual"]` 코드와 `acquisitionIntentLabel`만 제공하므로, 화면이나 상담 로그가 매수자 유형을 표시하려면 `sme -> 중소기업`, `individual -> 개인` 라벨 매핑을 별도로 가져야 한다.
+- A안: `buyerEligibilityCriteria`가 `eligibleBuyerTypes` 코드 배열만 반환한다.
+- B안: `buyerEligibilityCriteria.eligibleBuyerTypeLabels`가 코드별 공식 표시 라벨을 함께 반환한다.
+- 성공 기준: B안이 적격 기초/종합 결과의 신청가이드에서 `sme: "중소기업"`, `individual: "개인"` 라벨을 반환하고, 미자격 결과는 기존처럼 `applicationGuide: null`을 유지해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 매수자 유형 코드를 UI가 번역 | 코드와 공식 라벨 제공 | B안이 기초 상담 로그의 매수자 요건 표시를 안정화 |
+| 적격, 교섭 대상 있음 | 종합 상담도 별도 매핑 필요 | 코드와 공식 라벨 제공 | B안이 종합 매칭 조건 표시를 안정화 |
+| 중소기업/연령/업력 미충족 | 신청가이드 없음 | `applicationGuide: null` | B안이 미자격 판정 동작을 유지 |
+
+출처:
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342
+- 스마트 테크브릿지, "기업승계 M&A 활성화를 위한 2026년도 컨설팅 지원사업 시행계획 공고", 2026-03-25, https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&mode=view&title=%EA%B8%B0%EC%97%85%EC%8A%B9%EA%B3%84+M%26A+%ED%99%9C%EC%84%B1%ED%99%94%EB%A5%BC+%EC%9C%84%ED%95%9C++2026%EB%85%84%EB%8F%84+%EC%BB%A8%EC%84%A4%ED%8C%85+%EC%A7%80%EC%9B%90%EC%82%AC%EC%97%85+%EC%8B%9C%ED%96%89%EA%B3%84%ED%9A%8D+%EA%B3%B5%EA%B3%A0
+
+## 75차 기능 업그레이드 결정
+
+- `SuccessionConsultingBuyerEligibilityCriteria`에 `eligibleBuyerTypeLabels`를 추가한다.
+- `sme`는 `중소기업`, `individual`은 `개인`으로 공식 매수희망기업 유형 라벨을 구조화한다.
+- 기존 `eligibleBuyerTypes`, `acquisitionIntentLabel`, `buyerEligibilityLabel`은 호환성을 위해 유지하고, 미자격은 기존처럼 `applicationGuide: null`을 유지한다.

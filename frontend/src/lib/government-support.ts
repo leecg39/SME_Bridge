@@ -11,6 +11,7 @@ export type SuccessionConsultingBuyerType = "individual" | "sme";
 
 export interface SuccessionConsultingBuyerEligibilityCriteria {
   acquisitionIntentLabel: string;
+  eligibleBuyerTypeLabels: Record<SuccessionConsultingBuyerType, string>;
   eligibleBuyerTypes: SuccessionConsultingBuyerType[];
 }
 
@@ -450,6 +451,10 @@ const SUCCESSION_CONSULTING_APPLICATION_SCHEDULE = {
 const SUCCESSION_CONSULTING_BUYER_ELIGIBILITY_CRITERIA: SuccessionConsultingBuyerEligibilityCriteria =
   {
     acquisitionIntentLabel: "중소기업 인수 희망",
+    eligibleBuyerTypeLabels: {
+      individual: "개인",
+      sme: "중소기업",
+    },
     eligibleBuyerTypes: ["sme", "individual"],
   };
 const SUCCESSION_CONSULTING_CONTACT_CHANNELS = [
