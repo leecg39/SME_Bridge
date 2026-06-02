@@ -46,3 +46,12 @@ export function getMnaDocuments(): Promise<MnaRoadmapPhase[]> {
 export function getValuationProgress(): Promise<{ result: ValuationResult | null }> {
   return request<{ result: ValuationResult | null }>("/api/v1/valuation-progress");
 }
+
+export function saveValuationProgress(
+  result: ValuationResult,
+): Promise<{ result: ValuationResult | null }> {
+  return request<{ result: ValuationResult | null }>("/api/v1/valuation-progress", {
+    method: "PUT",
+    body: JSON.stringify({ result }),
+  });
+}

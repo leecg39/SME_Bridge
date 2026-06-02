@@ -3,6 +3,11 @@
 import { useEffect, useState } from "react";
 
 import { FloatingConsultationButton } from "@/components/floating-consultation-button";
+import { saveValuationProgress } from "@/lib/api";
+import {
+  VALUATION_STORAGE_KEY,
+  calculateValuationFromEbitda,
+} from "@/lib/valuation";
 
 interface Financials {
   years: number[];
@@ -37,15 +42,13 @@ export default function ValuationReviewPage() {
   const normalizedEbitda =
     latestOperatingIncome + latestDepreciation + (ownerSalaryAdjustment ? 150000000 : 0);
 
-  function continueToResult() {
-    window.localStorage.setItem(
-      "smeBridgeValuation",
-      JSON.stringify({
-        normalizedEbitda,
-        rangeLow: normalizedEbitda * 3.7,
-        rangeHigh: normalizedEbitda * 5.5,
-      }),
-    );
+  async function continueToResult() {
+    const result = calculateValuationFromEbitda({
+      normalizedEbitda,
+      ownerSalaryAdjustment,
+    });
+    window.localStorage.setItem(VALUATION_STORAGE_KEY, JSON.stringify(result));
+    await saveValuationProgress(result).catch(() => undefined);
     window.location.href = "/valuation/result";
   }
 

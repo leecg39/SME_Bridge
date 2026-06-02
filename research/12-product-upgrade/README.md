@@ -2055,3 +2055,28 @@
 - 기존 `requirementLabels`, `missingRequirementDetails`, 적격/미자격 판정 동작은 유지한다.
 - 검증 중 `tax-simulation`의 기업가치 진행 상태 API 계약이 소스에서 누락되어 타입 체크와 런타임 smoke가 깨지는 것을 확인했다.
 - `/api/v1/valuation-progress` 최소 조회/저장 계약과 프론트 `valuation` 유틸을 추가해 기업가치 -> 세금 시뮬레이션 -> 상담 접수 흐름의 빌드/브라우저 검증을 통과시킨다.
+
+## 88차 A/B 테스트 기준
+
+비교 대상은 기업가치 검토 결과를 브라우저 로컬 저장소에만 남길지, 백엔드 진행 상태 API에도 저장해 다음 세금/상담 단계에서 다시 불러올 수 있게 할지이다.
+
+- 리서치 근거: 기업마당 공고는 종합컨설팅 지원내용에 `기업실사, 기업가치평가 등에 대한 컨설팅`을 포함하고, 기초컨설팅도 M&A 추진 기초자료 작성을 지원한다. 승계브릿지의 핵심 흐름도 기업가치 -> 세금 시뮬레이션 -> 상담 요청이므로 산정 결과가 다음 단계 API 계약으로 이어져야 한다.
+- A안: `valuation/review`가 `localStorage`에만 결과를 저장한다.
+- B안: `valuation/review`가 같은 결과를 `/api/v1/valuation-progress`에도 저장하고, `tax-simulation`은 기존처럼 해당 API를 우선 조회한다.
+- 성공 기준: B안은 가치 산정 보기 클릭 후 백엔드 `GET /api/v1/valuation-progress`에서 산정 결과가 반환되어야 하며, 세금 시뮬레이션은 저장된 중립 기업가치를 기준 매각가로 표시해야 한다. API 저장 실패 시 기존 로컬 저장 기반 이동은 유지한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 가치 검토 후 결과 보기 | 현재 브라우저 localStorage에만 저장 | 백엔드 valuation-progress에도 저장 | B안이 단계 간 상태 복원성을 강화 |
+| 새 탭/다른 화면에서 세금 시뮬레이션 진입 | 로컬 저장 상태에 의존 | API 저장 결과를 우선 조회 | B안이 상담 전 세금 기준값 일관성 강화 |
+| API 일시 실패 | 흐름 유지 가능 | 로컬 저장 후 이동 유지 | B안이 기존 사용자 흐름을 보존 |
+
+출처:
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342
+- 스마트 테크브릿지, "기업승계 M&A 활성화를 위한 2026년도 컨설팅 지원사업 시행계획 공고", 2026-03-25, https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&mode=view&title=%EA%B8%B0%EC%97%85%EC%8A%B9%EA%B3%84+M%26A+%ED%99%9C%EC%84%B1%ED%99%94%EB%A5%BC+%EC%9C%84%ED%95%9C++2026%EB%85%84%EB%8F%84+%EC%BB%A8%EC%84%A4%ED%8C%85+%EC%A7%80%EC%9B%90%EC%82%AC%EC%97%85+%EC%8B%9C%ED%96%89%EA%B3%84%ED%9A%8D+%EA%B3%B5%EA%B3%A0
+
+## 88차 기능 업그레이드 결정
+
+- `saveValuationProgress` API 클라이언트 함수를 추가한다.
+- `valuation/review`의 결과 생성값을 `localStorage`와 `/api/v1/valuation-progress`에 함께 저장한다.
+- 저장 실패는 사용자 이동을 막지 않도록 처리하고, 성공 시 세금 시뮬레이션이 백엔드 저장값을 읽는 것을 브라우저 smoke로 검증한다.
