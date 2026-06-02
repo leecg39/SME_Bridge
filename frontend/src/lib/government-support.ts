@@ -144,9 +144,20 @@ export interface SuccessionConsultingSelectionPlan {
   unitLabel: string;
 }
 
+export interface SuccessionConsultingTrackQualificationRequirement {
+  hasNegotiationTarget: boolean;
+  label: string;
+}
+
 export interface SuccessionConsultingTrackQualificationCriteria {
+  decisionInputKey: "hasNegotiationTarget";
+  decisionInputLabel: string;
   summaryLabel: string;
   trackLabels: Record<Exclude<SuccessionConsultingTrack, "not-eligible">, string>;
+  trackRequirements: Record<
+    Exclude<SuccessionConsultingTrack, "not-eligible">,
+    SuccessionConsultingTrackQualificationRequirement
+  >;
 }
 
 export interface SuccessionConsultingSupportScopeByRole {
@@ -362,9 +373,21 @@ const SUCCESSION_CONSULTING_TRACK_QUALIFICATION_LABELS: Record<
   comprehensive: "종합컨설팅(M&A 교섭 대상이 있는 기업)",
 };
 const SUCCESSION_CONSULTING_TRACK_QUALIFICATION_CRITERIA = {
+  decisionInputKey: "hasNegotiationTarget",
+  decisionInputLabel: "M&A 교섭 대상 보유 여부",
   summaryLabel:
     "기초컨설팅(M&A 교섭 대상이 없는 기업), 종합컨설팅(M&A 교섭 대상이 있는 기업)",
   trackLabels: SUCCESSION_CONSULTING_TRACK_QUALIFICATION_LABELS,
+  trackRequirements: {
+    basic: {
+      hasNegotiationTarget: false,
+      label: "M&A 교섭 대상이 없는 기업",
+    },
+    comprehensive: {
+      hasNegotiationTarget: true,
+      label: "M&A 교섭 대상이 있는 기업",
+    },
+  },
 } satisfies SuccessionConsultingTrackQualificationCriteria;
 const SUCCESSION_CONSULTING_TRACK_APPLICATION_URLS: Record<
   Exclude<SuccessionConsultingTrack, "not-eligible">,

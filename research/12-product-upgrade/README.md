@@ -1902,3 +1902,28 @@
 - `SuccessionConsultingEligibilityResult`에 `trackQualificationCriteria`를 추가한다.
 - `basic`, `comprehensive` 트랙별 공식 판정 라벨과 전체 요약 문구를 구조화한다.
 - 기존 `trackQualificationLabel`, `trackApplicationGuide`, 적격/미자격 판정 동작은 유지한다.
+
+## 82차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 트랙 판정 기준이 라벨 맵만 제공할지, 트랙별 `hasNegotiationTarget` 요구값까지 함께 제공할지이다.
+
+- 리서치 근거: 기업마당 공고는 `기초컨설팅(M&A 교섭 대상이 없는 기업)`, `종합컨설팅(M&A 교섭 대상이 있는 기업)`으로 트랙을 나눈다. 81차에서 전체 트랙 라벨 맵을 제공했지만, 화면이나 상담 로그가 교섭대상 보유 여부를 기준으로 트랙 선택 이유를 설명하려면 여전히 라벨 문자열을 파싱해야 한다.
+- A안: `trackQualificationCriteria.trackLabels`만 반환한다.
+- B안: `trackQualificationCriteria.decisionInputKey`, `decisionInputLabel`, `trackRequirements`로 트랙별 교섭대상 요구값을 함께 반환한다.
+- 성공 기준: B안이 적격 기초/종합과 미자격 결과 모두 기초는 `hasNegotiationTarget: false`, 종합은 `hasNegotiationTarget: true` 기준을 반환해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 기초 라벨 문자열을 해석 | 기초 요구값 `false` 제공 | B안이 기초 선택 이유를 구조화 |
+| 적격, 교섭 대상 있음 | 종합 라벨 문자열을 해석 | 종합 요구값 `true` 제공 | B안이 종합 선택 이유를 구조화 |
+| 중소기업/연령/업력 미충족 | 트랙 라벨만 제공 | 전체 트랙 요구값 제공 | B안이 보완 후 트랙 선택 조건 안내를 안정화 |
+
+출처:
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342
+- 스마트 테크브릿지, "기업승계 M&A 활성화를 위한 2026년도 컨설팅 지원사업 시행계획 공고", 2026-03-25, https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&mode=view&title=%EA%B8%B0%EC%97%85%EC%8A%B9%EA%B3%84+M%26A+%ED%99%9C%EC%84%B1%ED%99%94%EB%A5%BC+%EC%9C%84%ED%95%9C++2026%EB%85%84%EB%8F%84+%EC%BB%A8%EC%84%A4%ED%8C%85+%EC%A7%80%EC%9B%90%EC%82%AC%EC%97%85+%EC%8B%9C%ED%96%89%EA%B3%84%ED%9A%8D+%EA%B3%B5%EA%B3%A0
+
+## 82차 기능 업그레이드 결정
+
+- `SuccessionConsultingTrackQualificationCriteria`에 `decisionInputKey`, `decisionInputLabel`, `trackRequirements`를 추가한다.
+- 기초컨설팅은 `hasNegotiationTarget: false`, 종합컨설팅은 `hasNegotiationTarget: true`로 구조화한다.
+- 기존 `summaryLabel`, `trackLabels`, `trackQualificationLabel`은 유지한다.
