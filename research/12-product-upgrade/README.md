@@ -1580,3 +1580,28 @@
 - `SuccessionConsultingApplicationPreparationDocument`에 `purposeLabel`을 추가한다.
 - 공고문 HWP는 `사업 시행계획 공고 확인`, 첨부서식 HWP는 `신청 서식 작성`으로 준비 목적을 구조화한다.
 - 기존 준비 문서 라벨/URL과 라벨 배열은 유지하고, 미자격은 기존처럼 `applicationGuide: null`을 유지한다.
+
+## 69차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 트랙별 신청경로 객체가 CTA/매뉴얼/URL만 제공할지, 해당 신청경로의 트랙명을 함께 제공할지이다.
+
+- 리서치 근거: 기업마당 공고는 지원 대상을 `기초컨설팅(M&A 교섭 대상이 없는 기업)`과 `종합컨설팅(M&A 교섭 대상이 있는 기업)`으로 나눈다. 스마트 테크브릿지 원공지도 `기초컨설팅 신청경로`와 `종합컨설팅 신청경로`를 별도 링크로 제공한다. 현재 `trackApplicationGuide`는 `ctaLabel`, 매뉴얼, URL은 제공하지만 트랙명을 별도 필드로 제공하지 않아 화면이나 상담 로그가 신청경로 객체만 받는 경우 `track` 또는 `trackQualificationLabel`을 다시 결합해야 한다.
+- A안: `trackApplicationGuide`가 `ctaLabel`, `manualAttachmentLabel`, `manualUrl`, `url`만 반환한다.
+- B안: `trackApplicationGuide.trackLabel`이 `기초컨설팅` 또는 `종합컨설팅`을 함께 반환한다.
+- 성공 기준: B안이 기초 적격 결과는 `trackLabel: "기초컨설팅"`, 종합 적격 결과는 `trackLabel: "종합컨설팅"`을 반환하고, 미자격은 기존처럼 `trackApplicationGuide: null`을 유지해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 신청경로 객체만으로 트랙명 표시 어려움 | `기초컨설팅` 트랙명 제공 | B안이 기초 신청 CTA 표시를 안정화 |
+| 적격, 교섭 대상 있음 | 종합 신청도 외부 필드 결합 필요 | `종합컨설팅` 트랙명 제공 | B안이 종합 신청 CTA 표시를 안정화 |
+| 미자격 | 트랙 신청경로 오노출 위험 | `trackApplicationGuide: null` | B안이 자격 보완 상담과 신청경로 안내를 분리 |
+
+출처:
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342
+- 스마트 테크브릿지, "기업승계 M&A 활성화를 위한 2026년도 컨설팅 지원사업 시행계획 공고", 2026-03-25, https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&mode=view&title=%EA%B8%B0%EC%97%85%EC%8A%B9%EA%B3%84+M%26A+%ED%99%9C%EC%84%B1%ED%99%94%EB%A5%BC+%EC%9C%84%ED%95%9C++2026%EB%85%84%EB%8F%84+%EC%BB%A8%EC%84%A4%ED%8C%85+%EC%A7%80%EC%9B%90%EC%82%AC%EC%97%85+%EC%8B%9C%ED%96%89%EA%B3%84%ED%9A%8D+%EA%B3%B5%EA%B3%A0
+
+## 69차 기능 업그레이드 결정
+
+- `SuccessionConsultingTrackApplicationGuide`에 `trackLabel`을 추가한다.
+- 기초 신청경로는 `기초컨설팅`, 종합 신청경로는 `종합컨설팅`으로 트랙명을 구조화한다.
+- 기존 `track`, `trackQualificationLabel`, `trackApplicationCtaLabel`은 호환성을 위해 유지하고, 미자격은 기존처럼 `trackApplicationGuide: null`을 유지한다.

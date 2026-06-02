@@ -122,6 +122,7 @@ export interface SuccessionConsultingTrackApplicationGuide {
   ctaLabel: string;
   manualAttachmentLabel: string;
   manualUrl: string;
+  trackLabel: string;
   url: string;
 }
 
@@ -354,11 +355,13 @@ const SUCCESSION_CONSULTING_TRACK_APPLICATION_GUIDES: Record<
   basic: {
     ctaLabel: SUCCESSION_CONSULTING_TRACK_APPLICATION_CTA_LABELS.basic,
     ...SUCCESSION_CONSULTING_TRACK_APPLICATION_MANUALS.basic,
+    trackLabel: "기초컨설팅",
     url: SUCCESSION_CONSULTING_TRACK_APPLICATION_URLS.basic,
   },
   comprehensive: {
     ctaLabel: SUCCESSION_CONSULTING_TRACK_APPLICATION_CTA_LABELS.comprehensive,
     ...SUCCESSION_CONSULTING_TRACK_APPLICATION_MANUALS.comprehensive,
+    trackLabel: "종합컨설팅",
     url: SUCCESSION_CONSULTING_TRACK_APPLICATION_URLS.comprehensive,
   },
 };
