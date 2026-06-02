@@ -1927,3 +1927,28 @@
 - `SuccessionConsultingTrackQualificationCriteria`에 `decisionInputKey`, `decisionInputLabel`, `trackRequirements`를 추가한다.
 - 기초컨설팅은 `hasNegotiationTarget: false`, 종합컨설팅은 `hasNegotiationTarget: true`로 구조화한다.
 - 기존 `summaryLabel`, `trackLabels`, `trackQualificationLabel`은 유지한다.
+
+## 83차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 트랙별 교섭대상 요구값이 boolean만 제공될지, 화면 표시용 값 라벨까지 함께 제공될지이다.
+
+- 리서치 근거: 기업마당 공고는 기초컨설팅을 `M&A 교섭 대상이 없는 기업`, 종합컨설팅을 `M&A 교섭 대상이 있는 기업`으로 구분한다. 82차에서 `hasNegotiationTarget` 요구값은 구조화했지만, 화면이나 상담 로그가 `true/false`를 `있음/없음`으로 다시 번역해야 한다.
+- A안: `trackRequirements`가 `hasNegotiationTarget` boolean과 문장형 라벨만 반환한다.
+- B안: 각 요구조건이 `hasNegotiationTargetLabel`로 `없음` 또는 `있음`을 함께 반환한다.
+- 성공 기준: B안이 적격 기초/종합과 미자격 결과 모두 기초는 `hasNegotiationTargetLabel: "없음"`, 종합은 `hasNegotiationTargetLabel: "있음"`을 반환해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | `false`를 UI가 `없음`으로 번역 | `없음` 라벨 제공 | B안이 기초 판정 표시를 안정화 |
+| 적격, 교섭 대상 있음 | `true`를 UI가 `있음`으로 번역 | `있음` 라벨 제공 | B안이 종합 판정 표시를 안정화 |
+| 중소기업/연령/업력 미충족 | 재판정 조건 표시 시 boolean 매핑 필요 | 전체 트랙 값 라벨 제공 | B안이 보완 후 트랙 조건 안내를 단순화 |
+
+출처:
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342
+- 스마트 테크브릿지, "기업승계 M&A 활성화를 위한 2026년도 컨설팅 지원사업 시행계획 공고", 2026-03-25, https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&mode=view&title=%EA%B8%B0%EC%97%85%EC%8A%B9%EA%B3%84+M%26A+%ED%99%9C%EC%84%B1%ED%99%94%EB%A5%BC+%EC%9C%84%ED%95%9C++2026%EB%85%84%EB%8F%84+%EC%BB%A8%EC%84%A4%ED%8C%85+%EC%A7%80%EC%9B%90%EC%82%AC%EC%97%85+%EC%8B%9C%ED%96%89%EA%B3%84%ED%9A%8D+%EA%B3%B5%EA%B3%A0
+
+## 83차 기능 업그레이드 결정
+
+- `SuccessionConsultingTrackQualificationRequirement`에 `hasNegotiationTargetLabel`을 추가한다.
+- 기초컨설팅 요구값은 `없음`, 종합컨설팅 요구값은 `있음`으로 구조화한다.
+- 기존 `hasNegotiationTarget`, `label`, 트랙 판정 동작은 유지한다.

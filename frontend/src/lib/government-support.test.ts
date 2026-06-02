@@ -333,10 +333,12 @@ describe("evaluateSuccessionConsultingEligibility", () => {
       trackRequirements: {
         basic: {
           hasNegotiationTarget: false,
+          hasNegotiationTargetLabel: "없음",
           label: "M&A 교섭 대상이 없는 기업",
         },
         comprehensive: {
           hasNegotiationTarget: true,
+          hasNegotiationTargetLabel: "있음",
           label: "M&A 교섭 대상이 있는 기업",
         },
       },
