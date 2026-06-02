@@ -98,6 +98,7 @@ describe("evaluateSuccessionConsultingEligibility", () => {
         representativeAge: "대표자 만 55세 이상",
       },
       requiresSme: true,
+      roleLabel: "매도희망기업",
       summaryLabel: "대표자 만 55세 이상 및 업력 만 5년 이상인 중소기업",
     };
 
@@ -178,6 +179,7 @@ describe("evaluateSuccessionConsultingEligibility", () => {
         sme: "중소기업",
       },
       eligibleBuyerTypes: ["sme", "individual"],
+      roleLabel: "매수희망기업",
       summaryLabel: "중소기업 인수를 희망하는 중소기업 또는 개인",
     };
 

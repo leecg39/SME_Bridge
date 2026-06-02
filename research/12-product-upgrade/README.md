@@ -2002,3 +2002,29 @@
 - `SuccessionConsultingSupportScopeByRole`에 `roleOrder`를 추가한다.
 - 역할 순서는 공식 공고 표시 순서인 `seller`, `buyer`로 구조화한다.
 - 기존 역할별 문장, 역할 라벨, 적격/미자격 판정 동작은 유지한다.
+
+## 86차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 지원대상 역할명이 자격 요약 문자열에만 묻힐지, seller/buyer 자격 기준 객체에서 공식 역할 라벨로 직접 제공될지이다.
+
+- 리서치 근거: 기업마당 공고는 지원대상을 `매도희망기업`과 `매수희망기업`으로 나눠 설명한다. 현재 seller/buyer 자격 기준은 요건 문장만 제공하므로 화면이나 상담 로그가 지원대상 역할명을 표시하려면 별도 하드코딩이 필요하다.
+- A안: `sellerEligibilityCriteria.summaryLabel`과 `buyerEligibilityCriteria.summaryLabel`만 반환한다.
+- B안: `sellerEligibilityCriteria.roleLabel: "매도희망기업"`, `buyerEligibilityCriteria.roleLabel: "매수희망기업"`을 함께 반환한다.
+- 성공 기준: B안이 적격 기초/종합 결과에서 매도/매수 공식 역할 라벨을 반환하고, 미자격 결과도 seller 보완 안내를 위해 `sellerEligibilityCriteria.roleLabel`을 유지해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 자격 문장만 제공 | 매도희망기업/매수희망기업 역할 라벨 제공 | B안이 기초 상담 화면의 역할 표시를 안정화 |
+| 적격, 교섭 대상 있음 | 종합 화면도 역할명 하드코딩 필요 | 같은 공식 역할 라벨 제공 | B안이 종합 상담 로그 표시를 안정화 |
+| 중소기업/연령/업력 미충족 | seller 보완 안내에 역할명 없음 | `매도희망기업` 라벨 유지 | B안이 보완 조건 안내의 공식 용어를 보존 |
+
+출처:
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342
+- 스마트 테크브릿지, "기업승계 M&A 활성화를 위한 2026년도 컨설팅 지원사업 시행계획 공고", 2026-03-25, https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&mode=view&title=%EA%B8%B0%EC%97%85%EC%8A%B9%EA%B3%84+M%26A+%ED%99%9C%EC%84%B1%ED%99%94%EB%A5%BC+%EC%9C%84%ED%95%9C++2026%EB%85%84%EB%8F%84+%EC%BB%A8%EC%84%A4%ED%8C%85+%EC%A7%80%EC%9B%90%EC%82%AC%EC%97%85+%EC%8B%9C%ED%96%89%EA%B3%84%ED%9A%8D+%EA%B3%B5%EA%B3%A0
+
+## 86차 기능 업그레이드 결정
+
+- `SuccessionConsultingSellerEligibilityCriteria`에 `roleLabel`을 추가한다.
+- `SuccessionConsultingBuyerEligibilityCriteria`에 `roleLabel`을 추가한다.
+- 역할 라벨은 공식 공고 문구인 `매도희망기업`, `매수희망기업`으로 구조화한다.
+- 기존 자격 판정, 요건 문장, 적격/미자격 application guide 동작은 유지한다.

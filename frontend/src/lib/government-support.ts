@@ -13,6 +13,7 @@ export interface SuccessionConsultingBuyerEligibilityCriteria {
   acquisitionIntentLabel: string;
   eligibleBuyerTypeLabels: Record<SuccessionConsultingBuyerType, string>;
   eligibleBuyerTypes: SuccessionConsultingBuyerType[];
+  roleLabel: string;
   summaryLabel: string;
 }
 
@@ -110,6 +111,7 @@ export interface SuccessionConsultingSellerEligibilityCriteria {
   minimumRepresentativeAgeYears: number;
   requirementLabels: Record<SuccessionConsultingMissingRequirementInputKey, string>;
   requiresSme: boolean;
+  roleLabel: string;
   summaryLabel: string;
 }
 
@@ -345,6 +347,7 @@ const SUCCESSION_CONSULTING_SELLER_ELIGIBILITY_CRITERIA = {
     representativeAge: "대표자 만 55세 이상",
   },
   requiresSme: true,
+  roleLabel: "매도희망기업",
   summaryLabel: "대표자 만 55세 이상 및 업력 만 5년 이상인 중소기업",
 } satisfies SuccessionConsultingSellerEligibilityCriteria;
 const SUCCESSION_CONSULTING_SUPPORT_SCOPE_LABELS: Record<
@@ -517,6 +520,7 @@ const SUCCESSION_CONSULTING_BUYER_ELIGIBILITY_CRITERIA: SuccessionConsultingBuye
       sme: "중소기업",
     },
     eligibleBuyerTypes: ["sme", "individual"],
+    roleLabel: "매수희망기업",
     summaryLabel: "중소기업 인수를 희망하는 중소기업 또는 개인",
   };
 const SUCCESSION_CONSULTING_CONTACT_CHANNELS = [
