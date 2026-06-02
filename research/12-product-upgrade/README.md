@@ -2205,3 +2205,28 @@
 - `mergeValuationAndTaxIntoConsultationSnapshot()` 순수 함수를 추가해 기업가치와 세금 요약을 같은 valuation 기준으로 병합한다.
 - 상담 페이지는 valuation-progress/로컬 저장값을 읽을 때 해당 함수를 사용하고, 자동 첨부 미리보기에 최신 절세 효과를 표시한다.
 - 브라우저 smoke로 valuation-progress seed 후 상담 미리보기가 `41억~61억`, `9.6억`을 표시하고 상담 POST 스냅샷에 같은 세금 요약이 저장되는지 검증한다.
+
+## 94차 A/B 테스트 기준
+
+비교 대상은 세금/가치평가/로드맵 흐름에서 상담으로 넘어올 때 상담 제목과 문의 내용이 기본 M&A 문구로 남을지, 선택된 상담 유형에 맞는 초안으로 바뀔지이다.
+
+- 리서치 근거: 국세청은 가업승계 세무컨설팅과 가업승계 지원제도를 별도 상담/검토 영역으로 안내하고, 기업마당 기업승계 M&A 컨설팅 공고도 M&A 기초자료 작성과 기업가치평가 등 컨설팅을 구분한다. 상담 요청 초안은 사용자가 직전 화면에서 선택한 검토 주제를 그대로 반영해야 전문가 전달 맥락이 흐려지지 않는다.
+- A안: `/consultation?type=tax`로 진입해도 제목은 `기업승계 M&A 자문 요청`, 문의 내용은 M&A 일반 문구로 남는다.
+- B안: 상담 유형별 기본 제목/문의 내용을 `getConsultationDraft()`로 분리하고, URL type 또는 referrer 추천 유형에 따라 초안을 갱신한다.
+- 성공 기준: B안은 `/consultation?type=tax` 진입 시 제목이 `기업승계 세무 상담 요청`, 문의 내용이 세금 시나리오 검토 문구로 채워져야 한다. `/consultation?type=valuation`은 가치평가 상담 초안, 기본 진입은 기존 M&A 초안을 유지한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| `/consultation?type=tax` | 세무 상담 선택 + M&A 제목 | 세무 상담 선택 + 세무 제목/내용 | B안이 세금 상담 전달 맥락 강화 |
+| `/consultation?type=valuation` | 가치평가 상담 선택 + M&A 제목 | 가치평가 상담 선택 + 가치평가 제목/내용 | B안이 가치평가 흐름 일관성 강화 |
+| 일반 상담 진입 | M&A 제목 | M&A 제목 유지 | B안이 기존 기본 흐름 보존 |
+
+출처:
+- 국세청, "가업승계 지원제도", https://nts.go.kr/nts/cm/cntnts/cntntsView.do?cntntsId=238920&mi=40345
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342
+
+## 94차 기능 업그레이드 결정
+
+- `getConsultationDraft()` 순수 함수를 추가해 상담 유형별 제목/문의 내용 초안을 관리한다.
+- 상담 페이지는 URL type과 referrer 기반 추천 유형 모두에 같은 초안 함수를 적용한다.
+- 브라우저 smoke로 `/consultation?type=tax`에서 세무 상담 초안이 표시되고 제출 payload title/description이 같은 값으로 저장되는지 검증한다.

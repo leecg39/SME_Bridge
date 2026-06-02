@@ -11,18 +11,25 @@ import {
   mergeValuationAndTaxIntoConsultationSnapshot,
   type ConsultationType,
 } from "@/lib/consultation";
-import { demoCompany, progressSnapshot, recommendedTypeFromPath } from "@/lib/demo-data";
+import {
+  demoCompany,
+  getConsultationDraft,
+  progressSnapshot,
+  recommendedTypeFromPath,
+} from "@/lib/demo-data";
 import { readStoredValuation, wonHundredMillion } from "@/lib/valuation";
 
+const defaultDraft = getConsultationDraft("mna");
+
 export default function ConsultationPage() {
-  const [consultationType, setConsultationType] = useState<ConsultationType>("mna");
+  const [consultationType, setConsultationType] = useState<ConsultationType>(
+    defaultDraft.consultationType,
+  );
   const [requesterName, setRequesterName] = useState("김영호");
   const [requesterPhone, setRequesterPhone] = useState("010-1234-5678");
   const [requesterEmail, setRequesterEmail] = useState("ceo@example.com");
-  const [title, setTitle] = useState("기업승계 M&A 자문 요청");
-  const [description, setDescription] = useState(
-    "매각을 준비하기 전에 기업가치와 세금, 필요한 자료를 전문가와 함께 검토하고 싶습니다.",
-  );
+  const [title, setTitle] = useState(defaultDraft.title);
+  const [description, setDescription] = useState(defaultDraft.description);
   const [includeProgressSnapshot, setIncludeProgressSnapshot] = useState(true);
   const [privacyConsent, setPrivacyConsent] = useState(false);
   const [externalTransferConsent, setExternalTransferConsent] = useState(false);
@@ -41,11 +48,18 @@ export default function ConsultationPage() {
       type === "mna" ||
       type === "general"
     ) {
-      setConsultationType(type);
+      applyConsultationDraft(type);
       return;
     }
-    setConsultationType(recommendedTypeFromPath(document.referrer));
+    applyConsultationDraft(recommendedTypeFromPath(document.referrer));
   }, []);
+
+  function applyConsultationDraft(nextType: ConsultationType) {
+    const draft = getConsultationDraft(nextType);
+    setConsultationType(draft.consultationType);
+    setTitle(draft.title);
+    setDescription(draft.description);
+  }
 
   useEffect(() => {
     const storedValuation = readStoredValuation();
@@ -149,7 +163,7 @@ export default function ConsultationPage() {
                   className={consultationType === type ? "active" : ""}
                   key={type}
                   type="button"
-                  onClick={() => setConsultationType(type)}
+                  onClick={() => applyConsultationDraft(type)}
                 >
                   {consultationTypeLabels[type]}
                 </button>
