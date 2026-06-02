@@ -36,6 +36,18 @@ export interface TaxSavingsSummary {
   note: string;
 }
 
+export interface TaxScenarioComparisonTableRow {
+  effectiveRateLabel: string;
+  id: TaxScenarioId;
+  name: string;
+  netLabel: string;
+  note: string;
+  rank: number;
+  savingsAgainstBaselineLabel: string;
+  taxGapFromBestLabel: string;
+  taxLabel: string;
+}
+
 export interface BusinessSuccessionGiftEligibilityInput {
   donorAge: number;
   isCompanyShareGift: boolean;
@@ -140,6 +152,22 @@ export function buildTaxSavingsSummary(taxableBase: number): TaxSavingsSummary {
     label: formatTaxSavingsLabel(comparison.maxSavingsAgainstBaseline),
     note: `양도소득세 대비 ${bestScenario.name} 검토 시`,
   };
+}
+
+export function buildTaxScenarioComparisonTableRows(
+  taxableBase: number,
+): TaxScenarioComparisonTableRow[] {
+  return compareTaxScenarios(taxableBase).rows.map((row) => ({
+    effectiveRateLabel: `${(row.effectiveRate * 100).toFixed(1)}%`,
+    id: row.id,
+    name: row.name,
+    netLabel: formatTaxSavingsLabel(row.net),
+    note: row.note,
+    rank: row.rank,
+    savingsAgainstBaselineLabel: formatTaxSavingsLabel(row.savingsAgainstBaseline),
+    taxGapFromBestLabel: formatTaxSavingsLabel(row.taxGapFromBest),
+    taxLabel: formatTaxSavingsLabel(row.tax),
+  }));
 }
 
 export function estimateTaxScenario(

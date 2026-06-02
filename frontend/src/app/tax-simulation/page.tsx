@@ -12,8 +12,8 @@ import {
   type ValuationResult,
 } from "@/lib/valuation";
 import {
+  buildTaxScenarioComparisonTableRows,
   estimateTaxScenario,
-  estimateTaxScenarios,
   TAX_RULE_BASE_DATE,
   taxScenarioDefinitions,
   type TaxScenarioId,
@@ -31,8 +31,8 @@ export default function TaxSimulationPage() {
     () => salePriceEok * 100000000 * (ownershipPercent / 100),
     [ownershipPercent, salePriceEok],
   );
-  const scenarioRows = useMemo(
-    () => estimateTaxScenarios(taxableBase),
+  const comparisonRows = useMemo(
+    () => buildTaxScenarioComparisonTableRows(taxableBase),
     [taxableBase],
   );
   const selectedScenario = useMemo(
@@ -195,20 +195,26 @@ export default function TaxSimulationPage() {
           <table className="table">
             <thead>
               <tr>
+                <th>순위</th>
                 <th>시나리오</th>
                 <th>실효세율</th>
                 <th>예상 세액</th>
+                <th>양도세 대비 절감</th>
+                <th>최저세액 대비 차이</th>
                 <th>예상 순수령액</th>
                 <th>메모</th>
               </tr>
             </thead>
             <tbody>
-              {scenarioRows.map((scenario) => (
+              {comparisonRows.map((scenario) => (
                 <tr className={selected === scenario.id ? "selected-row" : ""} key={scenario.id}>
+                  <td>{scenario.rank}</td>
                   <td>{scenario.name}</td>
-                  <td>{(scenario.effectiveRate * 100).toFixed(1)}%</td>
-                  <td>{wonHundredMillion(scenario.tax)}</td>
-                  <td>{wonHundredMillion(scenario.net)}</td>
+                  <td>{scenario.effectiveRateLabel}</td>
+                  <td>{scenario.taxLabel}</td>
+                  <td>{scenario.savingsAgainstBaselineLabel}</td>
+                  <td>{scenario.taxGapFromBestLabel}</td>
+                  <td>{scenario.netLabel}</td>
                   <td>{scenario.note}</td>
                 </tr>
               ))}

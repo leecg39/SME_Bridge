@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  buildTaxScenarioComparisonTableRows,
   buildTaxSavingsSummary,
   buildBusinessSuccessionGiftReview,
   calculateBusinessSuccessionGiftTax,
@@ -237,5 +238,28 @@ describe("buildTaxSavingsSummary", () => {
       label: "9.6억",
       note: "양도소득세 대비 증여특례 검토 시",
     });
+  });
+});
+
+describe("buildTaxScenarioComparisonTableRows", () => {
+  it("sorts scenarios by tax and formats savings labels for the tax comparison table", () => {
+    const rows = buildTaxScenarioComparisonTableRows(52.8 * ONE_EOK);
+
+    expect(rows.map((row) => row.id)).toEqual([
+      "gift",
+      "hybrid",
+      "sale",
+      "inheritance",
+    ]);
+    expect(rows[0]).toMatchObject({
+      effectiveRateLabel: "8.1%",
+      name: "증여특례",
+      netLabel: "48.5억",
+      rank: 1,
+      savingsAgainstBaselineLabel: "9.6억",
+      taxGapFromBestLabel: "0원",
+      taxLabel: "4.3억",
+    });
+    expect(rows.find((row) => row.id === "sale")?.savingsAgainstBaselineLabel).toBe("0원");
   });
 });
