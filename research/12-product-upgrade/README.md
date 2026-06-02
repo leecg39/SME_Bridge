@@ -1977,3 +1977,28 @@
 - `SuccessionConsultingSupportScopeByRole`에 `sellerRoleLabel`, `buyerRoleLabel`을 추가한다.
 - 역할 라벨은 공식 공고 문구인 `매도희망기업`, `매수희망기업`으로 구조화한다.
 - 기존 `seller`, `buyer`, `supportScopeLabel`, 적격/미자격 판정 동작은 유지한다.
+
+## 85차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 지원내용의 역할별 표시 순서를 객체 키 순서에 맡길지, 공식 공고 순서를 별도 배열로 제공할지이다.
+
+- 리서치 근거: 기업마당 공고는 지원내용을 `(매도희망기업)` 다음 `(매수희망기업)` 순서로 설명한다. 84차에서 역할 라벨은 구조화했지만, 화면이나 상담 로그가 객체 키 순서에 의존하면 공식 공고와 다른 순서로 표시될 수 있다.
+- A안: `supportScopeByRole`이 역할별 문장과 라벨만 반환한다.
+- B안: `supportScopeByRole.roleOrder`가 `["seller", "buyer"]`를 함께 반환한다.
+- 성공 기준: B안이 적격 기초/종합 결과에서 공식 순서 `seller -> buyer`를 반환하고, 미자격 결과는 기존처럼 `supportScopeByRole: null`을 유지해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 객체 키 순서에 의존 | 매도희망기업 다음 매수희망기업 순서 제공 | B안이 기초 지원내용 표시 순서를 안정화 |
+| 적격, 교섭 대상 있음 | 종합 범위도 객체 키 순서에 의존 | 같은 공식 역할 순서 제공 | B안이 종합 상담 로그 순서를 안정화 |
+| 중소기업/연령/업력 미충족 | 지원내용 없음 | `supportScopeByRole: null` | B안이 미자격 판정 동작을 유지 |
+
+출처:
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342
+- 스마트 테크브릿지, "기업승계 M&A 활성화를 위한 2026년도 컨설팅 지원사업 시행계획 공고", 2026-03-25, https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&mode=view&title=%EA%B8%B0%EC%97%85%EC%8A%B9%EA%B3%84+M%26A+%ED%99%9C%EC%84%B1%ED%99%94%EB%A5%BC+%EC%9C%84%ED%95%9C++2026%EB%85%84%EB%8F%84+%EC%BB%A8%EC%84%A4%ED%8C%85+%EC%A7%80%EC%9B%90%EC%82%AC%EC%97%85+%EC%8B%9C%ED%96%89%EA%B3%84%ED%9A%8D+%EA%B3%B5%EA%B3%A0
+
+## 85차 기능 업그레이드 결정
+
+- `SuccessionConsultingSupportScopeByRole`에 `roleOrder`를 추가한다.
+- 역할 순서는 공식 공고 표시 순서인 `seller`, `buyer`로 구조화한다.
+- 기존 역할별 문장, 역할 라벨, 적격/미자격 판정 동작은 유지한다.
