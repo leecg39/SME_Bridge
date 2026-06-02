@@ -209,3 +209,55 @@ def test_patasos_retry_is_idempotent_after_successful_issue_creation():
     assert first.patasos_issue_id == "issue-stable"
     assert second.patasos_issue_id == "issue-stable"
     assert issue_posts == 1
+
+
+def test_patasos_issue_description_highlights_selected_tax_strategy():
+    issue_descriptions = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        if request.url.path == "/api/auth/sign-in/email":
+            return httpx.Response(200, json={"ok": True})
+        if request.url.path == "/api/companies/patasos-company/issues":
+            body = json.loads(request.content.decode("utf-8"))
+            issue_descriptions.append(body["description"])
+            return httpx.Response(
+                200,
+                json={
+                    "id": "issue-tax",
+                    "identifier": "PAT-777",
+                    "title": "created",
+                },
+            )
+        return httpx.Response(404)
+
+    service = ConsultationService(
+        repository=InMemoryConsultationRepository(),
+        patasos_client=PatasosClient(
+            settings=patasos_settings(),
+            transport=httpx.MockTransport(handler),
+        ),
+    )
+
+    consultation = run(
+        service.create_consultation(
+            consultation_payload(
+                snapshot_json={
+                    "tax": {
+                        "selectedScenario": "혼합 전략",
+                        "selectedScenarioId": "hybrid",
+                        "savingsLabel": "9.6억",
+                        "summaryNote": "양도소득세 대비 증여특례 검토 시",
+                    },
+                }
+            ),
+            sync_to_patasos=False,
+        )
+    )
+    run(service.sync_to_patasos(consultation.id))
+
+    assert issue_descriptions
+    description = issue_descriptions[-1]
+    assert "## 핵심 검토 포인트" in description
+    assert "- 선택 세무 전략: 혼합 전략" in description
+    assert "- 예상 절세 효과: 9.6억" in description
+    assert "- 검토 메모: 양도소득세 대비 증여특례 검토 시" in description

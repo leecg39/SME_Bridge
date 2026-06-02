@@ -211,26 +211,51 @@ class ConsultationService:
     def _issue_description(self, record: ConsultationRecord) -> str:
         type_label = self._TYPE_LABELS[record.consultation_type]
         snapshot = json.dumps(record.snapshot_json, ensure_ascii=False, indent=2)
-        return "\n".join(
+        lines = [
+            "## 상담 요청",
+            f"- 내부 요청 ID: {record.id}",
+            f"- 상담 유형: {type_label}",
+            f"- 기업명: {record.company_name}",
+            f"- 요청자: {record.requester_name}",
+            f"- 연락처: {record.requester_phone}",
+            f"- 이메일: {record.requester_email}",
+            f"- 민감 파일 공유 동의: {'예' if record.share_sensitive_files else '아니오'}",
+            "",
+            "## 문의 내용",
+            record.description,
+            "",
+        ]
+        highlight_lines = self._issue_highlight_lines(record)
+        if highlight_lines:
+            lines.extend(["## 핵심 검토 포인트", *highlight_lines, ""])
+        lines.extend(
             [
-                "## 상담 요청",
-                f"- 내부 요청 ID: {record.id}",
-                f"- 상담 유형: {type_label}",
-                f"- 기업명: {record.company_name}",
-                f"- 요청자: {record.requester_name}",
-                f"- 연락처: {record.requester_phone}",
-                f"- 이메일: {record.requester_email}",
-                f"- 민감 파일 공유 동의: {'예' if record.share_sensitive_files else '아니오'}",
-                "",
-                "## 문의 내용",
-                record.description,
-                "",
                 "## 승계브릿지 진행상황 요약",
                 snapshot,
                 "",
                 "> 재무제표 원본 파일과 서명 URL은 자동 전달하지 않았습니다.",
             ]
         )
+        return "\n".join(lines)
+
+    def _issue_highlight_lines(self, record: ConsultationRecord) -> List[str]:
+        tax_snapshot = record.snapshot_json.get("tax")
+        if not isinstance(tax_snapshot, dict):
+            return []
+
+        lines: List[str] = []
+        selected_scenario = tax_snapshot.get("selectedScenario")
+        savings_label = tax_snapshot.get("savingsLabel")
+        summary_note = tax_snapshot.get("summaryNote")
+
+        if isinstance(selected_scenario, str) and selected_scenario:
+            lines.append(f"- 선택 세무 전략: {selected_scenario}")
+        if isinstance(savings_label, str) and savings_label:
+            lines.append(f"- 예상 절세 효과: {savings_label}")
+        if isinstance(summary_note, str) and summary_note:
+            lines.append(f"- 검토 메모: {summary_note}")
+
+        return lines
 
     def _sanitize_snapshot(self, value: Any) -> Any:
         if isinstance(value, dict):
