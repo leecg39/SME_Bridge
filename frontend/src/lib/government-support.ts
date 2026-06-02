@@ -165,6 +165,7 @@ export interface SuccessionConsultingEligibilityResult {
   consultingFundingBreakdown: SuccessionConsultingFundingBreakdown | null;
   consultingFeeWon: number | null;
   eligibilityDetailNoticeLabel: string;
+  eligibilityDetailNoticeUrl: string;
   governmentContributionRate: number | null;
   governmentContributionWon: number | null;
   isEligible: boolean;
@@ -586,6 +587,7 @@ export function evaluateSuccessionConsultingEligibility(
     consultingFundingBreakdown,
     consultingFeeWon,
     eligibilityDetailNoticeLabel: SUCCESSION_CONSULTING_ELIGIBILITY_DETAIL_NOTICE_LABEL,
+    eligibilityDetailNoticeUrl: SUCCESSION_CONSULTING_OFFICIAL_NOTICE_URL,
     governmentContributionRate,
     governmentContributionWon,
     isEligible,

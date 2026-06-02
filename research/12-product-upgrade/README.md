@@ -1677,3 +1677,28 @@
 - `SuccessionConsultingMissingRequirementDetail`에 `comparisonOperator`를 추가한다.
 - 중소기업 여부는 `must-be-true`, 대표자 연령과 업력은 `at-least`로 반환한다.
 - 기존 실제값/기준값과 문구 필드는 유지한다.
+
+## 73차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 사전판정 결과가 상세 지원대상 공고 확인 문구만 제공할지, 미자격 상태에서도 바로 열 수 있는 공고 URL을 함께 제공할지이다.
+
+- 리서치 근거: 기업마당 공고와 스마트 테크브릿지 원공지는 매도희망기업 지원대상, 기초/종합 컨설팅 구분, 신청방법과 첨부 공고문을 안내한다. 현재 사전판정 결과는 모든 결과에 `eligibilityDetailNoticeLabel: "자세한 지원대상 공고문 참조"`를 반환하지만, 미자격 결과는 `applicationGuide: null`이므로 화면이나 상담 로그가 공고 URL을 별도 매핑해야 한다.
+- A안: `eligibilityDetailNoticeLabel`만 반환하고 URL은 적격의 `applicationGuide`에서만 확인한다.
+- B안: `eligibilityDetailNoticeUrl`을 모든 판정 결과에 함께 반환한다.
+- 성공 기준: B안이 적격 기초/종합과 미자격 결과 모두 스마트 테크브릿지 원공지 URL을 반환하고, 미자격은 기존처럼 `applicationGuide: null`을 유지해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 공고 URL은 applicationGuide에서만 확인 | 판정 결과에서도 원공지 URL 제공 | B안이 기초 판정 출처 접근을 단순화 |
+| 적격, 교섭 대상 있음 | 공고 URL은 applicationGuide에서만 확인 | 판정 결과에서도 원공지 URL 제공 | B안이 종합 판정 출처 접근을 단순화 |
+| 중소기업/연령/업력 미충족 | `applicationGuide: null`이라 공고 URL 별도 매핑 필요 | 미자격 결과에도 원공지 URL 제공 | B안이 자격 보완 상담의 근거 링크를 안정화 |
+
+출처:
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342
+- 스마트 테크브릿지, "기업승계 M&A 활성화를 위한 2026년도 컨설팅 지원사업 시행계획 공고", 2026-03-25, https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&mode=view&title=%EA%B8%B0%EC%97%85%EC%8A%B9%EA%B3%84+M%26A+%ED%99%9C%EC%84%B1%ED%99%94%EB%A5%BC+%EC%9C%84%ED%95%9C++2026%EB%85%84%EB%8F%84+%EC%BB%A8%EC%84%A4%ED%8C%85+%EC%A7%80%EC%9B%90%EC%82%AC%EC%97%85+%EC%8B%9C%ED%96%89%EA%B3%84%ED%9A%8D+%EA%B3%B5%EA%B3%A0
+
+## 73차 기능 업그레이드 결정
+
+- `SuccessionConsultingEligibilityResult`에 `eligibilityDetailNoticeUrl`을 추가한다.
+- 적격/미자격 모든 결과에서 스마트 테크브릿지 원공지 URL을 반환한다.
+- 기존 `eligibilityDetailNoticeLabel`, `applicationGuide`, `officialNoticeSource`는 유지한다.
