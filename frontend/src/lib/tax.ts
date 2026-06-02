@@ -29,6 +29,13 @@ export interface TaxScenarioComparison {
   taxableBase: number;
 }
 
+export interface TaxSavingsSummary {
+  baselineScenarioId: TaxScenarioId;
+  bestScenarioId: TaxScenarioId;
+  label: string;
+  note: string;
+}
+
 export interface BusinessSuccessionGiftEligibilityInput {
   donorAge: number;
   isCompanyShareGift: boolean;
@@ -119,6 +126,19 @@ export function compareTaxScenarios(
     ),
     rows,
     taxableBase: base,
+  };
+}
+
+export function buildTaxSavingsSummary(taxableBase: number): TaxSavingsSummary {
+  const comparison = compareTaxScenarios(taxableBase);
+  const bestScenario =
+    comparison.rows.find((row) => row.id === comparison.bestScenarioId) ?? comparison.rows[0]!;
+
+  return {
+    baselineScenarioId: comparison.baselineScenarioId,
+    bestScenarioId: comparison.bestScenarioId,
+    label: formatTaxSavingsLabel(comparison.maxSavingsAgainstBaseline),
+    note: `양도소득세 대비 ${bestScenario.name} 검토 시`,
   };
 }
 
@@ -286,6 +306,15 @@ function getBusinessSuccessionGiftReviewNextAction(
 
 function calculateCapitalGainsTax(taxableBase: number): number {
   return Math.max(0, taxableBase) * 0.262;
+}
+
+function formatTaxSavingsLabel(value: number): string {
+  const safeValue = Math.max(0, value);
+  if (safeValue === 0) return "0원";
+  if (safeValue < ONE_EOK) return `${Math.round(safeValue / 10000).toLocaleString("ko-KR")}만원`;
+  return `${(safeValue / ONE_EOK).toLocaleString("ko-KR", {
+    maximumFractionDigits: 1,
+  })}억`;
 }
 
 function buildEstimate(

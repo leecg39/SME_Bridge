@@ -15,13 +15,18 @@ import {
   fallbackValuation,
   formatValuationRangeLabel,
   readStoredValuation,
+  type ValuationResult,
 } from "@/lib/valuation";
+import { buildTaxSavingsSummary } from "@/lib/tax";
 
 export default function DashboardPage() {
   const [consultations, setConsultations] = useState<ConsultationRecord[]>([]);
   const [lastStatus, setLastStatus] = useState<PatasosSyncStatus>("not_requested");
   const [valuationRangeLabel, setValuationRangeLabel] = useState(
     formatValuationRangeLabel(fallbackValuation),
+  );
+  const [taxSavingsSummary, setTaxSavingsSummary] = useState(
+    buildTaxSavingsSummary(fallbackValuation.rangeMid),
   );
 
   useEffect(() => {
@@ -40,15 +45,20 @@ export default function DashboardPage() {
         if (items[0]) setLastStatus(items[0].patasos_sync_status);
       })
       .catch(() => undefined);
-    setValuationRangeLabel(formatValuationRangeLabel(readStoredValuation()));
+    applyValuationSummary(readStoredValuation());
     getValuationProgress()
       .then((progress) => {
         if (progress.result) {
-          setValuationRangeLabel(formatValuationRangeLabel(progress.result));
+          applyValuationSummary(progress.result);
         }
       })
       .catch(() => undefined);
   }, []);
+
+  function applyValuationSummary(valuation: ValuationResult) {
+    setValuationRangeLabel(formatValuationRangeLabel(valuation));
+    setTaxSavingsSummary(buildTaxSavingsSummary(valuation.rangeMid));
+  }
 
   return (
     <section className="page">
@@ -90,8 +100,8 @@ export default function DashboardPage() {
         </Link>
         <Link className="card metric-card" href="/tax-simulation">
           <h2>예상 절세 효과</h2>
-          <div className="metric">4.2억</div>
-          <p>증여특례 검토 시</p>
+          <div className="metric">{taxSavingsSummary.label}</div>
+          <p>{taxSavingsSummary.note}</p>
         </Link>
         <Link className="card metric-card" href="/roadmap">
           <h2>로드맵 진행률</h2>

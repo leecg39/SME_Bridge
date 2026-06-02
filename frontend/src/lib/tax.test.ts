@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  buildTaxSavingsSummary,
   buildBusinessSuccessionGiftReview,
   calculateBusinessSuccessionGiftTax,
   calculateProgressiveTransferTax,
@@ -225,5 +226,16 @@ describe("compareTaxScenarios", () => {
     expect(comparison.maxSavingsAgainstBaseline).toBe(0);
     expect(comparison.rows.every((row) => row.savingsAgainstBaseline === 0)).toBe(true);
     expect(comparison.rows.every((row) => row.taxGapFromBest === 0)).toBe(true);
+  });
+});
+
+describe("buildTaxSavingsSummary", () => {
+  it("formats dashboard tax savings from the current valuation middle range", () => {
+    expect(buildTaxSavingsSummary(52.8 * ONE_EOK)).toEqual({
+      baselineScenarioId: "sale",
+      bestScenarioId: "gift",
+      label: "9.6억",
+      note: "양도소득세 대비 증여특례 검토 시",
+    });
   });
 });
