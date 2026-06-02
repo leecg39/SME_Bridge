@@ -1777,3 +1777,28 @@
 - `SuccessionConsultingSellerEligibilityCriteria`에 `requirementLabels`를 추가한다.
 - `isSme`, `representativeAge`, `companyAgeYears` 입력 키별 공식 기준 라벨을 구조화한다.
 - 기존 숫자/불리언 기준값과 `missingRequirementDetails`는 유지한다.
+
+## 77차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 사전판정의 매도희망기업 기준이 개별 기준값/라벨만 제공할지, 공식 요약 문구까지 함께 제공할지이다.
+
+- 리서치 근거: 기업마당 공고는 매도희망기업 지원대상을 `대표자 만 55세 이상 및 업력 만 5년 이상인 중소기업`으로 한 문장에 정리한다. 현재 이 문구는 적격 결과의 `applicationGuide.sellerEligibilityLabel`에는 있지만, 미자격 결과는 `applicationGuide: null`이므로 사전판정 화면이나 상담 로그가 같은 요약 문구를 쓰려면 `sellerEligibilityCriteria` 값을 다시 조합해야 한다.
+- A안: `sellerEligibilityCriteria`가 숫자/불리언 기준과 개별 라벨만 반환한다.
+- B안: `sellerEligibilityCriteria.summaryLabel`이 공식 매도희망기업 요약 문구를 함께 반환한다.
+- 성공 기준: B안이 적격 기초/종합과 미자격 결과 모두 `summaryLabel: "대표자 만 55세 이상 및 업력 만 5년 이상인 중소기업"`을 반환해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 신청가이드에서만 요약 문구 확인 | 판정 기준 객체에서도 요약 문구 제공 | B안이 기초 판정 설명을 단순화 |
+| 적격, 교섭 대상 있음 | 종합 판정도 신청가이드 의존 | 판정 기준 객체에서도 요약 문구 제공 | B안이 종합 상담 로그를 안정화 |
+| 중소기업/연령/업력 미충족 | `applicationGuide: null`이라 기준 요약 재조합 필요 | 미자격도 같은 공식 요약 문구 제공 | B안이 보완 안내의 기준 문구를 일관화 |
+
+출처:
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342
+- 스마트 테크브릿지, "기업승계 M&A 활성화를 위한 2026년도 컨설팅 지원사업 시행계획 공고", 2026-03-25, https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&mode=view&title=%EA%B8%B0%EC%97%85%EC%8A%B9%EA%B3%84+M%26A+%ED%99%9C%EC%84%B1%ED%99%94%EB%A5%BC+%EC%9C%84%ED%95%9C++2026%EB%85%84%EB%8F%84+%EC%BB%A8%EC%84%A4%ED%8C%85+%EC%A7%80%EC%9B%90%EC%82%AC%EC%97%85+%EC%8B%9C%ED%96%89%EA%B3%84%ED%9A%8D+%EA%B3%B5%EA%B3%A0
+
+## 77차 기능 업그레이드 결정
+
+- `SuccessionConsultingSellerEligibilityCriteria`에 `summaryLabel`을 추가한다.
+- 적격/미자격 모든 사전판정 결과에서 공식 매도희망기업 요약 문구를 같은 위치에서 반환한다.
+- 기존 `applicationGuide.sellerEligibilityLabel`, 기준값, 개별 `requirementLabels`는 유지한다.
