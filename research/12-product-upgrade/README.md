@@ -1481,3 +1481,27 @@
 - `SuccessionConsultingOfficialNoticeSource`에 `title`을 추가한다.
 - 적격 트랙은 스마트 테크브릿지 원공지 제목을 URL과 함께 구조화해 반환한다.
 - 기존 라벨/작성일/URL 필드는 유지하고, 미자격은 기존처럼 `applicationGuide: null`을 유지한다.
+
+## 65차 A/B 테스트 기준
+
+비교 대상은 기업마당 공고 출처를 개별 날짜·URL 필드로만 제공할지, 제목·라벨·게시일·URL을 하나의 출처 객체로 함께 제공할지이다.
+
+- 리서치 근거: 기업마당 공고는 `2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고`라는 제목과 게시일 `2026-04-03`을 표시하고, 같은 화면에서 신청기간, 신청방법, 문의처, 소관부처, 수행기관을 제공한다. 현재 `applicationGuide`는 `noticePublishedDate`와 `noticeSourceUrl`만 개별 필드로 제공하므로 상담 화면이 출처 제목과 라벨을 표시하려면 별도 매핑이 필요하다.
+- A안: `applicationGuide`가 `noticePublishedDate`와 `noticeSourceUrl`만 반환한다.
+- B안: `applicationGuide.noticeSource`가 기업마당 공고 라벨, 제목, 게시일, URL을 함께 반환한다.
+- 성공 기준: B안이 기초/종합 적격 결과 모두 `noticeSource.title: "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고"`와 `publishedDate: "2026-04-03"`을 반환하고, 미자격은 기존처럼 `applicationGuide: null`을 유지해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 기업마당 날짜·URL만 표시 | 기업마당 공고 제목·라벨까지 표시 | B안이 기초 신청 공고 출처를 사람이 읽기 쉽게 고정 |
+| 적격, 교섭 대상 있음 | 종합 상담도 출처 제목 재매핑 필요 | 같은 기업마당 출처 객체 제공 | B안이 종합 신청 안내의 근거 표시를 안정화 |
+| 미자격 | 공고 출처 오노출 위험 | `applicationGuide: null` | B안이 자격 보완 상담과 신청 공고 안내를 분리 |
+
+출처:
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/web/lay1/bbs/S1T122C128/AS/74/view.do?pblancId=PBLN_000000000120342
+
+## 65차 기능 업그레이드 결정
+
+- `SuccessionConsultingApplicationGuide`에 `noticeSource`를 추가한다.
+- 적격 트랙은 기업마당 공고 라벨, 제목, 게시일 `2026-04-03`, URL을 구조화해 반환한다.
+- 기존 `noticePublishedDate`와 `noticeSourceUrl`은 호환성을 위해 유지하고, 미자격은 기존처럼 `applicationGuide: null`을 유지한다.

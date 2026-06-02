@@ -627,6 +627,12 @@ describe("evaluateSuccessionConsultingEligibility", () => {
         noticeSourceUrl:
           "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342",
         noticeAttachmentLabel: "(붙임1) 2026년도 컨설팅 지원사업 시행계획 공고.hwp",
+        noticeSource: {
+          label: "기업마당 공고",
+          publishedDate: "2026-04-03",
+          title: "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고",
+          url: "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342",
+        },
         officialNoticeSource: {
           label: "스마트 테크브릿지 공지사항",
           publishedDate: "2026-03-25",
@@ -707,6 +713,12 @@ describe("evaluateSuccessionConsultingEligibility", () => {
         noticeSourceUrl:
           "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342",
         noticeAttachmentLabel: "(붙임1) 2026년도 컨설팅 지원사업 시행계획 공고.hwp",
+        noticeSource: {
+          label: "기업마당 공고",
+          publishedDate: "2026-04-03",
+          title: "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고",
+          url: "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342",
+        },
         officialNoticeSource: {
           label: "스마트 테크브릿지 공지사항",
           publishedDate: "2026-03-25",

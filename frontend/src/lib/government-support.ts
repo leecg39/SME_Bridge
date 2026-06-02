@@ -60,6 +60,13 @@ export interface SuccessionConsultingOfficialNoticeSource {
   url: string;
 }
 
+export interface SuccessionConsultingNoticeSource {
+  label: string;
+  publishedDate: string;
+  title: string;
+  url: string;
+}
+
 export interface SuccessionConsultingApplicationGuide {
   applicationFormAttachmentLabel: string;
   applicationMethodLabel: string;
@@ -78,6 +85,7 @@ export interface SuccessionConsultingApplicationGuide {
   contactPhoneNumbers: string[];
   noticeAttachmentLabel: string;
   noticePublishedDate: string;
+  noticeSource: SuccessionConsultingNoticeSource;
   noticeSourceUrl: string;
   officialNoticeSource: SuccessionConsultingOfficialNoticeSource;
   onlineApplicationContactLabel: string;
@@ -360,6 +368,14 @@ const SUCCESSION_CONSULTING_OFFICIAL_NOTICE_SOURCE = {
   title: "기업승계 M&A 활성화를 위한 2026년도 컨설팅 지원사업 시행계획 공고",
   url: SUCCESSION_CONSULTING_OFFICIAL_NOTICE_URL,
 } satisfies SuccessionConsultingOfficialNoticeSource;
+const SUCCESSION_CONSULTING_NOTICE_SOURCE_URL =
+  "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342";
+const SUCCESSION_CONSULTING_NOTICE_SOURCE = {
+  label: "기업마당 공고",
+  publishedDate: "2026-04-03",
+  title: "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고",
+  url: SUCCESSION_CONSULTING_NOTICE_SOURCE_URL,
+} satisfies SuccessionConsultingNoticeSource;
 const SUCCESSION_CONSULTING_NOTICE_ATTACHMENT_URL =
   "https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&attachNo=2767&mode=download";
 const SUCCESSION_CONSULTING_APPLICATION_FORM_ATTACHMENT_LABEL =
@@ -433,8 +449,8 @@ const SUCCESSION_CONSULTING_APPLICATION_GUIDE: SuccessionConsultingApplicationGu
   contactPhoneNumbers: ["02-3215-5917", "02-3215-5999", "02-3215-5995"],
   noticeAttachmentLabel: SUCCESSION_CONSULTING_NOTICE_ATTACHMENT_LABEL,
   noticePublishedDate: "2026-04-03",
-  noticeSourceUrl:
-    "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342",
+  noticeSource: SUCCESSION_CONSULTING_NOTICE_SOURCE,
+  noticeSourceUrl: SUCCESSION_CONSULTING_NOTICE_SOURCE_URL,
   officialNoticeSource: SUCCESSION_CONSULTING_OFFICIAL_NOTICE_SOURCE,
   onlineApplicationContactLabel: "기술보증기금 기술거래보호부 플랫폼팀",
   onlineApplicationContactPhoneNumbers: ["051-606-7429", "051-606-7431", "051-606-7699"],
