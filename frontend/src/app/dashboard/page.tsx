@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { FloatingConsultationButton } from "@/components/floating-consultation-button";
 import { getValuationProgress, listConsultations } from "@/lib/api";
 import {
+  buildDashboardConsultationRows,
   consultationStatusLabel,
   type ConsultationRecord,
   type PatasosSyncStatus,
@@ -59,6 +60,8 @@ export default function DashboardPage() {
     setValuationRangeLabel(formatValuationRangeLabel(valuation));
     setTaxSavingsSummary(buildTaxSavingsSummary(valuation.rangeMid));
   }
+
+  const consultationRows = buildDashboardConsultationRows(consultations);
 
   return (
     <section className="page">
@@ -118,7 +121,7 @@ export default function DashboardPage() {
       </div>
       <div className="card" style={{ marginTop: 24 }}>
         <h2>최근 상담 요청</h2>
-        {consultations.length === 0 ? (
+        {consultationRows.length === 0 ? (
           <p>아직 상담 요청이 없습니다.</p>
         ) : (
           <table className="table">
@@ -130,11 +133,14 @@ export default function DashboardPage() {
               </tr>
             </thead>
             <tbody>
-              {consultations.map((item) => (
+              {consultationRows.map((item) => (
                 <tr key={item.id}>
-                  <td>{item.title}</td>
-                  <td>{item.status}</td>
-                  <td>{consultationStatusLabel(item.patasos_sync_status)}</td>
+                  <td>
+                    <strong>{item.title}</strong>
+                    {item.selectedScenarioLabel ? <p>{item.selectedScenarioLabel}</p> : null}
+                  </td>
+                  <td>{item.requestStatusLabel}</td>
+                  <td>{item.patasosStatusLabel}</td>
                 </tr>
               ))}
             </tbody>

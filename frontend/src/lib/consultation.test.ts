@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  buildDashboardConsultationRows,
   buildConsultationPayload,
   mergeValuationAndTaxIntoConsultationSnapshot,
   mergeValuationIntoConsultationSnapshot,
@@ -64,6 +65,49 @@ describe("consultationStatusLabel", () => {
     expect(consultationStatusLabel("sent")).toBe("Patasos 전달완료");
     expect(consultationStatusLabel("failed")).toBe("전달 실패");
     expect(consultationStatusLabel("not_requested")).toBe("접수됨");
+  });
+});
+
+describe("buildDashboardConsultationRows", () => {
+  it("surfaces the selected tax scenario and user-facing status labels", () => {
+    const rows = buildDashboardConsultationRows([
+      {
+        company_id: "company-1",
+        company_name: "동양정밀",
+        consultation_type: "tax",
+        created_at: "2026-06-02T22:20:00Z",
+        description: "혼합 전략을 중심으로 검토하고 싶습니다.",
+        external_transfer_consent: true,
+        id: "consultation-1",
+        patasos_issue_id: null,
+        patasos_issue_identifier: null,
+        patasos_issue_url: null,
+        patasos_sync_error: null,
+        patasos_sync_status: "not_requested",
+        privacy_consent: true,
+        requester_email: "ceo@example.com",
+        requester_name: "김영호",
+        requester_phone: "010-1234-5678",
+        share_sensitive_files: false,
+        snapshot_json: {
+          tax: {
+            selectedScenario: "혼합 전략",
+            selectedScenarioId: "hybrid",
+          },
+        },
+        status: "pending",
+        title: "기업승계 세무 상담 요청",
+        updated_at: "2026-06-02T22:20:00Z",
+      },
+    ]);
+
+    expect(rows[0]).toEqual({
+      id: "consultation-1",
+      patasosStatusLabel: "접수됨",
+      requestStatusLabel: "접수됨",
+      selectedScenarioLabel: "선택 전략: 혼합 전략",
+      title: "기업승계 세무 상담 요청",
+    });
   });
 });
 

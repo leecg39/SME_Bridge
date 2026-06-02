@@ -58,6 +58,14 @@ export interface ConsultationRecord extends ConsultationPayload {
   updated_at: string;
 }
 
+export interface DashboardConsultationRow {
+  id: string;
+  patasosStatusLabel: string;
+  requestStatusLabel: string;
+  selectedScenarioLabel: string | null;
+  title: string;
+}
+
 const SENSITIVE_KEYS = new Set([
   "file_url",
   "fileUrl",
@@ -106,6 +114,22 @@ export function consultationStatusLabel(status: PatasosSyncStatus): string {
     failed: "전달 실패",
   };
   return labels[status];
+}
+
+export function buildDashboardConsultationRows(
+  consultations: ConsultationRecord[],
+): DashboardConsultationRow[] {
+  return consultations.map((item) => {
+    const selectedScenario = selectedTaxScenarioFromSnapshot(item.snapshot_json);
+
+    return {
+      id: item.id,
+      patasosStatusLabel: consultationStatusLabel(item.patasos_sync_status),
+      requestStatusLabel: consultationRequestStatusLabel(item.status),
+      selectedScenarioLabel: selectedScenario ? `선택 전략: ${selectedScenario}` : null,
+      title: item.title,
+    };
+  });
 }
 
 export function mergeValuationIntoConsultationSnapshot(
@@ -186,9 +210,30 @@ function sanitizeSnapshot(value: JsonValue): JsonValue {
   return value;
 }
 
+function consultationRequestStatusLabel(status: string): string {
+  const labels: Record<string, string> = {
+    cancelled: "취소됨",
+    completed: "완료",
+    in_progress: "진행중",
+    pending: "접수됨",
+    requested: "접수됨",
+  };
+
+  return labels[status] ?? status;
+}
+
 function sanitizeSnapshotObject(value: Record<string, JsonValue>): Record<string, JsonValue> {
   const sanitized = sanitizeSnapshot(value);
   return sanitized !== null && !Array.isArray(sanitized) && typeof sanitized === "object"
     ? sanitized
     : {};
+}
+
+function selectedTaxScenarioFromSnapshot(snapshot: Record<string, JsonValue>): string | null {
+  const tax =
+    snapshot.tax !== null && !Array.isArray(snapshot.tax) && typeof snapshot.tax === "object"
+      ? snapshot.tax
+      : null;
+
+  return typeof tax?.selectedScenario === "string" ? tax.selectedScenario : null;
 }
