@@ -1952,3 +1952,28 @@
 - `SuccessionConsultingTrackQualificationRequirement`에 `hasNegotiationTargetLabel`을 추가한다.
 - 기초컨설팅 요구값은 `없음`, 종합컨설팅 요구값은 `있음`으로 구조화한다.
 - 기존 `hasNegotiationTarget`, `label`, 트랙 판정 동작은 유지한다.
+
+## 84차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 지원내용의 역할별 범위가 역할 키만 제공될지, 공식 역할 라벨까지 함께 제공될지이다.
+
+- 리서치 근거: 기업마당 공고는 지원내용을 `(매도희망기업)`과 `(매수희망기업)`으로 나눠 설명한다. 현재 `supportScopeByRole`은 `seller`, `buyer` 키와 범위 문장만 제공하므로 화면이나 상담 로그가 공식 역할명을 표시하려면 키를 별도 라벨로 번역해야 한다.
+- A안: `supportScopeByRole`이 `seller`, `buyer` 범위 문장만 반환한다.
+- B안: `supportScopeByRole`이 `sellerRoleLabel: "매도희망기업"`, `buyerRoleLabel: "매수희망기업"`을 함께 반환한다.
+- 성공 기준: B안이 적격 기초/종합 결과에서 역할별 공식 라벨을 반환하고, 미자격 결과는 기존처럼 `supportScopeByRole: null`을 유지해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | `seller`/`buyer` 키를 UI가 번역 | 매도희망기업/매수희망기업 라벨 제공 | B안이 기초 지원내용 표시를 안정화 |
+| 적격, 교섭 대상 있음 | 종합 범위도 키 번역 필요 | 같은 공식 역할 라벨 제공 | B안이 종합 상담 로그 표시를 안정화 |
+| 중소기업/연령/업력 미충족 | 지원내용 없음 | `supportScopeByRole: null` | B안이 미자격 판정 동작을 유지 |
+
+출처:
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342
+- 스마트 테크브릿지, "기업승계 M&A 활성화를 위한 2026년도 컨설팅 지원사업 시행계획 공고", 2026-03-25, https://tb.kibo.or.kr/ktbs/board/notice/notice.do?articleNo=1850&mode=view&title=%EA%B8%B0%EC%97%85%EC%8A%B9%EA%B3%84+M%26A+%ED%99%9C%EC%84%B1%ED%99%94%EB%A5%BC+%EC%9C%84%ED%95%9C++2026%EB%85%84%EB%8F%84+%EC%BB%A8%EC%84%A4%ED%8C%85+%EC%A7%80%EC%9B%90%EC%82%AC%EC%97%85+%EC%8B%9C%ED%96%89%EA%B3%84%ED%9A%8D+%EA%B3%B5%EA%B3%A0
+
+## 84차 기능 업그레이드 결정
+
+- `SuccessionConsultingSupportScopeByRole`에 `sellerRoleLabel`, `buyerRoleLabel`을 추가한다.
+- 역할 라벨은 공식 공고 문구인 `매도희망기업`, `매수희망기업`으로 구조화한다.
+- 기존 `seller`, `buyer`, `supportScopeLabel`, 적격/미자격 판정 동작은 유지한다.

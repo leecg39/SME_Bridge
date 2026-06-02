@@ -261,7 +261,9 @@ describe("evaluateSuccessionConsultingEligibility", () => {
     ).toMatchObject({
       supportScopeByRole: {
         buyer: "인수대상 탐색, 자금조달방안 등에 대한 컨설팅",
+        buyerRoleLabel: "매수희망기업",
         seller: "M&A 추진을 위한 기초자료 작성 등에 대한 컨설팅",
+        sellerRoleLabel: "매도희망기업",
       },
       track: "basic",
     });
@@ -276,7 +278,9 @@ describe("evaluateSuccessionConsultingEligibility", () => {
     ).toMatchObject({
       supportScopeByRole: {
         buyer: "인수가격협상, 기업실사 등에 대한 컨설팅",
+        buyerRoleLabel: "매수희망기업",
         seller: "기업실사, 기업가치평가 등에 대한 컨설팅",
+        sellerRoleLabel: "매도희망기업",
       },
       track: "comprehensive",
     });

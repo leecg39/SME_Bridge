@@ -163,7 +163,9 @@ export interface SuccessionConsultingTrackQualificationCriteria {
 
 export interface SuccessionConsultingSupportScopeByRole {
   buyer: string;
+  buyerRoleLabel: string;
   seller: string;
+  sellerRoleLabel: string;
 }
 
 export interface SuccessionConsultingTrackApplicationGuide {
@@ -359,11 +361,15 @@ const SUCCESSION_CONSULTING_SUPPORT_SCOPE_BY_ROLE: Record<
 > = {
   basic: {
     buyer: "인수대상 탐색, 자금조달방안 등에 대한 컨설팅",
+    buyerRoleLabel: "매수희망기업",
     seller: "M&A 추진을 위한 기초자료 작성 등에 대한 컨설팅",
+    sellerRoleLabel: "매도희망기업",
   },
   comprehensive: {
     buyer: "인수가격협상, 기업실사 등에 대한 컨설팅",
+    buyerRoleLabel: "매수희망기업",
     seller: "기업실사, 기업가치평가 등에 대한 컨설팅",
+    sellerRoleLabel: "매도희망기업",
   },
 };
 const SUCCESSION_CONSULTING_TRACK_QUALIFICATION_LABELS: Record<
