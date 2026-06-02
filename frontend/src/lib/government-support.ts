@@ -29,6 +29,13 @@ export interface SuccessionConsultingApplicationPeriodStatus {
   type: SuccessionConsultingApplicationPeriodType;
 }
 
+export interface SuccessionConsultingApplicationSchedule {
+  closingType: SuccessionConsultingApplicationPeriodType;
+  endDate: string | null;
+  label: string;
+  startDate: string;
+}
+
 export interface SuccessionConsultingApplicationPreparationDocument {
   label: string;
   url: string;
@@ -54,6 +61,7 @@ export interface SuccessionConsultingApplicationGuide {
   applicationPeriodStatus: SuccessionConsultingApplicationPeriodStatus;
   applicationPreparationDocumentLabels: string[];
   applicationPreparationDocuments: SuccessionConsultingApplicationPreparationDocument[];
+  applicationSchedule: SuccessionConsultingApplicationSchedule;
   applicationSiteCtaLabel: string;
   buyerEligibilityCriteria: SuccessionConsultingBuyerEligibilityCriteria;
   buyerEligibilityLabel: string;
@@ -361,6 +369,12 @@ const SUCCESSION_CONSULTING_APPLICATION_PERIOD_STATUS = {
   label: "예산 소진시까지",
   type: "until-budget-exhausted",
 } satisfies SuccessionConsultingApplicationPeriodStatus;
+const SUCCESSION_CONSULTING_APPLICATION_SCHEDULE = {
+  closingType: "until-budget-exhausted",
+  endDate: null,
+  label: "2026-04-01부터 예산 소진시까지",
+  startDate: "2026-04-01",
+} satisfies SuccessionConsultingApplicationSchedule;
 const SUCCESSION_CONSULTING_BUYER_ELIGIBILITY_CRITERIA: SuccessionConsultingBuyerEligibilityCriteria =
   {
     acquisitionIntentLabel: "중소기업 인수 희망",
@@ -393,6 +407,7 @@ const SUCCESSION_CONSULTING_APPLICATION_GUIDE: SuccessionConsultingApplicationGu
     SUCCESSION_CONSULTING_APPLICATION_FORM_ATTACHMENT_LABEL,
   ],
   applicationPreparationDocuments: SUCCESSION_CONSULTING_APPLICATION_PREPARATION_DOCUMENTS,
+  applicationSchedule: SUCCESSION_CONSULTING_APPLICATION_SCHEDULE,
   applicationSiteCtaLabel: "온라인신청 바로가기",
   buyerEligibilityCriteria: SUCCESSION_CONSULTING_BUYER_ELIGIBILITY_CRITERIA,
   buyerEligibilityLabel: "중소기업 인수를 희망하는 중소기업 또는 개인",

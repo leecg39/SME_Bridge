@@ -1408,3 +1408,28 @@
 - `SuccessionConsultingApplicationGuide`에 `contactChannels`를 추가한다.
 - 적격 트랙은 사업 문의와 온라인 신청 문의를 목적별 `{ type, purposeLabel, label, phoneNumbers, email }` 객체로 반환한다.
 - 기존 개별 문의처 필드는 호환성을 위해 유지하고, 미자격은 기존처럼 `applicationGuide: null`을 유지한다.
+
+## 62차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 신청 타이밍을 기간 문구만 제공할지, 신청 시작일과 마감 유형을 함께 구조화해 제공할지이다.
+
+- 리서치 근거: 대한민국 정책브리핑은 기술보증기금이 2026년 4월 1일부터 스마트테크브릿지 누리집을 통해 신청을 받는다고 설명한다. 기업마당 공고는 신청기간을 `예산 소진시까지`로 안내한다. 현재 `applicationPeriodStatus`는 예산 소진형 마감만 구조화하므로, 화면이나 상담 스냅샷이 신청 시작일과 마감 유형을 함께 표시하려면 출처를 다시 조합해야 한다.
+- A안: `applicationGuide`가 `applicationPeriodLabel`과 `applicationPeriodStatus`만 반환한다.
+- B안: `applicationGuide.applicationSchedule`이 신청 시작일, 종료일 없음, 예산 소진형 마감 유형, 표시 라벨을 함께 반환한다.
+- 성공 기준: B안이 기초/종합 적격 결과 모두 `startDate: "2026-04-01"`, `endDate: null`, `closingType: "until-budget-exhausted"`를 반환하고, 미자격은 `applicationGuide: null`을 유지해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 예산 소진형 마감만 표시 | 2026-04-01부터 예산 소진시까지 구조화 | B안이 기초 신청 타이밍을 명확화 |
+| 적격, 교섭 대상 있음 | 종합 신청도 시작일 별도 조합 필요 | 같은 신청 일정 객체 제공 | B안이 종합 신청 타이밍을 명확화 |
+| 미자격 | 신청 일정 오노출 위험 | `applicationGuide: null` | B안이 자격 보완 상담과 신청 일정 안내를 분리 |
+
+출처:
+- 대한민국 정책브리핑, "중기부, 기업승계 M&A 컨설팅 지원...140개사 선정", 2026-03-24, https://www.korea.kr/news/policyNewsView.do?newsId=148961348&pWise=main&pWiseMain=R5
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/web/lay1/bbs/S1T122C128/AS/74/view.do?pblancId=PBLN_000000000120342
+
+## 62차 기능 업그레이드 결정
+
+- `SuccessionConsultingApplicationGuide`에 `applicationSchedule`을 추가한다.
+- 적격 트랙은 신청 시작일 `2026-04-01`, 종료일 없음, 예산 소진형 마감 유형을 구조화해 반환한다.
+- 기존 신청기간 라벨/상태 필드는 호환성을 위해 유지하고, 미자격은 기존처럼 `applicationGuide: null`을 유지한다.
