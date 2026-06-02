@@ -107,6 +107,23 @@ export interface SuccessionConsultingSellerEligibilityCriteria {
   requiresSme: boolean;
 }
 
+export type SuccessionConsultingMissingRequirementCode =
+  | "company-age"
+  | "representative-age"
+  | "sme";
+
+export type SuccessionConsultingMissingRequirementInputKey = Exclude<
+  keyof SuccessionConsultingEligibilityInput,
+  "hasNegotiationTarget"
+>;
+
+export interface SuccessionConsultingMissingRequirementDetail {
+  code: SuccessionConsultingMissingRequirementCode;
+  inputKey: SuccessionConsultingMissingRequirementInputKey;
+  label: string;
+  requiredLabel: string;
+}
+
 export interface SuccessionConsultingSelectionPlan {
   totalLimitCompanies: number;
   trackLimitCompanies: number;
@@ -144,6 +161,7 @@ export interface SuccessionConsultingEligibilityResult {
   governmentContributionRate: number | null;
   governmentContributionWon: number | null;
   isEligible: boolean;
+  missingRequirementDetails: SuccessionConsultingMissingRequirementDetail[];
   missingRequirements: string[];
   nextAction: string;
   selectionLimitCompanies: number | null;
@@ -483,13 +501,32 @@ export function evaluateSuccessionConsultingEligibility(
     minimumRepresentativeAgeYears,
     requiresSme,
   } = SUCCESSION_CONSULTING_SELLER_ELIGIBILITY_CRITERIA;
-  const missingRequirements = [
-    ...(input.isSme || !requiresSme ? [] : ["중소기업 여부 확인"]),
-    ...(input.representativeAge >= minimumRepresentativeAgeYears
-      ? []
-      : ["대표자 만 55세 이상"]),
-    ...(input.companyAgeYears >= minimumCompanyAgeYears ? [] : ["업력 만 5년 이상"]),
-  ];
+  const missingRequirementDetails: SuccessionConsultingMissingRequirementDetail[] = [];
+  if (!input.isSme && requiresSme) {
+    missingRequirementDetails.push({
+      code: "sme",
+      inputKey: "isSme",
+      label: "중소기업 여부 확인",
+      requiredLabel: "중소기업",
+    });
+  }
+  if (input.representativeAge < minimumRepresentativeAgeYears) {
+    missingRequirementDetails.push({
+      code: "representative-age",
+      inputKey: "representativeAge",
+      label: "대표자 만 55세 이상",
+      requiredLabel: "대표자 만 55세 이상",
+    });
+  }
+  if (input.companyAgeYears < minimumCompanyAgeYears) {
+    missingRequirementDetails.push({
+      code: "company-age",
+      inputKey: "companyAgeYears",
+      label: "업력 만 5년 이상",
+      requiredLabel: "업력 만 5년 이상",
+    });
+  }
+  const missingRequirements = missingRequirementDetails.map(({ label }) => label);
   const isEligible = missingRequirements.length === 0;
   const track = isEligible
     ? input.hasNegotiationTarget
@@ -536,6 +573,7 @@ export function evaluateSuccessionConsultingEligibility(
     governmentContributionRate,
     governmentContributionWon,
     isEligible,
+    missingRequirementDetails,
     missingRequirements,
     nextAction: supportNextAction(track),
     selectionLimitCompanies:

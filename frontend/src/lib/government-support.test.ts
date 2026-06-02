@@ -23,6 +23,7 @@ describe("evaluateSuccessionConsultingEligibility", () => {
     expect(result.isEligible).toBe(true);
     expect(result.track).toBe("basic");
     expect(result.nextAction).toContain("기초컨설팅");
+    expect(result.missingRequirementDetails).toEqual([]);
   });
 
   it("routes eligible sellers with a negotiation target to comprehensive consulting", () => {
@@ -36,6 +37,7 @@ describe("evaluateSuccessionConsultingEligibility", () => {
     expect(result.isEligible).toBe(true);
     expect(result.track).toBe("comprehensive");
     expect(result.nextAction).toContain("종합컨설팅");
+    expect(result.missingRequirementDetails).toEqual([]);
   });
 
   it("returns track-specific consulting fees and company contributions", () => {
@@ -778,6 +780,26 @@ describe("evaluateSuccessionConsultingEligibility", () => {
       "중소기업 여부 확인",
       "대표자 만 55세 이상",
       "업력 만 5년 이상",
+    ]);
+    expect(result.missingRequirementDetails).toEqual([
+      {
+        code: "sme",
+        inputKey: "isSme",
+        label: "중소기업 여부 확인",
+        requiredLabel: "중소기업",
+      },
+      {
+        code: "representative-age",
+        inputKey: "representativeAge",
+        label: "대표자 만 55세 이상",
+        requiredLabel: "대표자 만 55세 이상",
+      },
+      {
+        code: "company-age",
+        inputKey: "companyAgeYears",
+        label: "업력 만 5년 이상",
+        requiredLabel: "업력 만 5년 이상",
+      },
     ]);
   });
 });

@@ -1605,3 +1605,27 @@
 - `SuccessionConsultingTrackApplicationGuide`에 `trackLabel`을 추가한다.
 - 기초 신청경로는 `기초컨설팅`, 종합 신청경로는 `종합컨설팅`으로 트랙명을 구조화한다.
 - 기존 `track`, `trackQualificationLabel`, `trackApplicationCtaLabel`은 호환성을 위해 유지하고, 미자격은 기존처럼 `trackApplicationGuide: null`을 유지한다.
+
+## 70차 A/B 테스트 기준
+
+비교 대상은 기업승계 M&A 컨설팅 사전판정의 미충족 요건을 문자열 배열만 제공할지, 화면 입력 필드와 연결 가능한 구조화 상세까지 함께 제공할지이다.
+
+- 리서치 근거: 기업마당 공고는 매도희망기업 지원대상을 대표자 만 55세 이상, 업력 만 5년 이상인 중소기업으로 안내한다. 현재 `missingRequirements`는 `"중소기업 여부 확인"`, `"대표자 만 55세 이상"`, `"업력 만 5년 이상"` 문구만 반환하므로, 사전판정 화면이나 상담 로그가 어떤 입력 필드를 보완해야 하는지 표시하려면 문구를 다시 해석해야 한다.
+- A안: `evaluateSuccessionConsultingEligibility()`가 `missingRequirements` 문자열 배열만 반환한다.
+- B안: `missingRequirementDetails`가 미충족 요건별 `code`, `inputKey`, `label`, `requiredLabel`을 함께 반환한다.
+- 성공 기준: B안이 미자격 결과에서 `isSme`, `representativeAge`, `companyAgeYears` 입력 필드와 연결되는 3개 상세를 반환하고, 적격 기초/종합 결과는 빈 상세 배열을 반환해야 한다.
+
+| 입력 | A안 결과 | B안 결과 | 판정 |
+| --- | --- | --- | --- |
+| 적격, 교섭 대상 없음 | 누락 문구 없음 | 빈 상세 배열 | B안이 적격 화면에서 보완 항목이 없음을 명확화 |
+| 적격, 교섭 대상 있음 | 누락 문구 없음 | 빈 상세 배열 | B안이 종합 상담에서도 같은 구조를 유지 |
+| 중소기업/연령/업력 미충족 | 문자열 3개를 UI가 재해석 | 입력 필드별 상세 3개 | B안이 보완 CTA와 상담 로그의 필드 연결을 안정화 |
+
+출처:
+- 기업마당, "2026년 기업승계 M&A 활성화를 위한 컨설팅 지원사업 시행계획 공고", 2026-04-03, https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120342
+
+## 70차 기능 업그레이드 결정
+
+- `SuccessionConsultingEligibilityResult`에 `missingRequirementDetails`를 추가한다.
+- 미충족 요건은 `sme`, `representative-age`, `company-age` 코드와 입력 키를 함께 반환한다.
+- 기존 `missingRequirements` 문자열 배열은 호환성을 위해 유지하고, 같은 상세 목록의 `label`에서 생성한다.
