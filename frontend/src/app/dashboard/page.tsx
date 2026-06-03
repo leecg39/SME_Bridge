@@ -19,6 +19,11 @@ import {
   type ValuationResult,
 } from "@/lib/valuation";
 import { buildTaxSavingsSummary } from "@/lib/tax";
+import {
+  buildMnaRoadmapTaskProgressSummary,
+  MNA_ROADMAP_TASK_CHECKLIST_STORAGE_KEY,
+  parseMnaRoadmapTaskChecklist,
+} from "@/lib/mna-documents";
 
 export default function DashboardPage() {
   const [consultations, setConsultations] = useState<ConsultationRecord[]>([]);
@@ -28,6 +33,9 @@ export default function DashboardPage() {
   );
   const [taxSavingsSummary, setTaxSavingsSummary] = useState(
     buildTaxSavingsSummary(fallbackValuation.rangeMid),
+  );
+  const [roadmapProgressSummary, setRoadmapProgressSummary] = useState(
+    buildMnaRoadmapTaskProgressSummary({}),
   );
 
   useEffect(() => {
@@ -40,6 +48,13 @@ export default function DashboardPage() {
     ) {
       setLastStatus(saved);
     }
+    setRoadmapProgressSummary(
+      buildMnaRoadmapTaskProgressSummary(
+        parseMnaRoadmapTaskChecklist(
+          window.localStorage.getItem(MNA_ROADMAP_TASK_CHECKLIST_STORAGE_KEY),
+        ),
+      ),
+    );
     listConsultations()
       .then((items) => {
         setConsultations(items);
@@ -92,7 +107,7 @@ export default function DashboardPage() {
         <div>
           <CheckCircle2 aria-hidden="true" size={28} />
           <strong>현재 단계</strong>
-          <span>Phase 1 매각 준비, 진행률 24%</span>
+          <span>{roadmapProgressSummary.stageLabel}</span>
         </div>
       </div>
       <div className="grid grid-4">
@@ -108,8 +123,8 @@ export default function DashboardPage() {
         </Link>
         <Link className="card metric-card" href="/roadmap">
           <h2>로드맵 진행률</h2>
-          <div className="metric">24%</div>
-          <p>Phase 1 매각 준비</p>
+          <div className="metric">{roadmapProgressSummary.percentLabel}</div>
+          <p>{roadmapProgressSummary.detailLabel}</p>
         </Link>
         <Link className="card metric-card" href="/consultation">
           <h2>상담 상태</h2>

@@ -68,6 +68,15 @@ export interface MnaRoadmapActionPlan {
 
 export type MnaRoadmapTaskChecklist = Record<string, boolean>;
 
+export interface MnaRoadmapTaskProgressSummary {
+  completed: number;
+  detailLabel: string;
+  percent: number;
+  percentLabel: string;
+  stageLabel: string;
+  total: number;
+}
+
 export const MNA_ROADMAP_TASK_CHECKLIST_STORAGE_KEY = "sme-bridge:mna-roadmap-task-checklist";
 
 export const mnaRoadmapPhases: MnaRoadmapPhase[] = [
@@ -309,6 +318,24 @@ export function parseMnaRoadmapTaskChecklist(value: string | null): MnaRoadmapTa
   } catch {
     return {};
   }
+}
+
+export function buildMnaRoadmapTaskProgressSummary(
+  checklist: MnaRoadmapTaskChecklist,
+  phases: MnaRoadmapPhase[] = mnaRoadmapPhases,
+): MnaRoadmapTaskProgressSummary {
+  const total = phases.reduce((sum, phase) => sum + phase.tasks.length, 0);
+  const completed = Object.values(checklist).filter(Boolean).length;
+  const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
+
+  return {
+    completed,
+    detailLabel: `완료 항목 ${completed}/${total}개`,
+    percent,
+    percentLabel: `${percent}%`,
+    stageLabel: `Phase 1 매각 준비, 진행률 ${percent}%`,
+    total,
+  };
 }
 
 export function evaluateMnaPhaseDocumentReadiness(

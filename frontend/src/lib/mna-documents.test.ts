@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { SUCCESSION_SUPPORT_CHECK_TASK } from "./government-support";
 import {
+  buildMnaRoadmapTaskProgressSummary,
   buildMnaPhaseActionSummary,
   buildMnaRoadmapActionPlan,
   evaluateMnaPhaseDocumentReadiness,
@@ -196,5 +197,23 @@ describe("roadmap task checklist persistence", () => {
       "1-최근 3개년 재무제표 준비": true,
     });
     expect(parseMnaRoadmapTaskChecklist("not-json")).toEqual({});
+  });
+});
+
+describe("buildMnaRoadmapTaskProgressSummary", () => {
+  it("summarizes stored roadmap task progress for dashboard cards", () => {
+    expect(
+      buildMnaRoadmapTaskProgressSummary({
+        "1-최근 3개년 재무제표 준비": true,
+        "1-임대차 계약서 정리": false,
+      }),
+    ).toEqual({
+      completed: 1,
+      detailLabel: "완료 항목 1/16개",
+      percent: 6,
+      percentLabel: "6%",
+      stageLabel: "Phase 1 매각 준비, 진행률 6%",
+      total: 16,
+    });
   });
 });
