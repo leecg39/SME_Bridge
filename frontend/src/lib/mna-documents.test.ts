@@ -211,9 +211,29 @@ describe("buildMnaRoadmapTaskProgressSummary", () => {
     ).toEqual({
       completed: 1,
       detailLabel: "완료 항목 1/16개",
+      nextTaskLabel: `다음 할 일: ${SUCCESSION_SUPPORT_CHECK_TASK}`,
       percent: 6,
       percentLabel: "6%",
       stageLabel: "Phase 1 매각 준비, 진행률 6%",
+      total: 16,
+    });
+  });
+
+  it("moves the next dashboard action to marketing after preparation tasks are complete", () => {
+    expect(
+      buildMnaRoadmapTaskProgressSummary({
+        [`1-${SUCCESSION_SUPPORT_CHECK_TASK}`]: true,
+        "1-최근 3개년 재무제표 준비": true,
+        "1-임대차 계약서 정리": true,
+        "1-주요 거래처 매출 비중 확인": true,
+      }),
+    ).toEqual({
+      completed: 4,
+      detailLabel: "완료 항목 4/16개",
+      nextTaskLabel: "다음 할 일: 티저 작성",
+      percent: 25,
+      percentLabel: "25%",
+      stageLabel: "Phase 2 마케팅, 진행률 25%",
       total: 16,
     });
   });

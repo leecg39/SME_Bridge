@@ -71,6 +71,7 @@ export type MnaRoadmapTaskChecklist = Record<string, boolean>;
 export interface MnaRoadmapTaskProgressSummary {
   completed: number;
   detailLabel: string;
+  nextTaskLabel: string;
   percent: number;
   percentLabel: string;
   stageLabel: string;
@@ -324,23 +325,43 @@ export function buildMnaRoadmapTaskProgressSummary(
   checklist: MnaRoadmapTaskChecklist,
   phases: MnaRoadmapPhase[] = mnaRoadmapPhases,
 ): MnaRoadmapTaskProgressSummary {
-  const taskKeys = getRoadmapTaskKeys(phases);
-  const total = taskKeys.length;
-  const completed = taskKeys.filter((key) => checklist[key]).length;
+  const taskEntries = getRoadmapTaskEntries(phases);
+  const total = taskEntries.length;
+  const completed = taskEntries.filter((entry) => checklist[entry.key]).length;
   const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
+  const nextTaskEntry = taskEntries.find((entry) => !checklist[entry.key]) ?? null;
+  const currentPhase = nextTaskEntry?.phase ?? phases.at(-1) ?? null;
 
   return {
     completed,
     detailLabel: `완료 항목 ${completed}/${total}개`,
+    nextTaskLabel: getRoadmapNextTaskLabel(nextTaskEntry, total),
     percent,
     percentLabel: `${percent}%`,
-    stageLabel: `Phase 1 매각 준비, 진행률 ${percent}%`,
+    stageLabel: currentPhase
+      ? `Phase ${currentPhase.phase} ${currentPhase.name}, 진행률 ${percent}%`
+      : `로드맵 항목 없음, 진행률 ${percent}%`,
     total,
   };
 }
 
-function getRoadmapTaskKeys(phases: MnaRoadmapPhase[]): string[] {
-  return phases.flatMap((phase) => phase.tasks.map((task) => `${phase.phase}-${task}`));
+function getRoadmapTaskEntries(phases: MnaRoadmapPhase[]) {
+  return phases.flatMap((phase) =>
+    phase.tasks.map((task) => ({
+      key: `${phase.phase}-${task}`,
+      phase,
+      task,
+    })),
+  );
+}
+
+function getRoadmapNextTaskLabel(
+  nextTaskEntry: ReturnType<typeof getRoadmapTaskEntries>[number] | null,
+  total: number,
+): string {
+  if (nextTaskEntry) return `다음 할 일: ${nextTaskEntry.task}`;
+  if (total === 0) return "로드맵 항목을 불러오면 다음 행동을 표시합니다.";
+  return "모든 로드맵 항목을 완료했습니다. 상담 스냅샷을 전송하세요.";
 }
 
 export function evaluateMnaPhaseDocumentReadiness(

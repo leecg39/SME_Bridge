@@ -97,7 +97,7 @@ export default function DashboardPage() {
         <div>
           <ClipboardList aria-hidden="true" size={28} />
           <strong>다음 권장 행동</strong>
-          <span>최근 3개년 재무제표와 주요 계약서를 준비하세요.</span>
+          <span>{roadmapProgressSummary.nextTaskLabel}</span>
         </div>
         <div>
           <ShieldCheck aria-hidden="true" size={28} />
