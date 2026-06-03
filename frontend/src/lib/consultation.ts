@@ -60,6 +60,7 @@ export interface ConsultationRecord extends ConsultationPayload {
 
 export interface DashboardConsultationRow {
   id: string;
+  nextActionLabel: string | null;
   patasosStatusLabel: string;
   requestStatusLabel: string;
   savingsLabel: string | null;
@@ -122,10 +123,14 @@ export function buildDashboardConsultationRows(
 ): DashboardConsultationRow[] {
   return consultations.map((item) => {
     const selectedScenario = selectedTaxScenarioFromSnapshot(item.snapshot_json);
+    const selectedScenarioId = selectedTaxScenarioIdFromSnapshot(item.snapshot_json);
     const savingsLabel = taxSavingsLabelFromSnapshot(item.snapshot_json);
 
     return {
       id: item.id,
+      nextActionLabel: selectedScenarioId
+        ? nextTaxActionLabelFromScenarioId(selectedScenarioId)
+        : null,
       patasosStatusLabel: consultationStatusLabel(item.patasos_sync_status),
       requestStatusLabel: consultationRequestStatusLabel(item.status),
       savingsLabel: savingsLabel ? `예상 절세 효과: ${savingsLabel}` : null,
@@ -241,6 +246,26 @@ function selectedTaxScenarioFromSnapshot(snapshot: Record<string, JsonValue>): s
   return typeof tax?.selectedScenario === "string" ? tax.selectedScenario : null;
 }
 
+function selectedTaxScenarioIdFromSnapshot(
+  snapshot: Record<string, JsonValue>,
+): TaxScenarioId | null {
+  const tax =
+    snapshot.tax !== null && !Array.isArray(snapshot.tax) && typeof snapshot.tax === "object"
+      ? snapshot.tax
+      : null;
+
+  if (
+    tax?.selectedScenarioId === "sale" ||
+    tax?.selectedScenarioId === "inheritance" ||
+    tax?.selectedScenarioId === "gift" ||
+    tax?.selectedScenarioId === "hybrid"
+  ) {
+    return tax.selectedScenarioId;
+  }
+
+  return null;
+}
+
 function taxSavingsLabelFromSnapshot(snapshot: Record<string, JsonValue>): string | null {
   const tax =
     snapshot.tax !== null && !Array.isArray(snapshot.tax) && typeof snapshot.tax === "object"
@@ -248,4 +273,15 @@ function taxSavingsLabelFromSnapshot(snapshot: Record<string, JsonValue>): strin
       : null;
 
   return typeof tax?.savingsLabel === "string" ? tax.savingsLabel : null;
+}
+
+function nextTaxActionLabelFromScenarioId(scenarioId: TaxScenarioId): string {
+  const labels: Record<TaxScenarioId, string> = {
+    gift: "다음 확인: 10년 경영·대표이사 취임·5년 사후관리 요건",
+    hybrid: "다음 확인: 가족관계·취득가액·지분 구조별 최적 비율 재계산",
+    inheritance: "다음 확인: 가업상속공제 적용 여부와 상속세 공제 구조",
+    sale: "다음 확인: 취득가액·필요경비·대주주 여부",
+  };
+
+  return labels[scenarioId];
 }

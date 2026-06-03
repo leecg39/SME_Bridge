@@ -104,6 +104,7 @@ describe("buildDashboardConsultationRows", () => {
 
     expect(rows[0]).toEqual({
       id: "consultation-1",
+      nextActionLabel: "다음 확인: 가족관계·취득가액·지분 구조별 최적 비율 재계산",
       patasosStatusLabel: "접수됨",
       requestStatusLabel: "접수됨",
       savingsLabel: "예상 절세 효과: 9.6억",
