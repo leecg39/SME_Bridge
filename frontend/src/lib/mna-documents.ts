@@ -324,8 +324,9 @@ export function buildMnaRoadmapTaskProgressSummary(
   checklist: MnaRoadmapTaskChecklist,
   phases: MnaRoadmapPhase[] = mnaRoadmapPhases,
 ): MnaRoadmapTaskProgressSummary {
-  const total = phases.reduce((sum, phase) => sum + phase.tasks.length, 0);
-  const completed = Object.values(checklist).filter(Boolean).length;
+  const taskKeys = getRoadmapTaskKeys(phases);
+  const total = taskKeys.length;
+  const completed = taskKeys.filter((key) => checklist[key]).length;
   const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
 
   return {
@@ -336,6 +337,10 @@ export function buildMnaRoadmapTaskProgressSummary(
     stageLabel: `Phase 1 매각 준비, 진행률 ${percent}%`,
     total,
   };
+}
+
+function getRoadmapTaskKeys(phases: MnaRoadmapPhase[]): string[] {
+  return phases.flatMap((phase) => phase.tasks.map((task) => `${phase.phase}-${task}`));
 }
 
 export function evaluateMnaPhaseDocumentReadiness(

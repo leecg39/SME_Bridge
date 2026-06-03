@@ -206,6 +206,7 @@ describe("buildMnaRoadmapTaskProgressSummary", () => {
       buildMnaRoadmapTaskProgressSummary({
         "1-최근 3개년 재무제표 준비": true,
         "1-임대차 계약서 정리": false,
+        "unknown-stale-task": true,
       }),
     ).toEqual({
       completed: 1,
