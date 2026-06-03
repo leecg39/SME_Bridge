@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { SUCCESSION_SUPPORT_CHECK_TASK } from "./government-support";
 import {
+  buildMnaRoadmapHeaderSummary,
   buildMnaRoadmapTaskProgressSummary,
   buildMnaPhaseActionSummary,
   buildMnaRoadmapActionPlan,
@@ -234,6 +235,22 @@ describe("buildMnaRoadmapTaskProgressSummary", () => {
       percent: 25,
       percentLabel: "25%",
       stageLabel: "Phase 2 마케팅, 진행률 25%",
+      total: 16,
+    });
+  });
+});
+
+describe("buildMnaRoadmapHeaderSummary", () => {
+  it("counts only current roadmap task keys for the roadmap page header", () => {
+    expect(
+      buildMnaRoadmapHeaderSummary({
+        "1-최근 3개년 재무제표 준비": true,
+        "unknown-stale-task": true,
+      }),
+    ).toEqual({
+      completed: 1,
+      detailLabel: "완료 항목 1/16개, 단계별 필요 서류 PDF 18개",
+      documentTotal: 18,
       total: 16,
     });
   });

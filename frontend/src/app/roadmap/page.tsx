@@ -7,6 +7,7 @@ import Link from "next/link";
 import { FloatingConsultationButton } from "@/components/floating-consultation-button";
 import { getMnaDocuments } from "@/lib/api";
 import {
+  buildMnaRoadmapHeaderSummary,
   MNA_ROADMAP_TASK_CHECKLIST_STORAGE_KEY,
   mnaRoadmapPhases,
   parseMnaRoadmapTaskChecklist,
@@ -18,9 +19,7 @@ export default function RoadmapPage() {
   const [phases, setPhases] = useState<MnaRoadmapPhase[]>(mnaRoadmapPhases);
   const [checked, setChecked] = useState<Record<string, boolean>>({});
   const [isChecklistLoaded, setIsChecklistLoaded] = useState(false);
-  const completed = Object.values(checked).filter(Boolean).length;
-  const total = phases.reduce((sum, phase) => sum + phase.tasks.length, 0);
-  const documentTotal = phases.reduce((sum, phase) => sum + phase.documents.length, 0);
+  const roadmapHeaderSummary = buildMnaRoadmapHeaderSummary(checked, phases);
 
   useEffect(() => {
     setChecked(
@@ -53,9 +52,7 @@ export default function RoadmapPage() {
       <div className="roadmap-title-row">
         <div>
           <h1 className="page-title">매각 로드맵</h1>
-          <p className="lead">
-            완료 항목 {completed}/{total}개, 단계별 필요 서류 PDF {documentTotal}개
-          </p>
+          <p className="lead">{roadmapHeaderSummary.detailLabel}</p>
         </div>
         <Link className="button button-secondary" href="/consultation?type=mna">
           M&A 자문 요청

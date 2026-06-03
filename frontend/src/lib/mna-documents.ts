@@ -68,6 +68,13 @@ export interface MnaRoadmapActionPlan {
 
 export type MnaRoadmapTaskChecklist = Record<string, boolean>;
 
+export interface MnaRoadmapHeaderSummary {
+  completed: number;
+  detailLabel: string;
+  documentTotal: number;
+  total: number;
+}
+
 export interface MnaRoadmapTaskProgressSummary {
   completed: number;
   detailLabel: string;
@@ -362,6 +369,21 @@ function getRoadmapNextTaskLabel(
   if (nextTaskEntry) return `다음 할 일: ${nextTaskEntry.task}`;
   if (total === 0) return "로드맵 항목을 불러오면 다음 행동을 표시합니다.";
   return "모든 로드맵 항목을 완료했습니다. 상담 스냅샷을 전송하세요.";
+}
+
+export function buildMnaRoadmapHeaderSummary(
+  checklist: MnaRoadmapTaskChecklist,
+  phases: MnaRoadmapPhase[] = mnaRoadmapPhases,
+): MnaRoadmapHeaderSummary {
+  const taskSummary = buildMnaRoadmapTaskProgressSummary(checklist, phases);
+  const documentTotal = phases.reduce((sum, phase) => sum + phase.documents.length, 0);
+
+  return {
+    completed: taskSummary.completed,
+    detailLabel: `완료 항목 ${taskSummary.completed}/${taskSummary.total}개, 단계별 필요 서류 PDF ${documentTotal}개`,
+    documentTotal,
+    total: taskSummary.total,
+  };
 }
 
 export function evaluateMnaPhaseDocumentReadiness(
