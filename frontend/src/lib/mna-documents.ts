@@ -66,6 +66,10 @@ export interface MnaRoadmapActionPlan {
   status: MnaRoadmapActionPlanStatus;
 }
 
+export type MnaRoadmapTaskChecklist = Record<string, boolean>;
+
+export const MNA_ROADMAP_TASK_CHECKLIST_STORAGE_KEY = "sme-bridge:mna-roadmap-task-checklist";
+
 export const mnaRoadmapPhases: MnaRoadmapPhase[] = [
   {
     phase: 1,
@@ -285,6 +289,27 @@ export const mnaRoadmapPhases: MnaRoadmapPhase[] = [
     ],
   },
 ];
+
+export function serializeMnaRoadmapTaskChecklist(checklist: MnaRoadmapTaskChecklist): string {
+  return JSON.stringify(checklist);
+}
+
+export function parseMnaRoadmapTaskChecklist(value: string | null): MnaRoadmapTaskChecklist {
+  if (!value) return {};
+
+  try {
+    const parsed = JSON.parse(value);
+    if (parsed === null || Array.isArray(parsed) || typeof parsed !== "object") return {};
+
+    return Object.fromEntries(
+      Object.entries(parsed).filter((entry): entry is [string, boolean] =>
+        typeof entry[1] === "boolean",
+      ),
+    );
+  } catch {
+    return {};
+  }
+}
 
 export function evaluateMnaPhaseDocumentReadiness(
   phaseCode: string,

@@ -6,22 +6,43 @@ import Link from "next/link";
 
 import { FloatingConsultationButton } from "@/components/floating-consultation-button";
 import { getMnaDocuments } from "@/lib/api";
-import { mnaRoadmapPhases, type MnaRoadmapPhase } from "@/lib/mna-documents";
+import {
+  MNA_ROADMAP_TASK_CHECKLIST_STORAGE_KEY,
+  mnaRoadmapPhases,
+  parseMnaRoadmapTaskChecklist,
+  serializeMnaRoadmapTaskChecklist,
+  type MnaRoadmapPhase,
+} from "@/lib/mna-documents";
 
 export default function RoadmapPage() {
   const [phases, setPhases] = useState<MnaRoadmapPhase[]>(mnaRoadmapPhases);
   const [checked, setChecked] = useState<Record<string, boolean>>({});
+  const [isChecklistLoaded, setIsChecklistLoaded] = useState(false);
   const completed = Object.values(checked).filter(Boolean).length;
   const total = phases.reduce((sum, phase) => sum + phase.tasks.length, 0);
   const documentTotal = phases.reduce((sum, phase) => sum + phase.documents.length, 0);
 
   useEffect(() => {
+    setChecked(
+      parseMnaRoadmapTaskChecklist(
+        window.localStorage.getItem(MNA_ROADMAP_TASK_CHECKLIST_STORAGE_KEY),
+      ),
+    );
+    setIsChecklistLoaded(true);
     getMnaDocuments()
       .then((items) => {
         if (items.length > 0) setPhases(items);
       })
       .catch(() => setPhases(mnaRoadmapPhases));
   }, []);
+
+  useEffect(() => {
+    if (!isChecklistLoaded) return;
+    window.localStorage.setItem(
+      MNA_ROADMAP_TASK_CHECKLIST_STORAGE_KEY,
+      serializeMnaRoadmapTaskChecklist(checked),
+    );
+  }, [checked, isChecklistLoaded]);
 
   function toggle(key: string) {
     setChecked((current) => ({ ...current, [key]: !current[key] }));

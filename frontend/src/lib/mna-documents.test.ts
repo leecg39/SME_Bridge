@@ -6,6 +6,8 @@ import {
   buildMnaRoadmapActionPlan,
   evaluateMnaPhaseDocumentReadiness,
   mnaRoadmapPhases,
+  parseMnaRoadmapTaskChecklist,
+  serializeMnaRoadmapTaskChecklist,
 } from "./mna-documents";
 
 describe("mnaRoadmapPhases", () => {
@@ -174,5 +176,25 @@ describe("buildMnaRoadmapActionPlan", () => {
       "negotiation",
       "closing-pmi",
     ]);
+  });
+});
+
+describe("roadmap task checklist persistence", () => {
+  it("round-trips only boolean checklist states from storage", () => {
+    const serialized = serializeMnaRoadmapTaskChecklist({
+      "1-최근 3개년 재무제표 준비": true,
+      "1-임대차 계약서 정리": false,
+    });
+
+    expect(parseMnaRoadmapTaskChecklist(serialized)).toEqual({
+      "1-최근 3개년 재무제표 준비": true,
+      "1-임대차 계약서 정리": false,
+    });
+    expect(
+      parseMnaRoadmapTaskChecklist('{"1-최근 3개년 재무제표 준비":true,"bad":"yes"}'),
+    ).toEqual({
+      "1-최근 3개년 재무제표 준비": true,
+    });
+    expect(parseMnaRoadmapTaskChecklist("not-json")).toEqual({});
   });
 });
